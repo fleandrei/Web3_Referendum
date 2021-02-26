@@ -2,7 +2,8 @@ pragma solidity ^0.8.0;
 //pragma experimental ABIEncoderV2;
 
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol";
-
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/structs/EnumerableSet.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/SafeMath.sol";
 
 contract Institution{
     event Institution_Created(address Address, Institution_Type Type);
@@ -11,7 +12,7 @@ contract Institution{
         CONSTITUTION,
         LEGISLATION,
         API,
-        ADMINISTRATION,
+        DELEGATION,
         REGISTRATION,
         CUSTOM
     }
@@ -48,9 +49,18 @@ contract Institution{
         address contract_address;
     }
     
+    modifier Constitution_Only(){
+        require(msg.sender == Constitution_Address, "Constitution Only");
+        _;
+    }
     
     /*STATE*/
     string public name;
+    address public Constitution_Address;
+    Institution_Type public Type_Institution;
     
+    constructor(){
+        Constitution_Address = msg.sender;
+    }
 }
 
