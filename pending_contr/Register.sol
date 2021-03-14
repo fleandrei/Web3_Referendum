@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 //pragma experimental ABIEncoderV2;
 
 //import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol";
-import "contracts/Institution.sol";
+import "Institution.sol";
 
 abstract contract  Register is Institution{
     using EnumerableSet for EnumerableSet.AddressSet;
@@ -28,7 +28,7 @@ abstract contract  Register is Institution{
     }
     
     function Remove_Authority(address authority) external{
-        require(msg.sender == authority || msg.sender == Constitution_Address, "Not Allowed Removing Authorities");
+        require(msg.sender == authority, "Not Allowed Removing Authorities");
         require(Register_Authorities.contains(authority));
         Register_Authorities.remove(authority);
     }

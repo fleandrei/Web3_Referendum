@@ -18,11 +18,11 @@ contract Institution{
     
     enum Institution_Type{
         CONSTITUTION,
-        CITIZENS_REGISTRATION,
-        AGORA,
         LOI,
         API,
+        AGORA,
         DELEGATION,
+        REGISTRATION,
         CUSTOM
     }
     
