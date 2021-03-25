@@ -86,7 +86,6 @@ contract('TEST: Loi.sol (and Register.sol)', function(accounts){
 		});
 
 		it("Has correct Constitution",async function(){
-			console.debug(await this.Loi_Instance.Get_Authorities());
 			expect(await this.Loi_Instance.Constitution_Address()).to.equal(Constitution_Address);
 		});
 
@@ -95,8 +94,7 @@ contract('TEST: Loi.sol (and Register.sol)', function(accounts){
 		});
 
 		it(" Register_Authorities contains",async function(){
-			console.debug(Agora_Address);
-			console.debug(typeof((await this.Loi_Instance.Get_Authorities())[0]));
+			
 			var authority = (await this.Loi_Instance.Get_Authorities())[0];
 			expect(Bytes32ToAddress(authority)).to.equal(Agora_Address.toLowerCase());
 		});		
@@ -114,11 +112,9 @@ contract('TEST: Loi.sol (and Register.sol)', function(accounts){
 
 			var Title_bytes_size = chance.natural({min:1, max:32});
 			var Description_bytes_size = chance.natural({min:1, max:50});
-			console.debug("bytes_size=",Title_bytes_size);
 
 			Title = web3.utils.randomHex(Title_bytes_size);
 			Description = web3.utils.randomHex(Description_bytes_size);
-			console.debug("Title=",Title,", Description:",Description);
 		});
 
 		it("Random account attempts to Create Law", async function(){
