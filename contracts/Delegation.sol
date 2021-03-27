@@ -1,16 +1,20 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-
+//import "Initiative_Legislative.sol";
+//import "IDelegation.sol";
+//import "Agora.sol";
 /*import "Initiative_Legislative_lib.sol";
 import "Register.sol";
 import "Citizens_Register.sol";
 import "IVote.sol";*/
 
+
 import "contracts/Initiative_Legislative_lib.sol";
 import "contracts/Register.sol";
 import "contracts/Citizens_Register.sol";
 import "contracts/IVote.sol";
+
 
 interface IConstitution_Delegation{
     function Get_Delegation_Legislatif_Process_Versions(address delegation_address) external view returns(uint);
@@ -27,7 +31,7 @@ interface IConstitution_Delegation{
 library Delegation_Uils{
     using EnumerableSet for EnumerableSet.AddressSet;
     
-    
+
     
     struct Law_Project_Parameters{
         //uint Revert_Penalty_Limit;
@@ -63,6 +67,16 @@ library Delegation_Uils{
         uint Version;
     }
     
+    
+    event Governance_Parameters_Updated();
+    event Legislatif_Parameters_Updated();
+    event New_Candidat(address Candidat);
+    event Remove_Candidat(address Candidat);
+    event Sign();
+
+    event LogUint(uint data);
+    event LogUint1(uint data);
+    
     function Update_Mandate_Parameter(Mandate_Parameter storage mandate_param, uint Election_Duration, uint Validation_Duration, uint Mandate_Duration, uint Immunity_Duration,
         uint16 Num_Max_Members, uint16 New_Election_Petition_Rate, address Ivote_address) external {
             mandate_param.Election_Duration = Election_Duration;
@@ -72,6 +86,8 @@ library Delegation_Uils{
             mandate_param.Num_Max_Members = Num_Max_Members;
             mandate_param.New_Election_Petition_Rate = New_Election_Petition_Rate;
             mandate_param.Ivote_address = Ivote_address;
+            
+            emit Governance_Parameters_Updated();
         }
         
         function Update_Law_Parameters(Law_Project_Parameters storage projet_param, uint[6] calldata Uint256_Legislatifs_Arg, uint16 Censor_Proposition_Petition_Rate, 
@@ -85,6 +101,8 @@ library Delegation_Uils{
              projet_param.Censor_Proposition_Petition_Rate = Censor_Proposition_Petition_Rate;
              projet_param.Censor_Penalty_Rate = Censor_Penalty_Rate;
              projet_param.Ivote_address = Ivote_address;
+             
+             emit Legislatif_Parameters_Updated();
         }
     
     
@@ -104,17 +122,23 @@ library Delegation_Uils{
     function Add_Candidats(Mandate storage mandate, address new_candidat)external{
         require(!mandate.Next_Mandate_Candidats.contains(new_candidat), "Already Candidate");
         mandate.Next_Mandate_Candidats.add(new_candidat);
+        emit New_Candidat(new_candidat);
+    
     }
     
     function Remove_Candidats(Mandate storage mandate, address remove_candidat)external{
-        require(mandate.Next_Mandate_Candidats.contains(remove_candidat), "Already Candidate");
+        require(mandate.Next_Mandate_Candidats.contains(remove_candidat), "Not Candidate");
         mandate.Next_Mandate_Candidats.remove(remove_candidat);
+        emit Remove_Candidat(remove_candidat);
     }
     
     function Sign_Petition(Mandate storage mandate, uint Immunity_Duration, address signer)external{
-        require(block.timestamp - mandate.Inauguration_Timestamps > Immunity_Duration, "Immunity Period");
+        emit LogUint(block.timestamp - mandate.Inauguration_Timestamps);
+        emit LogUint1(Immunity_Duration);
+        require((block.timestamp - mandate.Inauguration_Timestamps) > Immunity_Duration, "Immunity Period");
         require(!mandate.New_Election_Petitions.contains(signer), "Already signed petition");
         mandate.New_Election_Petitions.add(signer);
+        emit Sign();
     }
     
     function New_Election(Mandate storage mandate, Mandate_Parameter storage mandate_version, uint citizen_number, uint num_mandate, bytes4 contain_function_selector)external{
@@ -130,7 +154,7 @@ library Delegation_Uils{
         for(uint i=0; i<Initial_members.length; i++){
             mandate.Members.add(Initial_members[i]);
         }
-        mandate.Version= 0;
+        mandate.Version= 1;
     }
     
     /*function Set_Legislatif_Process_Param(uint[6] calldata Uint256_Legislatifs_Arg, uint16 Censor_Proposition_Petition_Rate, uint16 Censor_Penalty_Rate, address Ivote_address, uint version)external{
@@ -149,6 +173,8 @@ library Delegation_Uils{
         return (ratio*base)/10000 ;// ((ratio*base)/100) * 10^(-ratio_decimals)
     }
 }
+
+
 
 
 
@@ -234,6 +260,12 @@ library Delegation_Uils{
         _;
     }
     
+    event Controled_Register_Added(address register);
+    event Controled_Register_Canceled(address register);
+    event Controled_Register_Removed(address register);
+    event New_Candidat(address Candidat);
+    event Remove_Candidat(address Candidat);
+    
     bytes4 constant Contains_Function_Selector = 0x57f98d32;
     
     DemoCoin Democoin;
@@ -260,7 +292,7 @@ library Delegation_Uils{
     /*Internal Governance*/
     
     mapping(uint=>Delegation_Uils.Mandate) Mandates;
-    mapping(uint=>Delegation_Uils.Mandate_Parameter) Mandates_Versions;
+    mapping(uint=>Delegation_Uils.Mandate_Parameter) public Mandates_Versions;
     
     
     
@@ -276,13 +308,13 @@ library Delegation_Uils{
         Citizens = Citizens_Register(citizen_address);
         Agora_address = agora_address;
         
-        Mandates[1].Set_First_Mandate( Initial_members);
+        Mandates[0].Set_First_Mandate( Initial_members);
         /*Mandates[1].Inauguration_Timestamps = block.timestamp;
         for(uint i=0; i<Initial_members.length; i++){
             Mandates[1].Members.add(Initial_members[i]);
         }
         Mandates[1].Version= 0;*/
-        Actual_Mandate = 1;
+        //Actual_Mandate = 1;
     }
     
     
@@ -389,7 +421,7 @@ library Delegation_Uils{
        List_Law_Project[law_project].Add_Corpus_Proposal(Parent, Parent_Proposals_Reuse, New_Function_Call, Description);
     }
     
-    /*function Add_Item(bytes32 law_project, uint Proposal, bytes[] calldata New_Items, uint[] calldata Indexs) external Delegation_Only{
+    function Add_Item(bytes32 law_project, uint Proposal, bytes[] calldata New_Items, uint[] calldata Indexs) external Delegation_Only{
         require(Delegation_Law_Projects[law_project].Law_Project_Status == Status.PROPOSITION, "Law Not at PROPOSITION status");
         uint version = Delegation_Law_Projects[law_project].Version;
         require( version != 0, "No existing Law Project");
@@ -398,7 +430,7 @@ library Delegation_Uils{
         
         //Add_Item_Proposal(law_project, Proposal, New_Items, Indexs, msg.sender);
         List_Law_Project[law_project].Add_Item_Proposal( Proposal, New_Items, Indexs, msg.sender);
-    }*/
+    }
     
     function Start_Vote(bytes32 law_project)external Delegation_Only{
         uint version = Delegation_Law_Projects[law_project].Version;
@@ -504,10 +536,13 @@ library Delegation_Uils{
              Law_Parameters_Versions[version].Ivote_address = Ivote_address;*/
              
              Legislatif_Process_Version = version;
+             
+            //emit Legilsatif_Parameters_Updated();
     }  
          
     function Update_Internal_Governance( uint Election_Duration, uint Validation_Duration, uint Mandate_Duration, uint Immunity_Duration,
         uint16 Num_Max_Members, uint16 New_Election_Petition_Rate, address Ivote_address)external Constitution_Only{
+            
             
             uint version = Internal_Governance_Version.add(1);
             Mandates_Versions[version].Update_Mandate_Parameter(Election_Duration, Validation_Duration, Mandate_Duration, Immunity_Duration,
@@ -522,6 +557,7 @@ library Delegation_Uils{
             Mandates_Versions[version].Ivote_address = Ivote_address;*/
             
             Internal_Governance_Version = version;
+            //emit Governance_Parameters_Updated();
     }
          
          
@@ -533,6 +569,8 @@ library Delegation_Uils{
     function Add_Controled_Register(address register_address) external Constitution_Only {
         Controled_Registers[register_address].Active = true;
         List_Controled_Registers.add(register_address);
+        emit Controled_Register_Added(register_address);
+    
     }
     
     /**
@@ -542,9 +580,12 @@ library Delegation_Uils{
     function Remove_Controled_Register(address register_address) external Constitution_Only {
         require(Controled_Registers[register_address].Active, "Register Not Controled");
         Controled_Registers[register_address].Active = false;
-        if(Controled_Registers[register_address].Law_Project_Counter ==0){
+         if(Controled_Registers[register_address].Law_Project_Counter ==0){
             Register(register_address).Remove_Authority(address(this));
             List_Controled_Registers.remove(register_address);
+            emit Controled_Register_Removed(register_address);
+        }else{
+            emit Controled_Register_Canceled(register_address);
         }
     }
     
@@ -618,7 +659,13 @@ library Delegation_Uils{
     function Get_List_Law_Register()external view returns(bytes32[] memory Law_Project_List, bytes32[] memory Controled_Register ){
         return (List_Delegation_Law_Projects, List_Controled_Registers._inner._values);
     }
-    
+    function Get_Mandate(uint Id)external view returns(uint version, uint Inauguration_Timestamps, uint New_Election_Petition_Number, bytes32[] memory Members, bytes32[] memory Candidats){
+        version = Mandates[Id].Version;
+        Inauguration_Timestamps = Mandates[Id].Inauguration_Timestamps;
+        New_Election_Petition_Number=Mandates[Id].New_Election_Petitions.length();
+        Members = Mandates[Id].Members._inner._values;
+        Candidats = Mandates[Id].Next_Mandate_Candidats._inner._values;
+    }
     /*function Get_Member_Amount_Consumed(bytes32 key, address member)external view returns(uint amount){
         return Delegation_Law_Projects[key].Members_Token_Consumption[member];
     }

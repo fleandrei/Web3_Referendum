@@ -67,11 +67,11 @@ contract Institution is ReentrancyGuard{
     }
     
     /*TEMP DEBUG EVENT*/
-    /*event LogUint(uint);
-    event LogString(string);
-    event LogBytes(bytes);
-    event LogBytes32(bytes32);
-    event LogAddress(address);*/
+    event LogUint(uint data);
+    event LogString(string data);
+    event LogBytes(bytes data);
+    event LogBytes32(bytes32 data);
+    event LogAddress(address data);
     
     /*STATE*/
     string public name;
