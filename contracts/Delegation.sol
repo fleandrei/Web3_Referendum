@@ -31,7 +31,7 @@ interface IConstitution_Delegation{
 library Delegation_Uils{
     using EnumerableSet for EnumerableSet.AddressSet;
     
-
+    
     
     struct Law_Project_Parameters{
         //uint Revert_Penalty_Limit;
@@ -54,7 +54,7 @@ library Delegation_Uils{
         uint Validation_Duration;
         uint Mandate_Duration;
         uint Immunity_Duration;
-        uint16 Num_Max_Members;
+        uint16 Next_Mandate_Max_Members;
         uint16 New_Election_Petition_Rate;
         address Ivote_address;
     }
@@ -64,6 +64,7 @@ library Delegation_Uils{
         EnumerableSet.AddressSet New_Election_Petitions;
         EnumerableSet.AddressSet Next_Mandate_Candidats;
         uint Inauguration_Timestamps;
+        uint Election_Timestamps;
         uint Version;
     }
     
@@ -73,17 +74,16 @@ library Delegation_Uils{
     event New_Candidat(address Candidat);
     event Remove_Candidat(address Candidat);
     event Sign();
-
-    event LogUint(uint data);
-    event LogUint1(uint data);
+    event New_election(bytes32 Vote_key);
+    event New_Mandate();
     
     function Update_Mandate_Parameter(Mandate_Parameter storage mandate_param, uint Election_Duration, uint Validation_Duration, uint Mandate_Duration, uint Immunity_Duration,
-        uint16 Num_Max_Members, uint16 New_Election_Petition_Rate, address Ivote_address) external {
+        uint16 Next_Mandate_Max_Members, uint16 New_Election_Petition_Rate, address Ivote_address) external {
             mandate_param.Election_Duration = Election_Duration;
             mandate_param.Validation_Duration = Validation_Duration;
             mandate_param.Mandate_Duration = Mandate_Duration;
             mandate_param.Immunity_Duration = Immunity_Duration;
-            mandate_param.Num_Max_Members = Num_Max_Members;
+            mandate_param.Next_Mandate_Max_Members = Next_Mandate_Max_Members;
             mandate_param.New_Election_Petition_Rate = New_Election_Petition_Rate;
             mandate_param.Ivote_address = Ivote_address;
             
@@ -108,15 +108,25 @@ library Delegation_Uils{
     
         
     function Transition_Mandate(mapping (uint=>Mandate) storage Mandates, address ivote_address, uint last_mandate_num, uint Internal_Governance_Version) external{
-        uint new_mandate_num=last_mandate_num++;
+        uint new_mandate_num=last_mandate_num+1;
         uint[] memory results;
         IVote Vote_Instance = IVote(ivote_address);
-        results = Vote_Instance.Get_Winning_Propositions(keccak256(abi.encodePacked(address(this),last_mandate_num)));
-        for(uint i =0; i<results.length; i++){
-            Mandates[new_mandate_num].Members.add(Mandates[last_mandate_num].Next_Mandate_Candidats.at(results[i]));
+        results = Vote_Instance.Get_Winning_Propositions(keccak256(abi.encodePacked(address(this),Mandates[last_mandate_num].Election_Timestamps)));
+        
+        if(results[0]==0){
+            uint actual_member_length = Mandates[last_mandate_num].Members.length();
+            for(uint i =0; i<actual_member_length; i++){
+                Mandates[new_mandate_num].Members.add(Mandates[last_mandate_num].Members.at(i));
+            }
+        }else{
+            for(uint i =0; i<results.length; i++){
+                Mandates[new_mandate_num].Members.add(Mandates[last_mandate_num].Next_Mandate_Candidats.at(results[i]));
+            }
         }
+        
         Mandates[new_mandate_num].Inauguration_Timestamps = block.timestamp;
         Mandates[new_mandate_num].Version = Internal_Governance_Version;
+        emit New_Mandate();
     }
     
     function Add_Candidats(Mandate storage mandate, address new_candidat)external{
@@ -133,19 +143,34 @@ library Delegation_Uils{
     }
     
     function Sign_Petition(Mandate storage mandate, uint Immunity_Duration, address signer)external{
-        emit LogUint(block.timestamp - mandate.Inauguration_Timestamps);
-        emit LogUint1(Immunity_Duration);
-        require((block.timestamp - mandate.Inauguration_Timestamps) > Immunity_Duration, "Immunity Period");
+        require(block.timestamp - mandate.Inauguration_Timestamps > Immunity_Duration, "Immunity Period");
         require(!mandate.New_Election_Petitions.contains(signer), "Already signed petition");
         mandate.New_Election_Petitions.add(signer);
         emit Sign();
     }
     
-    function New_Election(Mandate storage mandate, Mandate_Parameter storage mandate_version, uint citizen_number, uint num_mandate, bytes4 contain_function_selector)external{
-        require(mandate.New_Election_Petitions.length() >= Percentage(mandate_version.New_Election_Petition_Rate, citizen_number) || (block.timestamp - mandate.Inauguration_Timestamps) > mandate_version.Mandate_Duration, "New election impossible for now");
+    function New_Election(mapping(uint=>Mandate) storage Mandates, Mandate_Parameter storage mandate_version, uint citizen_number, uint num_mandate, bytes4 contain_function_selector)external returns(bool new_election){
+        uint candidats_number = Mandates[num_mandate].Next_Mandate_Candidats.length();
+        
+        require(candidats_number>0, "No Candidats");
+        require(Mandates[num_mandate].New_Election_Petitions.length() >= Percentage(mandate_version.New_Election_Petition_Rate, citizen_number) || (block.timestamp - Mandates[num_mandate].Inauguration_Timestamps) > mandate_version.Mandate_Duration, "New election impossible for now");
+        if(candidats_number <= mandate_version.Next_Mandate_Max_Members){
+            uint new_mandate_num = num_mandate+1;
+            for(uint i =0; i<candidats_number; i++){
+                Mandates[new_mandate_num].Members.add(Mandates[num_mandate].Next_Mandate_Candidats.at(i));
+            }
+            Mandates[new_mandate_num].Inauguration_Timestamps = block.timestamp;
             
-        IVote Vote_Instance = IVote(mandate_version.Ivote_address);
-        Vote_Instance.Create_Ballot(keccak256(abi.encodePacked(address(this),num_mandate)), address(this), contain_function_selector, mandate_version.Election_Duration, mandate_version.Validation_Duration, mandate.Next_Mandate_Candidats.length(), mandate_version.Num_Max_Members);
+            emit New_Mandate();
+            return false;
+        }else{
+            Mandates[num_mandate].Election_Timestamps = block.timestamp;
+            IVote Vote_Instance = IVote(mandate_version.Ivote_address);
+            bytes32 key = keccak256(abi.encodePacked(address(this),block.timestamp));
+            Vote_Instance.Create_Ballot(key, address(this), contain_function_selector, mandate_version.Election_Duration, mandate_version.Validation_Duration, candidats_number, mandate_version.Next_Mandate_Max_Members);
+            emit New_election(key);
+            return true;
+        }
         
     }
     
@@ -263,8 +288,7 @@ library Delegation_Uils{
     event Controled_Register_Added(address register);
     event Controled_Register_Canceled(address register);
     event Controled_Register_Removed(address register);
-    event New_Candidat(address Candidat);
-    event Remove_Candidat(address Candidat);
+    
     
     bytes4 constant Contains_Function_Selector = 0x57f98d32;
     
@@ -338,9 +362,18 @@ library Delegation_Uils{
     }
     
     function New_Election() external Citizen_Only {
+        require(!In_election_stage, "An Election is Pending");
         uint num_mandate = Actual_Mandate;
-        Mandates[num_mandate].New_Election(Mandates_Versions[Mandates[num_mandate].Version], Citizens.Get_Citizen_Number(), num_mandate, Contains_Function_Selector);
-        In_election_stage=true;
+        if(Delegation_Uils.New_Election(Mandates,Mandates_Versions[Mandates[num_mandate].Version], Citizens.Get_Citizen_Number(), num_mandate, Contains_Function_Selector)){
+            In_election_stage= true;
+        }else{
+            uint new_mandate_num = num_mandate+1;
+            Actual_Mandate = new_mandate_num;
+            Mandates[new_mandate_num].Version = Internal_Governance_Version;
+        }
+        
+        //Mandates[num_mandate].New_Election(Mandates_Versions[Mandates[num_mandate].Version], Citizens.Get_Citizen_Number(), num_mandate, Contains_Function_Selector);
+        //In_election_stage=true;
         /*uint num_mandate = Actual_Mandate;
         uint version = Mandates[num_mandate].Version;
     
@@ -375,10 +408,11 @@ library Delegation_Uils{
     }*/
     
     function End_Election()external{
-       
+    
+        require(In_election_stage, "Not in Election time");
         uint num_mandate = Actual_Mandate;
         //uint new_num_mandate = num_mandate.add(1);
-        Delegation_Uils.Transition_Mandate(Mandates, Law_Parameters_Versions[Mandates[num_mandate].Version].Ivote_address, num_mandate, Internal_Governance_Version);
+        Delegation_Uils.Transition_Mandate(Mandates, Mandates_Versions[Mandates[num_mandate].Version].Ivote_address, num_mandate, Internal_Governance_Version);
         Actual_Mandate = num_mandate + 1;
         In_election_stage=false;
     }
@@ -580,7 +614,8 @@ library Delegation_Uils{
     function Remove_Controled_Register(address register_address) external Constitution_Only {
         require(Controled_Registers[register_address].Active, "Register Not Controled");
         Controled_Registers[register_address].Active = false;
-         if(Controled_Registers[register_address].Law_Project_Counter ==0){
+        
+        if(Controled_Registers[register_address].Law_Project_Counter ==0){
             Register(register_address).Remove_Authority(address(this));
             List_Controled_Registers.remove(register_address);
             emit Controled_Register_Removed(register_address);
@@ -659,9 +694,11 @@ library Delegation_Uils{
     function Get_List_Law_Register()external view returns(bytes32[] memory Law_Project_List, bytes32[] memory Controled_Register ){
         return (List_Delegation_Law_Projects, List_Controled_Registers._inner._values);
     }
-    function Get_Mandate(uint Id)external view returns(uint version, uint Inauguration_Timestamps, uint New_Election_Petition_Number, bytes32[] memory Members, bytes32[] memory Candidats){
+        
+    function Get_Mandate(uint Id)external view returns(uint version, uint Inauguration_Timestamps, uint Election_Timestamps, uint New_Election_Petition_Number, bytes32[] memory Members, bytes32[] memory Candidats){
         version = Mandates[Id].Version;
         Inauguration_Timestamps = Mandates[Id].Inauguration_Timestamps;
+        Election_Timestamps= Mandates[Id].Election_Timestamps;
         New_Election_Petition_Number=Mandates[Id].New_Election_Petitions.length();
         Members = Mandates[Id].Members._inner._values;
         Candidats = Mandates[Id].Next_Mandate_Candidats._inner._values;

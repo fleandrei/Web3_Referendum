@@ -25,7 +25,8 @@ contract('TEST: Delegation.sol', function(accounts){
 
 	const Citizens = accounts.slice(3);
 	let member_ratio = 30
-	let Members = Citizens.slice(Math.floor(Citizens.length*member_ratio/100));
+	let first_member_indice = Math.floor(Citizens.length*(100-member_ratio)/100);
+	let Members = Citizens.slice(first_member_indice);
 
 	/*Contracts*/
 	let Delegation_Utils_Library;
@@ -65,7 +66,7 @@ contract('TEST: Delegation.sol', function(accounts){
 	let Validation_Duration;
 	let Mandate_Duration;
 	let Immunity_Duration;
-	let Num_Max_Members;
+	let Next_Mandate_Max_Members;
 	let New_Election_Petition_Rate;
 
 
@@ -81,7 +82,17 @@ contract('TEST: Delegation.sol', function(accounts){
 	
 
 	let Ivote_address;
+
 	
+	function Cleared_Votes_Creation(num_proposition, num_voter){
+		let res= Array.from({length:Citizens.length});
+
+		res.forEach((elem,i,arr)=>{
+			arr[i]= Array.from({length:num_proposition+1}, x=>chance.natural({min:0, max:4}));
+		});
+
+		return res;
+	}
 
 	beforeEach(async function () {
 			DemoCoin_Instance = await DEMOCOIN.new("Token", "TOK",Citizens, new Array(Citizens.length).fill(Initial_Ammounts), {from: Constitution_Address});
@@ -138,24 +149,24 @@ contract('TEST: Delegation.sol', function(accounts){
 				Validation_Duration = chance.natural({min:validation_duration_min, max:validation_duration_max});
 				Mandate_Duration = chance.natural({min:mandate_duration_min, max:mandate_duration_max});
 				Immunity_Duration = Math.floor(Immunity_duration_rate*Mandate_Duration/100);
-				Num_Max_Members = Members.length;
+				Next_Mandate_Max_Members = Members.length;
 				New_Election_Petition_Rate = chance.natural({min:1, max:5000});
 
 				console.log("Vote_Duration",Vote_Duration,"Validation_Duration",Validation_Duration,"Mandate_Duration",Mandate_Duration,
-					"\n Immunity_Duration", Immunity_Duration,"Num_Max_Members",Num_Max_Members,"New_Election_Petition_Rate",New_Election_Petition_Rate);
+					"\n Immunity_Duration", Immunity_Duration,"Next_Mandate_Max_Members",Next_Mandate_Max_Members,"New_Election_Petition_Rate",New_Election_Petition_Rate);
 				
 			});
 
 			it("Random Citizen attempt to Update Internal Governance parameters", async function(){
 				await expectRevert(Delegation_Instance.Update_Internal_Governance(Vote_Duration, Validation_Duration, Mandate_Duration,
-					Immunity_Duration, Num_Max_Members, New_Election_Petition_Rate, Ballot_Instance.address, {from:Citizens[0]}), "Constitution Only");
+					Immunity_Duration, Next_Mandate_Max_Members, New_Election_Petition_Rate, Ballot_Instance.address, {from:Citizens[0]}), "Constitution Only");
 			});
 
 
 			it("Constitution_Address Update Internal Governance parameters", async function(){
 
 				res = await Delegation_Instance.Update_Internal_Governance(Vote_Duration, Validation_Duration, Mandate_Duration,
-					Immunity_Duration, Num_Max_Members, New_Election_Petition_Rate, Ballot_Instance.address, {from:Constitution_Address});
+					Immunity_Duration, Next_Mandate_Max_Members, New_Election_Petition_Rate, Ballot_Instance.address, {from:Constitution_Address});
 				var General_info = await Delegation_Instance.Get_Delegation_Infos();
 				var mandate_version = await  Delegation_Instance.Mandates_Versions(1);
 
@@ -164,7 +175,7 @@ contract('TEST: Delegation.sol', function(accounts){
 				expect(mandate_version.Validation_Duration).to.be.bignumber.equal(new BN(Validation_Duration));
 				expect(mandate_version.Mandate_Duration).to.be.bignumber.equal(new BN(Mandate_Duration));
 				expect(mandate_version.Immunity_Duration).to.be.bignumber.equal(new BN(Immunity_Duration));
-				expect(mandate_version.Num_Max_Members).to.be.bignumber.equal(new BN(Num_Max_Members));
+				expect(mandate_version.Next_Mandate_Max_Members).to.be.bignumber.equal(new BN(Next_Mandate_Max_Members));
 				expect(mandate_version.New_Election_Petition_Rate).to.be.bignumber.equal(new BN(New_Election_Petition_Rate));
 				expect(mandate_version.Ivote_address).to.equal(Ballot_Instance.address);
 
@@ -304,18 +315,18 @@ contract('TEST: Delegation.sol', function(accounts){
 				Validation_Duration = chance.natural({min:validation_duration_min, max:validation_duration_max});
 				Mandate_Duration = chance.natural({min:mandate_duration_min, max:mandate_duration_max});
 				Immunity_Duration = Math.floor(Immunity_duration_rate*Mandate_Duration/100);
-				Num_Max_Members = Members.length;
-				New_Election_Petition_Rate = chance.natural({min:1, max:5000});
+				Next_Mandate_Max_Members = Members.length;
+				New_Election_Petition_Rate = chance.natural({min:10000/Citizens.length, max:5000}); //We assure that the ratio will correspond at least at 1 citizen
 
 				/*console.log("Vote_Duration",Vote_Duration,"Validation_Duration",Validation_Duration,"Mandate_Duration",Mandate_Duration,
-					"\n Immunity_Duration", Immunity_Duration,"Num_Max_Members",Num_Max_Members,"New_Election_Petition_Rate",New_Election_Petition_Rate);*/
+					"\n Immunity_Duration", Immunity_Duration,"Next_Mandate_Max_Members",Next_Mandate_Max_Members,"New_Election_Petition_Rate",New_Election_Petition_Rate);*/
 			});
 
-		context("Election and before", ()=>{
+		context("Election launching and before", ()=>{
 
 			beforeEach(async function (){
 				await Delegation_Instance.Update_Internal_Governance(Vote_Duration, Validation_Duration, Mandate_Duration,
-						Immunity_Duration, Num_Max_Members, New_Election_Petition_Rate, Ballot_Instance.address, {from:Constitution_Address});
+						Immunity_Duration, Next_Mandate_Max_Members, New_Election_Petition_Rate, Ballot_Instance.address, {from:Constitution_Address});
 			});
 
 			it("External_Account attempt to candidate to Delegation Elections", async function(){ 
@@ -397,16 +408,178 @@ contract('TEST: Delegation.sol', function(accounts){
 				await expectRevert(Delegation_Instance.New_Election({from:External_Account}), "Citizen Only");
 			});
 
+			it("Citizens attempts to setup a new election but there is no candidates", async function(){ 
+				await expectRevert(Delegation_Instance.New_Election({from:Citizens[0]}), "No Candidats");
+			});
+
 			it("Citizens attempts to setup a new election before Mandate duration is over and with not enough signatures", async function(){ 
+				await Delegation_Instance.Candidate_Election({from:Citizens[0]});
+				var mandate= await Delegation_Instance.Get_Mandate(0);
+				var parameter = await Delegation_Instance.Mandates_Versions(1);
+				var Delegation_info = await Delegation_Instance.Get_Delegation_Infos();
+				console.log("mandate:",mandate,"\n\nparameter",parameter,"\n\n Infos",Delegation_info);
 				await expectRevert(Delegation_Instance.New_Election({from:Citizens[0]}), "New election impossible for now");
 			});
 
-			it.skip("Citizens setup a new election After Mandate duration is over", async function(){ 
+			it("Citizens setup a new election After Mandate duration is over. LESS Candidates than Member place. A new Mandate is setup ", async function(){ 
+				await Delegation_Instance.Candidate_Election({from:Citizens[0]});
+
 				await time.increase(Mandate_Duration+1);
 				res = await Delegation_Instance.New_Election({from:Citizens[0]});
 
+				var mandate= await Delegation_Instance.Get_Mandate(0);
+				var parameter = await Delegation_Instance.Mandates_Versions(1);
+				var Delegation_info = await Delegation_Instance.Get_Delegation_Infos();
+				console.log("mandate:",mandate,"\n\nparameter",parameter,"\n\n Infos",Delegation_info);
+				
+				var last_mandate = await Delegation_Instance.Get_Mandate(0);
+				var new_mandate = await Delegation_Instance.Get_Mandate(1);
+				var Delegation_info = await Delegation_Instance.Get_Delegation_Infos();
+
+				expect(JSON.stringify(last_mandate.Candidats.map(Bytes32ToAddress))).to.equal(JSON.stringify(new_mandate.Members.map(Bytes32ToAddress)));
+				expect(new_mandate.version).to.be.bignumber.equal(new BN(1));
+				expect(new_mandate.New_Election_Petition_Number).to.be.bignumber.equal(new BN(0));
+				expect(new_mandate.Candidats.length).to.equal(0);
+				expect(Delegation_info.in_election_stage).to.equal(false);
+				await expectEvent(res, "New_Mandate", {}, "New_Mandate event incorrect");
+				
+				await expectRevert(Delegation_Instance.New_Election({from:Citizens[0]}), "No Candidats");
+
+				await Delegation_Instance.Candidate_Election({from:Citizens[0]});
+				
+				await expectRevert(Delegation_Instance.New_Election({from:Citizens[0]}), "New election impossible for now");
+			});
+
+			it("Citizens setup a new election After Mandate duration is over. MORE Candidates than Member place ", async function(){ 
+				
+				for(var i=0; i<Next_Mandate_Max_Members+1;i++){
+					await Delegation_Instance.Candidate_Election({from:Citizens[i]});
+				}
+
+				await time.increase(Mandate_Duration+1);
+				res = await Delegation_Instance.New_Election({from:Citizens[0]});
+
+				var blocknumber = (await web3.eth.getTransaction(res.tx)).blockNumber;
+				var timestamp = (await web3.eth.getBlock(blocknumber)).timestamp;
+				//var key= web3.utils.soliditySha3(web3.eth.abi.encodeParameters(["address", "uint256"],[Delegation_Instance.address, timestamp]));
+				var key = web3.utils.soliditySha3(Delegation_Instance.address, timestamp);
+
+				var last_mandate = await Delegation_Instance.Get_Mandate(0);				
+
+				var ballot = await Ballot_Instance.Ballots(key);
+				var Delegation_info = await Delegation_Instance.Get_Delegation_Infos();
+
+				//await expectEvent(res, "Ballot_Created", {key:key}, "Ballot_Created event incorrect");
+				/*await expectEvent(res, "LogAddress", {addr:Delegation_Instance.address}, "LogAddress event incorrect");
+				await expectEvent(res, "LogBytes32", {Hash:key}, "LogBytes32 event incorrect");	*/
+				
+				/*var last_mandate = await Delegation_Instance.Get_Mandate(0);
+				var new_mandate = await Delegation_Instance.Get_Mandate(1);
+				var Delegation_info = await Delegation_Instance.Get_Delegation_Infos();*/
+
+				expect(ballot.Voters_Register_Address).to.equal(Delegation_Instance.address);
+				expect(ballot.Check_Voter_Selector).to.equal(Contains_Selector);
+				expect(ballot.Status).to.be.bignumber.equal(new BN(1));
+				expect(ballot.Vote_Duration).to.be.bignumber.equal(new BN(Vote_Duration));
+				expect(ballot.Vote_Validation_Duration).to.be.bignumber.equal(new BN(Validation_Duration));
+				expect(ballot.Propositions_Number).to.be.bignumber.equal(new BN(Next_Mandate_Max_Members+1));
+				expect(ballot.Max_Winning_Propositions_Number).to.be.bignumber.equal(new BN(Next_Mandate_Max_Members));
+
+				expect(Delegation_info.in_election_stage).to.equal(true);
+				
+				await expectEvent(res, "New_election", {Vote_key:key}, "New_election event incorrect");
+			});
+
+			it("Citizens setup a new election before Mandate duration is over thanks to Petition. MORE Candidates than Member place.", async function(){ 
+				
+				for(var i=0; i<Next_Mandate_Max_Members+1;i++){
+					await Delegation_Instance.Candidate_Election({from:Citizens[i]});
+				}
+
+				var petition_min = Math.floor(New_Election_Petition_Rate*Citizens.length/10000);
+
+				await time.increase(Immunity_Duration+1);
+				for(i=0; i<petition_min; i++){
+					await Delegation_Instance.Sign_New_Election_Petition({from:Citizens[i]});
+				}
+
+				res = await Delegation_Instance.New_Election({from:Citizens[0]});
+
+				var blocknumber = (await web3.eth.getTransaction(res.tx)).blockNumber;
+				var timestamp = (await web3.eth.getBlock(blocknumber)).timestamp;
+				//var key= web3.utils.soliditySha3(web3.eth.abi.encodeParameters(["address", "uint256"],[Delegation_Instance.address, timestamp]));
+				var key = web3.utils.soliditySha3(Delegation_Instance.address, timestamp);
+				console.log("key",key,"\n timestamp",timestamp,"Next_Mandate_Max_Members",Next_Mandate_Max_Members);
+
+				var ballot = await Ballot_Instance.Ballots(key);
+				var Delegation_info = await Delegation_Instance.Get_Delegation_Infos();
+
+				expect(ballot.Voters_Register_Address).to.equal(Delegation_Instance.address);
+				expect(ballot.Check_Voter_Selector).to.equal(Contains_Selector);
+				expect(ballot.Status).to.be.bignumber.equal(new BN(1));
+				expect(ballot.Vote_Duration).to.be.bignumber.equal(new BN(Vote_Duration));
+				expect(ballot.Vote_Validation_Duration).to.be.bignumber.equal(new BN(Validation_Duration));
+				expect(ballot.Propositions_Number).to.be.bignumber.equal(new BN(Next_Mandate_Max_Members+1));
+				expect(ballot.Max_Winning_Propositions_Number).to.be.bignumber.equal(new BN(Next_Mandate_Max_Members));
+
+				expect(Delegation_info.in_election_stage).to.equal(true);
+				
+				await expectEvent(res, "New_election", {Vote_key:key}, "New_election event incorrect");
+			});
+
+			it("Citizen attempts end election but none was lauched", async function(){ 
+				await expectRevert(Delegation_Instance.End_Election({from:Citizens[0]}), "Not in Election time");
+			});
+
+		});
+		
+		context("During Election", ()=>{
+
+			beforeEach(async function (){
+				await Delegation_Instance.Update_Internal_Governance(Vote_Duration, 0, Mandate_Duration,
+						Immunity_Duration, Next_Mandate_Max_Members, New_Election_Petition_Rate, Ballot_Instance.address, {from:Constitution_Address});
+
+				for(var i=0; i<Next_Mandate_Max_Members+1;i++){
+					await Delegation_Instance.Candidate_Election({from:Citizens[i]});
+				}
+
+				await time.increase(Mandate_Duration+1);
+				res = await Delegation_Instance.New_Election({from:Citizens[0]});
 
 			});
+
+			it("Citizen attempts to Launch a new election during election time", async function(){ 
+				await expectRevert(Delegation_Instance.New_Election({from:Citizens[0]}), "An Election is Pending");
+			});
+
+			it("Citizen attempts to candidate during Election time", async function(){ 
+				await expectRevert(Delegation_Instance.Candidate_Election({from:Citizens[Next_Mandate_Max_Members+2]}), "Election Time");
+			});
+
+			it("Candidate attempts to remove his candidature during Election time", async function(){ 
+				await expectRevert(Delegation_Instance.Remove_Candidature({from:Citizens[0]}), "Election Time");
+			});
+			
+			it("Citizen (or External_Account) attempts end election before Vote_Duration period is over", async function(){ 
+				var mandate= await Delegation_Instance.Get_Mandate(0);
+				var parameter = await Delegation_Instance.Mandates_Versions(1);
+				var Delegation_info = await Delegation_Instance.Get_Delegation_Infos();
+				console.log("mandate:",mandate,"\n\nparameter",parameter,"\n\n Infos",Delegation_info);
+				await expectRevert(Delegation_Instance.End_Election({from:Citizens[0]}), "Ballot still Pending");
+			});
+
+			it.skip("Citizen end election and a new mandate is setup", async function(){
+				var Citizens_Votes = Cleared_Votes_Creation(Next_Mandate_Max_Members+1, Citizens.length);
+
+				Citizens_Votes.forEach(async (elem,i,arr)=>{
+					await Ballot_Instance.Vote_Clear(key, elem, {from:Citizens[i]});
+				});
+
+				//var expected_Results = Compute_Result(Citizens_Votes);
+
+				await Delegation_Instance.End_Election({from:Citizens[0]});
+			});
+
 
 		});
 
