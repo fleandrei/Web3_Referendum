@@ -15,6 +15,7 @@ contract Agora is Initiative_Legislative{
     using EnumerableSet for EnumerableSet.AddressSet;
     using EnumerableSet for EnumerableSet.Bytes32Set;
     using SafeMath for uint;
+    using Initiative_Legislative_Lib for Initiative_Legislative_Lib.Law_Project;
     enum Status{
         PETITIONS,
         VOTE,
@@ -42,6 +43,7 @@ contract Agora is Initiative_Legislative{
          uint8 Vote_Type;
          //address OffChain_Vote_Delegation;   
          address Assembly_Associated_Delegation;
+         address Ivote_address;
     }
     
     struct Register_Referendum{
@@ -105,7 +107,7 @@ contract Agora is Initiative_Legislative{
         bytes32 key = keccak256(abi.encode(Title,Description));
         require(Referendums[key].Version==0,"Law project already created");
         
-        Add_Law_Project(Title,  Description, key);
+        List_Law_Project[key].Add_Law_Project(Title,  Description);
         
         Referendums[key].Version = version;
         Referendums[key].Creation_Timestamps = block.timestamp;
@@ -128,7 +130,7 @@ contract Agora is Initiative_Legislative{
         Registers_Referendums[register_address].Type = Institution_Type(register_type);
     }
     
-    function Update_Register_Referendum_Parameters(address register_address, uint[7] memory Uint256_Arg, uint16 Assembly_Max_Members, uint8[6] memory Uint8_Arg, address Assembly_Associated_Delegation) external Constitution_Only{
+    function Update_Register_Referendum_Parameters(address register_address, uint[7] memory Uint256_Arg, uint16 Assembly_Max_Members, uint8[6] memory Uint8_Arg, address Assembly_Associated_Delegation, address Ivote_address) external Constitution_Only{
         uint new_version = Registers_Referendums[register_address].Last_Version.add(1);
         Registers_Referendums[register_address].Parameters_Versions[new_version].Petition_Duration= Uint256_Arg[0];
         Registers_Referendums[register_address].Parameters_Versions[new_version].Vote_Duration = Uint256_Arg[1];
@@ -149,6 +151,7 @@ contract Agora is Initiative_Legislative{
         Registers_Referendums[register_address].Parameters_Versions[new_version].Vote_Type = Uint8_Arg[5];
         
         Registers_Referendums[register_address].Parameters_Versions[new_version].Assembly_Associated_Delegation = Assembly_Associated_Delegation;
+        Registers_Referendums[register_address].Parameters_Versions[new_version].Ivote_address; Ivote_address;
         
         Registers_Referendums[register_address].Last_Version = new_version;
         

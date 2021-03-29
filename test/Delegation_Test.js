@@ -60,6 +60,8 @@ contract('TEST: Delegation.sol', function(accounts){
 	const Law_Censor_Period_Duration_max = time.duration.days(5).toNumber();
 	const Censor_Proposition_Petition_Rate_max = 5000;
 	const Censor_Penalty_Rate_max = 3000;
+	const Title_Size_max = 20;
+	const Description_Size_max= 50;
 
 	/*Delegation Parameters*/
 	let Vote_Duration;
@@ -196,12 +198,7 @@ contract('TEST: Delegation.sol', function(accounts){
 				Uint256_arg[5] = chance.natural({min:Law_Censor_Period_Duration_min, max:Law_Censor_Period_Duration_min}); //Law_Censor_Period_Duration
 
 				Censor_Proposition_Petition_Rate= chance.natural({min:1, max:Censor_Proposition_Petition_Rate_max});
-				Censor_Penalty_Rate = chance.natural({min:1, max:Censor_Penalty_Rate_max}); 
-
-				/*console.log("Member_Max_Token_Usage",Uint256_arg[0],"Law_Initialisation_Price",Uint256_arg[1],"FunctionCall_Price",Uint256_arg[2],
-					"\n Proposition_Duration", Uint256_arg[3],"Vote_Duration",Uint256_arg[4],"Law_Censor_Period_Duration",Uint256_arg[5], 
-					"\n Censor_Proposition_Petition_Rate", Censor_Proposition_Petition_Rate,"Censor_Penalty_Rate",Censor_Penalty_Rate);*/
-				
+				Censor_Penalty_Rate = chance.natural({min:1, max:Censor_Penalty_Rate_max}); 			
 			});
 
 			it("Random Citizen attempt to Update Legislatif Process parameters", async function(){
@@ -318,8 +315,6 @@ contract('TEST: Delegation.sol', function(accounts){
 				Next_Mandate_Max_Members = Members.length;
 				New_Election_Petition_Rate = chance.natural({min:10000/Citizens.length, max:5000}); //We assure that the ratio will correspond at least at 1 citizen
 
-				/*console.log("Vote_Duration",Vote_Duration,"Validation_Duration",Validation_Duration,"Mandate_Duration",Mandate_Duration,
-					"\n Immunity_Duration", Immunity_Duration,"Next_Mandate_Max_Members",Next_Mandate_Max_Members,"New_Election_Petition_Rate",New_Election_Petition_Rate);*/
 			});
 
 		context("Election launching and before", ()=>{
@@ -417,7 +412,7 @@ contract('TEST: Delegation.sol', function(accounts){
 				var mandate= await Delegation_Instance.Get_Mandate(0);
 				var parameter = await Delegation_Instance.Mandates_Versions(1);
 				var Delegation_info = await Delegation_Instance.Get_Delegation_Infos();
-				console.log("mandate:",mandate,"\n\nparameter",parameter,"\n\n Infos",Delegation_info);
+				console.log("mandate:",mandate,"\n\nparameter",parameter,"\n\n Infos",Delegation_info,"\n petition min number:",New_Election_Petition_Rate*Citizens.length/10000);
 				await expectRevert(Delegation_Instance.New_Election({from:Citizens[0]}), "New election impossible for now");
 			});
 
@@ -477,7 +472,7 @@ contract('TEST: Delegation.sol', function(accounts){
 				var new_mandate = await Delegation_Instance.Get_Mandate(1);
 				var Delegation_info = await Delegation_Instance.Get_Delegation_Infos();*/
 
-				expect(ballot.Voters_Register_Address).to.equal(Delegation_Instance.address);
+				expect(ballot.Voters_Register_Address).to.equal(Citizen_Register_Instance.address);
 				expect(ballot.Check_Voter_Selector).to.equal(Contains_Selector);
 				expect(ballot.Status).to.be.bignumber.equal(new BN(1));
 				expect(ballot.Vote_Duration).to.be.bignumber.equal(new BN(Vote_Duration));
@@ -514,7 +509,7 @@ contract('TEST: Delegation.sol', function(accounts){
 				var ballot = await Ballot_Instance.Ballots(key);
 				var Delegation_info = await Delegation_Instance.Get_Delegation_Infos();
 
-				expect(ballot.Voters_Register_Address).to.equal(Delegation_Instance.address);
+				expect(ballot.Voters_Register_Address).to.equal(Citizen_Register_Instance.address);
 				expect(ballot.Check_Voter_Selector).to.equal(Contains_Selector);
 				expect(ballot.Status).to.be.bignumber.equal(new BN(1));
 				expect(ballot.Vote_Duration).to.be.bignumber.equal(new BN(Vote_Duration));
@@ -533,8 +528,9 @@ contract('TEST: Delegation.sol', function(accounts){
 
 		});
 		
-		context("During Election", ()=>{
-
+		context("During Election and end Election", ()=>{
+			let ballot_key;
+			let old_mandate;
 			beforeEach(async function (){
 				await Delegation_Instance.Update_Internal_Governance(Vote_Duration, 0, Mandate_Duration,
 						Immunity_Duration, Next_Mandate_Max_Members, New_Election_Petition_Rate, Ballot_Instance.address, {from:Constitution_Address});
@@ -545,6 +541,9 @@ contract('TEST: Delegation.sol', function(accounts){
 
 				await time.increase(Mandate_Duration+1);
 				res = await Delegation_Instance.New_Election({from:Citizens[0]});
+				
+				old_mandate = await Delegation_Instance.Get_Mandate(0);
+				ballot_key = web3.utils.soliditySha3(Delegation_Instance.address, old_mandate.Election_Timestamps);
 
 			});
 
@@ -561,27 +560,185 @@ contract('TEST: Delegation.sol', function(accounts){
 			});
 			
 			it("Citizen (or External_Account) attempts end election before Vote_Duration period is over", async function(){ 
-				var mandate= await Delegation_Instance.Get_Mandate(0);
-				var parameter = await Delegation_Instance.Mandates_Versions(1);
-				var Delegation_info = await Delegation_Instance.Get_Delegation_Infos();
-				console.log("mandate:",mandate,"\n\nparameter",parameter,"\n\n Infos",Delegation_info);
+				
 				await expectRevert(Delegation_Instance.End_Election({from:Citizens[0]}), "Ballot still Pending");
 			});
 
-			it.skip("Citizen end election and a new mandate is setup", async function(){
+			it("Citizen end election and a new mandate is setup. Default proposition isn't chosed", async function(){
 				var Citizens_Votes = Cleared_Votes_Creation(Next_Mandate_Max_Members+1, Citizens.length);
 
 				Citizens_Votes.forEach(async (elem,i,arr)=>{
-					await Ballot_Instance.Vote_Clear(key, elem, {from:Citizens[i]});
+					elem[0] = 4;
+					await Ballot_Instance.Vote_Clear(ballot_key, elem, {from:Citizens[i]});
+				});
+				console.log("Citizens_Votes", Citizens_Votes);
+				//var expected_Results = Compute_Result(Citizens_Votes);
+
+				await time.increase(Vote_Duration+1);
+				await Ballot_Instance.End_Vote(ballot_key);
+				
+				res = await Delegation_Instance.End_Election({from:Citizens[0]});
+				
+				var new_mandate=await Delegation_Instance.Get_Mandate(1);
+				var parameter = await Delegation_Instance.Mandates_Versions(1);
+				var Delegation_info = await Delegation_Instance.Get_Delegation_Infos();
+				console.log("old mandate",old_mandate,"\nnew mandate:",new_mandate,"\n\nparameter",parameter,"\n\n Infos",Delegation_info);
+
+				var Winning_proposals = await Ballot_Instance.Get_Winning_Propositions(ballot_key);
+				console.log("Winning_proposals",Winning_proposals);
+				
+				for (var i = 0; i < Next_Mandate_Max_Members; i++) {
+					expect(Bytes32ToAddress(new_mandate.Members[i])).to.equal(Bytes32ToAddress(old_mandate.Candidats[Winning_proposals[i]-1]));
+				}
+				
+				expect(new_mandate.version).to.be.bignumber.equal(new BN(1));
+				expect(new_mandate.New_Election_Petition_Number).to.be.bignumber.equal(new BN(0));
+				expect(new_mandate.Candidats.length).to.equal(0);
+				expect(Delegation_info.in_election_stage).to.equal(false);
+				await expectEvent(res, "New_Mandate", {}, "New_Mandate event incorrect");
+			});
+
+			it("Citizen end election and a new mandate is setup. The default proposition is chosed", async function(){
+				var Citizens_Votes = Cleared_Votes_Creation(Next_Mandate_Max_Members+1, Citizens.length);
+
+				Citizens_Votes.forEach(async (elem,i,arr)=>{
+					elem[0] = 0;
+					await Ballot_Instance.Vote_Clear(ballot_key, elem, {from:Citizens[i]});
 				});
 
 				//var expected_Results = Compute_Result(Citizens_Votes);
+				await time.increase(Vote_Duration+1);
+				await Ballot_Instance.End_Vote(ballot_key);
+				res = await Delegation_Instance.End_Election({from:Citizens[0]});
 
-				await Delegation_Instance.End_Election({from:Citizens[0]});
+				var old_mandate= await Delegation_Instance.Get_Mandate(0);
+				var new_mandate=await Delegation_Instance.Get_Mandate(1);
+				var parameter = await Delegation_Instance.Mandates_Versions(1);
+				var Delegation_info = await Delegation_Instance.Get_Delegation_Infos();
+				console.log("old mandate",old_mandate,"\nnew mandate:",new_mandate,"\n\nparameter",parameter,"\n\n Infos",Delegation_info);
+
+				var Winning_proposals = await Ballot_Instance.Get_Winning_Propositions(ballot_key);
+
+				expect(JSON.stringify(old_mandate.Members.map(Bytes32ToAddress))).to.equal(JSON.stringify(new_mandate.Members.map(Bytes32ToAddress)));
+
+				expect(new_mandate.version).to.be.bignumber.equal(new BN(1));
+				expect(new_mandate.New_Election_Petition_Number).to.be.bignumber.equal(new BN(0));
+				expect(new_mandate.Candidats.length).to.equal(0);
+				expect(Delegation_info.in_election_stage).to.equal(false);
+				await expectEvent(res, "New_Mandate", {}, "New_Mandate event incorrect");
 			});
 
+			it("Change Delegation parameters during Election stage", async function(){
+				var Citizens_Votes = Cleared_Votes_Creation(Next_Mandate_Max_Members+1, Citizens.length);
+				var cesure_indice = chance.natural({min:0, max:Citizens_Votes.length});
+
+				for(var i=0; i<cesure_indice; i++){
+					await Ballot_Instance.Vote_Clear(ballot_key, Citizens_Votes[i], {from:Citizens[i]});
+				}
+
+
+				New_Ballot_Instance = await MAJORITY_JUDGMENT.new();
+				New_Vote_Duration = chance.natural({min:vote_duration_min, max:vote_duration_max});
+				New_Validation_Duration = chance.natural({min:validation_duration_min, max:validation_duration_max});
+				New_Mandate_Duration = chance.natural({min:mandate_duration_min, max:mandate_duration_max});
+				New_Immunity_Duration = Math.floor(Immunity_duration_rate*Mandate_Duration/100);
+				New_Next_Mandate_Max_Members = Members.length;
+				New_New_Election_Petition_Rate = chance.natural({min:10000/Citizens.length, max:5000});
+
+				await Delegation_Instance.Update_Internal_Governance(New_Vote_Duration, New_Validation_Duration, New_Mandate_Duration,
+						New_Immunity_Duration, New_Next_Mandate_Max_Members, New_New_Election_Petition_Rate, New_Ballot_Instance.address, {from:Constitution_Address});
+
+
+
+				for(var i=cesure_indice; i<Citizens_Votes.length; i++){
+					await Ballot_Instance.Vote_Clear(ballot_key, Citizens_Votes[i], {from:Citizens[i]});
+				}
+
+				//var expected_Results = Compute_Result(Citizens_Votes);
+				await time.increase(Vote_Duration+1);
+				await Ballot_Instance.End_Vote(ballot_key);
+				res = await Delegation_Instance.End_Election({from:Citizens[0]});
+
+				var old_mandate= await Delegation_Instance.Get_Mandate(0);
+				var new_mandate=await Delegation_Instance.Get_Mandate(1);
+				var parameter = await Delegation_Instance.Mandates_Versions(1);
+				var Delegation_info = await Delegation_Instance.Get_Delegation_Infos();
+				console.log("old mandate",old_mandate,"\nnew mandate:",new_mandate,"\n\nparameter",parameter,"\n\n Infos",Delegation_info);
+
+				var Winning_proposals = await Ballot_Instance.Get_Winning_Propositions(ballot_key);
+
+				if(Winning_proposals[0]==0){
+					expect(JSON.stringify(old_mandate.Members.map(Bytes32ToAddress))).to.equal(JSON.stringify(new_mandate.Members.map(Bytes32ToAddress)));
+				}else{
+					for (var i = 0; i < Next_Mandate_Max_Members; i++) {
+						expect(Bytes32ToAddress(new_mandate.Members[i])).to.equal(Bytes32ToAddress(old_mandate.Candidats[Winning_proposals[i]-1]));
+					}
+				}
+
+				
+				expect(old_mandate.version).to.be.bignumber.equal(new BN(1));
+				expect(new_mandate.version).to.be.bignumber.equal(new BN(2));
+				expect(new_mandate.New_Election_Petition_Number).to.be.bignumber.equal(new BN(0));
+				expect(new_mandate.Candidats.length).to.equal(0);
+				expect(Delegation_info.in_election_stage).to.equal(false);
+				await expectEvent(res, "New_Mandate", {}, "New_Mandate event incorrect");
+			});
 
 		});
+
+	});
+
+
+	describe("Delegation: Legislatif process Tests", ()=>{
+		beforeEach(async function (){
+			Ballot_Instance = await MAJORITY_JUDGMENT.new();
+
+			Uint256_arg[0] = Math.floor(Initital_Token_Ammount/Members.length); //Member_Max_Token_Usage
+			Uint256_arg[1] = Math.floor(Uint256_arg[0]*Law_Initialisation_Price_Ratio/100); //Law_Initialisation_Price
+			Uint256_arg[2] = Math.floor(Uint256_arg[0]*FunctionCall_Price_Ratio/100); //FunctionCall_Price
+			Uint256_arg[3] = chance.natural({min:Proposition_Duration_min, max:Proposition_Duration_max}); //Proposition_Duration
+			Uint256_arg[4] = chance.natural({min:vote_duration_min, max:vote_duration_max}); //Vote_Duration
+			Uint256_arg[5] = chance.natural({min:Law_Censor_Period_Duration_min, max:Law_Censor_Period_Duration_min}); //Law_Censor_Period_Duration
+
+			Censor_Proposition_Petition_Rate= chance.natural({min:1, max:Censor_Proposition_Petition_Rate_max});
+			Censor_Penalty_Rate = chance.natural({min:1, max:Censor_Penalty_Rate_max}); 
+		});
+
+
+		context("Add New Delegation law", ()=>{
+			
+			let Title;
+			let Description;
+			beforeEach(async function (){
+				Title = web3.utils.randomHex(Title_Size_max);
+				Description = web3.utils.randomHex(Description_Size_max);
+
+				res = await Delegation_Instance.Update_Legislatif_Process(Uint256_arg, Censor_Proposition_Petition_Rate, Censor_Penalty_Rate,
+					Ballot_Instance.address, {from:Constitution_Address});
+
+				law_key = web3.utils.soliditySha3(Title, Description);
+
+			});
+
+			it("Non member account attempts to create a delegation law project", async function(){
+				await Delegation_Instance.Add_Controled_Register(Citizen_Register_Instance.address);
+				await expectRevert(Delegation_Instance.Add_Law_Project(Citizen_Register_Instance.address, Title, Description,{from:Citizens[0]}), "Delegation Only");
+			});
+
+			it("Member account attempts to create a delegation law project for a Register that isn't under current Delegation control", async function(){
+				await expectRevert(Delegation_Instance.Add_Law_Project(Citizen_Register_Instance.address, Title, Description,{from:Members[0]}), "Register Not Controled");
+			});
+
+			it("Member account creates a delegation law project for a Citizens_Register", async function(){
+				await Delegation_Instance.Add_Controled_Register(Citizen_Register_Instance.address);
+				res = await Delegation_Instance.Add_Law_Project(Citizen_Register_Instance.address, Title, Description,{from:Members[0]});
+
+				var delegation_law = Delegation_Instance.Delegation_Law_Projects(law_key);
+				var law_project = Delegation_Instance.List_Law_Project(law_key);
+			});
+
+		});
+
 
 
 	});

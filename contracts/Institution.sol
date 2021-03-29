@@ -18,6 +18,7 @@ import "contracts/DemoCoin.sol";
 
 contract Institution is ReentrancyGuard{
     event Institution_Created(address Address, Institution_Type Type);
+    event Constitution_Changed(address new_constitution);
     
     enum Institution_Type{
         CONSTITUTION,
@@ -67,11 +68,11 @@ contract Institution is ReentrancyGuard{
     }
     
     /*TEMP DEBUG EVENT*/
-    event LogUint(uint data);
-    event LogString(string data);
-    event LogBytes(bytes data);
-    event LogBytes32(bytes32 data);
-    event LogAddress(address data);
+    /*event LogUint(uint);
+    event LogString(string);
+    event LogBytes(bytes);
+    event LogBytes32(bytes32);
+    event LogAddress(address);*/
     
     /*STATE*/
     string public name;
@@ -80,6 +81,12 @@ contract Institution is ReentrancyGuard{
     
     constructor(){
         Constitution_Address = msg.sender;
+    }
+    
+    function Set_Constitution(address new_constitution)external Constitution_Only{
+        require(new_constitution!=address(0), "Address 0");
+        Constitution_Address= new_constitution;
+        emit Constitution_Changed(new_constitution);
     }
     
     /*UTILS*/

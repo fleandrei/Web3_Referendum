@@ -1,5 +1,5 @@
 // Test: Loi.sol
-const { BN, ether, expectEvent, expectRevert } = require('@openzeppelin/test-helpers'); // BN: Big Number
+const { BN, constants, ether, expectEvent, expectRevert } = require('@openzeppelin/test-helpers'); // BN: Big Number
 const { expect } = require('chai');
 const LOI = artifacts.require('Loi');
 const chance = require("chance").Chance();
@@ -33,9 +33,28 @@ contract('TEST: Loi.sol (and Register.sol)', function(accounts){
 		});
 	}*/
 
-	describe("Test Register.sol (inherited) contract",()=>{
+	describe("Test Institution.sol Register.sol (inherited) contract",()=>{
+		let Law_initialisation_res;
 		beforeEach(async function () {
 			Loi_Instance = await LOI.new(Agora_Address, {from: Constitution_Address});	
+		});
+
+		/*it("Institution created", async function(){
+			await expectEvent(Law_initialisation_res, "Institution_Created", {Address: Loi_Instance.address, Type:3}, "Institution_Created event incorrect");
+		});*/
+
+		it("Random_Account attempt to Change Constitution_Address", async function(){
+			await expectRevert(Loi_Instance.Set_Constitution(accounts[4],{from: Random_Account}), "Constitution Only");
+		});
+
+		it("Constitution_Address attempt to Change Constitution_Address to zero address", async function(){
+			await expectRevert(Loi_Instance.Set_Constitution(constants.ZERO_ADDRESS,{from: Constitution_Address}), "Address 0");
+		});
+
+		it("Constitution_Address Changes Constitution_Address value", async function(){
+			res=await Loi_Instance.Set_Constitution(accounts[4],{from: Constitution_Address});
+			expect(await Loi_Instance.Constitution_Address()).to.equal(accounts[4]);
+			await expectEvent(res, "Constitution_Changed", {new_constitution: accounts[4]}, "Constitution_Changed event incorrect");
 		});
 
 		it("Random_Account attempt to add address to Register_Authorities", async function(){
@@ -118,7 +137,7 @@ contract('TEST: Loi.sol (and Register.sol)', function(accounts){
 		});
 
 		it("Random account attempts to Create Law", async function(){
-			await expectRevert.unspecified(Loi_Instance.AddLaw( Title, Description, {from: Random_Account}));
+			await expectRevert(Loi_Instance.AddLaw( Title, Description, {from: Random_Account}),"Authorities Only");
 		});
 
 		it("Authorithy account (agora) Creates Law", async function(){
@@ -132,7 +151,7 @@ contract('TEST: Loi.sol (and Register.sol)', function(accounts){
 
 		it("Authorithy account (agora) attempts to create 2 laws with same title", async function(){
 			let res1 = await Loi_Instance.AddLaw( Title, Description, {from:Agora_Address});
-			await expectRevert.unspecified( Loi_Instance.AddLaw( Title, web3.utils.randomHex(Description.length), {from:Agora_Address}));
+			await expectRevert( Loi_Instance.AddLaw( Title, web3.utils.randomHex(Description.length), {from:Agora_Address}), "Loi: Title already existing");
 		});
 
 		it("Authorithy account (agora) change description of already created law", async function(){
@@ -144,7 +163,7 @@ contract('TEST: Loi.sol (and Register.sol)', function(accounts){
 			await expectEvent(res, "Description_Changed", {title:Title}, "Description_Changed event incorrect");
 		});
 
-		it("Random account attempts to change description of already existing Law", async function(){
+		it("Random account changes description of already existing Law", async function(){
 			Loi_Instance.AddLaw( Title, Description, {from: Agora_Address});
 			let new_description = web3.utils.randomHex(chance.natural({min:1, max:50}));
 			await expectRevert.unspecified(Loi_Instance.Change_Law_Description(Title, new_description,{from:Random_Account}));
@@ -184,7 +203,7 @@ contract('TEST: Loi.sol (and Register.sol)', function(accounts){
 
 		it("Authorithy account (agora) attempts to Create an Article for non existing law", async function(){
 			var random_title = web3.utils.randomHex(chance.natural({min:1, max:32}));
-			await expectRevert.unspecified(Loi_Instance.AddArticle( random_title , Article_Title, Article_Content, {from: Agora_Address}));
+			await expectRevert(Loi_Instance.AddArticle( random_title , Article_Title, Article_Content, {from: Agora_Address}), "Loi: Non existing law");
 		});
 
 		it("Authorithy account (agora) Creates an Article for existing law", async function(){
@@ -204,7 +223,7 @@ contract('TEST: Loi.sol (and Register.sol)', function(accounts){
 			let other_law_title = web3.utils.randomHex(chance.natural({min:1, max:32}));
 			await Loi_Instance.AddLaw( other_law_title, Law_Description, {from:Agora_Address});
 
-			await expectRevert.unspecified(Loi_Instance.AddArticle( other_law_title, Article_Title, Article_Content, {from: Agora_Address}));
+			await expectRevert(Loi_Instance.AddArticle( other_law_title, Article_Title, Article_Content, {from: Agora_Address}), "Loi: Already existing article");
 		});
 	});
 
@@ -243,19 +262,19 @@ contract('TEST: Loi.sol (and Register.sol)', function(accounts){
 
 		/*Article Removal*/
 		it("Random account attempts to remove an Article from the law", async function(){
-			await expectRevert.unspecified(Loi_Instance.Remove_Article( Law_Title1, key1, {from: Random_Account}));
+			await expectRevert(Loi_Instance.Remove_Article( Law_Title1, key1, {from: Random_Account}), "Authorities Only");
 		});
 
 		it("Authorithy account (agora) attempts to remove an existing Article from an not existing law", async function(){
-			await expectRevert.unspecified(Loi_Instance.Remove_Article( web3.utils.randomHex(chance.natural({min:1, max:32})), key1, {from: Agora_Address}));
+			await expectRevert(Loi_Instance.Remove_Article( web3.utils.randomHex(chance.natural({min:1, max:32})), key1, {from: Agora_Address}),"Non existing article/law");
 		});
 
 		it("Authorithy account (agora) attempts to remove an non existing Article from a law", async function(){
-			await expectRevert.unspecified(Loi_Instance.Remove_Article( Law_Title1, web3.utils.randomHex(32), {from: Agora_Address}));
+			await expectRevert(Loi_Instance.Remove_Article( Law_Title1, web3.utils.randomHex(32), {from: Agora_Address}), "Non existing article/law");
 		});
 
 		it("Authorithy account (agora) attempts to remove an existing Article from the wrong law", async function(){
-			await expectRevert.unspecified(Loi_Instance.Remove_Article( Law_Title2, key1, {from: Agora_Address}));
+			await expectRevert(Loi_Instance.Remove_Article( Law_Title2, key1, {from: Agora_Address}), "Article no exist in this law");
 		});
 
 		it("Authorithy account removes an existing Article from the good existing law", async function(){
@@ -273,11 +292,11 @@ contract('TEST: Loi.sol (and Register.sol)', function(accounts){
 		/*Law Removal*/
 		
 		it("Random account attempts to remove an existing law", async function(){
-			await expectRevert.unspecified(Loi_Instance.Remove_Law( Law_Title1, {from: Random_Account}));
+			await expectRevert(Loi_Instance.Remove_Law( Law_Title1, {from: Random_Account}), "Authorities Only");
 		});
 
 		it("Authorithy account (agora) attempts to remove an not existing law", async function(){
-			await expectRevert.unspecified(Loi_Instance.Remove_Law( web3.utils.randomHex(chance.natural({min:1, max:32})), {from: Agora_Address}));
+			await expectRevert(Loi_Instance.Remove_Law( web3.utils.randomHex(chance.natural({min:1, max:32})), {from: Agora_Address}), "Law doesn't exist");
 		});
 
 		it("Authorithy account (agora) removes an existing law", async function(){

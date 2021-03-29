@@ -6,12 +6,10 @@ import "Agora.sol";
 import "Loi.sol";
 import "Delegation.sol";
 import "Citizens_Register.sol";
-
+import "IVote.sol";
 
 library Constitution_Register{
-    using SafeMath for uint;
-    using EnumerableSet for EnumerableSet.AddressSet; 
-    
+
      
     function Create_Loi(address agora)external returns(address){
          Loi loi = new Loi(agora);
@@ -19,8 +17,8 @@ library Constitution_Register{
          return address(loi);
      }
      
-     function Create_Citizens(address[] calldata Initial_members)external returns(address){
-         return address(new Citizens_Register(Initial_members));
+     function Create_Citizens(address[] calldata Initial_members, address token_address, uint new_citizen_mint_amount)external returns(address){
+         return address(new Citizens_Register(Initial_members, token_address, new_citizen_mint_amount));
      }
     
 }
@@ -28,8 +26,8 @@ library Constitution_Register{
 
 library Constitution_Delegation{
 
-    function Create_Delegation(address[] memory Initial_members, address Token_Address)external returns(address){
-         Delegation delegation = new Delegation(Initial_members, Token_Address);
+    function Create_Delegation(address[] memory Initial_members, address Token_Address, address citizen_address, address agora_address)external returns(address){
+         Delegation delegation = new Delegation(Initial_members, Token_Address, citizen_address, agora_address);
          return address(delegation);
     }
 
@@ -110,6 +108,8 @@ contract Constitution is Register{
      
      Agora public Agora_Instance;
      Citizens_Register public Citizen_Instance;
+     DemoCoin public Democoin;
+     IVote public majority_judgment_ballot;
      //address public Citizens_Address;
      
      address public Transitional_Government;
@@ -121,10 +121,8 @@ contract Constitution is Register{
     EnumerableSet.AddressSet Delegation_Address_List;
     
      
-     address Citizen_Registering_Address;
-     uint public New_Citizen_Mint_Amount;  //Each new citizen get "New_Citizen_Mint_Amount" token that are mint.
-     
-     DemoCoin public Democoin;
+     address public Citizen_Registering_Address;
+ 
      
      
      //uint8 public Account_Max_Token_Rate;  //Each account can't pocess more than "Account_Max_Token_Rate"% of the entire token supply.
@@ -137,10 +135,10 @@ contract Constitution is Register{
          //Type_Institution = Institution_Type.CONSTITUTION;
          Democoin = new DemoCoin(Token_Name, Token_Symbole, initial_citizens, initial_citizens_token_amount);
          
-         New_Citizen_Mint_Amount = new_citizen_mint_amount;
+         Citizen_Instance = new Citizens_Register(initial_citizens, address(Democoin), new_citizen_mint_amount);
+         Agora_Instance = new Agora(address(Democoin), address(Citizen_Instance));
          
-         Agora_Instance = new Agora(address(Democoin));
-         Citizen_Instance = new Citizens_Register(initial_citizens);
+         //majority_judgment_ballot = new majority_judgment_ballot();
          //Citizens_Address = Constitution_Register.Create_Citizens(initial_citizens);
          
          Transitional_Government = transition_government;
@@ -148,8 +146,6 @@ contract Constitution is Register{
          Register_Authorities.add(address(Agora_Instance));
          
      }
-     
-     /* "Token", "Tok", */
      
      
      function End_Transition_Government()external{
@@ -161,6 +157,9 @@ contract Constitution is Register{
      
     /*FUNCTIONCALL API functions*/
     
+    function Set_Citizen_Mint_Amount(uint amount) external Register_Authorities_Only{
+        Citizen_Instance.Set_Citizen_Mint_Amount(amount);
+    }
     
     function Set_Minnter(address[] calldata Add_Minter, address[] calldata Remove_Minter)external Register_Authorities_Only{
         uint add_len=Add_Minter.length;
@@ -186,26 +185,31 @@ contract Constitution is Register{
     
     
     /*Citizens_Register  Handling*/
+    
+    function Citizen_Register_Remove_Authority(address removed_authority) external Register_Authorities_Only{
+        Citizen_Instance.Remove_Authority(removed_authority);
+    }
+    
     function Add_Registering_Authority(address new_authority)external Register_Authorities_Only{
         Citizen_Instance.Add_Registering_Authority(new_authority);
      }
      
-     function Remove_Registering_Authority(address removed_authority)external Register_Authorities_Only{
+     /*function Remove_Registering_Authority(address removed_authority)external Register_Authorities_Only{
          Citizen_Instance.Remove_Registering_Authority(removed_authority);
-     }
+     }*/
      
      function Add_Banning_Authority(address new_authority)external Register_Authorities_Only{
          Citizen_Instance.Add_Banning_Authority(new_authority);
      }
      
-     function Remove_Banning_Authority(address removed_authority)external Register_Authorities_Only{
+     /*function Remove_Banning_Authority(address removed_authority)external Register_Authorities_Only{
          Citizen_Instance.Remove_Banning_Authority(removed_authority);
-     }
+     }*/
     
     
     
     /*Register/Agora Handling*/
-    function Create_Register(uint8 register_type, uint[7] calldata Uint256_Arg, uint16 Assembly_Max_Members, uint8[6] calldata Uint8_Arg, address Assembly_Associated_Delegation)
+    function Create_Register(uint8 register_type, uint[7] calldata Uint256_Arg, uint16 Assembly_Max_Members, uint8[6] calldata Uint8_Arg, address Assembly_Associated_Delegation, address Ivote_address)
     external Register_Authorities_Only{ //returns(bool, bytes memory){
         
         
@@ -234,7 +238,7 @@ contract Constitution is Register{
         Registers_Address_List.add(new_register_address);
      
         Agora_Instance.Create_Register_Referendum(new_register_address, register_type);
-        _Set_Register_Param( new_register_address, Uint256_Arg, Assembly_Max_Members, Uint8_Arg, Assembly_Associated_Delegation);
+        _Set_Register_Param( new_register_address, Uint256_Arg, Assembly_Max_Members, Uint8_Arg, Assembly_Associated_Delegation, Ivote_address);
          
          
          //Registers[new_register_address].Register_Type = register_type;
@@ -245,7 +249,7 @@ contract Constitution is Register{
         //return Registers[new_register_address]._Set_Register_Param(new_register_address, Uint256_Arg, Uint16_Arg, Uint8_Arg, OffChain_Vote_Delegation, Assembly_Associated_Delegation);
     }
     
-    function Set_Register_Param(address register_address, uint[7] calldata Uint256_Arg, uint16 Assembly_Max_Members, uint8[6] calldata Uint8_Arg, address Assembly_Associated_Delegation) 
+    function Set_Register_Param(address register_address, uint[7] calldata Uint256_Arg, uint16 Assembly_Max_Members, uint8[6] calldata Uint8_Arg, address Assembly_Associated_Delegation, address Ivote_address) 
     external Register_Authorities_Only{ //returns(bool, bytes memory){
         //uint version = Registers[register_address].Actual_Version;
     
@@ -257,7 +261,7 @@ contract Constitution is Register{
         }*/
         
       
-        _Set_Register_Param(register_address, Uint256_Arg, Assembly_Max_Members, Uint8_Arg, Assembly_Associated_Delegation);
+        _Set_Register_Param(register_address, Uint256_Arg, Assembly_Max_Members, Uint8_Arg, Assembly_Associated_Delegation, Ivote_address);
          
         emit Register_Parameters_Modified(register_address);
         //return (success, data);
@@ -265,11 +269,11 @@ contract Constitution is Register{
        
     }
     
-     function _Set_Register_Param(address register_address, uint[7] calldata Uint256_Arg, uint16 Assembly_Max_Members, uint8[6] calldata Uint8_Arg,  address Assembly_Associated_Delegation) 
+     function _Set_Register_Param(address register_address, uint[7] calldata Uint256_Arg, uint16 Assembly_Max_Members, uint8[6] calldata Uint8_Arg,  address Assembly_Associated_Delegation, address Ivote_address) 
      internal {//returns(bool, bytes memory){
         //uint version =register.Actual_Version;
         
-        if(Uint256_Arg[0] ==0 || Uint256_Arg[1] ==0 || Uint256_Arg[3]==0 || Uint8_Arg[0] == 0 || Uint8_Arg[0] >100 || Uint8_Arg[1]>100){
+        if(Uint256_Arg[0] ==0 || Uint256_Arg[1] ==0 || Uint256_Arg[3]==0 || Uint8_Arg[0] == 0 || Uint8_Arg[0] >100 || Uint8_Arg[1]>100 || Ivote_address==address(0)){
             //return (false, bytes("Bad arguments value"));
             revert("Bad arguments value");
         }
@@ -282,7 +286,7 @@ contract Constitution is Register{
         }
         
         
-        Agora_Instance.Update_Register_Referendum_Parameters(register_address,Uint256_Arg, Assembly_Max_Members, Uint8_Arg, Assembly_Associated_Delegation);
+        Agora_Instance.Update_Register_Referendum_Parameters(register_address,Uint256_Arg, Assembly_Max_Members, Uint8_Arg, Assembly_Associated_Delegation, Ivote_address);
         //Registers[register_param].Set_Register(Uint256_Arg,  Uint16_Arg, Uint8_Arg,  OffChain_Vote_Delegation,  Assembly_Associated_Delegation);
        
     }
@@ -293,17 +297,17 @@ contract Constitution is Register{
     
      /*Delegations Handling*/
      
-   function Create_Delegation(address delegation_address, uint[6] calldata Uint256_Legislatifs_Arg, uint[4] calldata Uint256_Governance_Arg, 
+   function Create_Delegation(address delegation_address, uint[6] calldata Uint256_Legislatifs_Arg, uint[5] calldata Uint256_Governance_Arg, 
          uint16 Num_Max_Members, uint8 Revert_Proposition_Petition_Rate, uint8 Revert_Penalty_Rate, 
-         uint8 New_Election_Petition_Rate, address[] memory Initial_members)
+         uint8 New_Election_Petition_Rate, address[] memory Initial_members, address Ivote_address_legislatif, address Ivote_address_governance)
          external Register_Authorities_Only {
 
-            if(Uint256_Legislatifs_Arg[3]==0 || Uint256_Legislatifs_Arg[4]==0 || Revert_Proposition_Petition_Rate>100 || Revert_Penalty_Rate>100 ){
+            if(Uint256_Legislatifs_Arg[3]==0 || Uint256_Legislatifs_Arg[4]==0 || Revert_Proposition_Petition_Rate>100 || Revert_Penalty_Rate>100 || Ivote_address_legislatif==address(0)){
                  //return(false, bytes("Bad Argument Value"));
                  revert("Legislatif: Bad Argument Value");
              }
              
-             if(Uint256_Governance_Arg[0]==0 || Uint256_Governance_Arg[1]==0 || Num_Max_Members==0 || New_Election_Petition_Rate ==0 || New_Election_Petition_Rate>100 || Initial_members.length <= Num_Max_Members){
+             if(Uint256_Governance_Arg[0]==0 || Uint256_Governance_Arg[1]==0 || Num_Max_Members==0 || New_Election_Petition_Rate ==0 || New_Election_Petition_Rate>100 || Initial_members.length <= Num_Max_Members || Ivote_address_governance==address(0)){
                  //return(false, bytes("Bad Argument Value"));
                  revert("Governance: Bad Argument Value");
              }
@@ -312,7 +316,10 @@ contract Constitution is Register{
             if(delegation_address == address(0)){ //Create a new delegation
                  /*Delegation Delegation_Instance = new Delegation(Initial_members, address(Democoin));
                  delegation_address = address(Delegation_Instance);*/
-                 delegation_address = Constitution_Delegation.Create_Delegation( Initial_members, address(Democoin));
+                 for(uint i =0; i<Initial_members.length; i++){
+                     require(Citizen_Instance.Contains(Initial_members[i]), "member is not citizen");
+                 }
+                 delegation_address = Constitution_Delegation.Create_Delegation( Initial_members, address(Democoin), address(Citizen_Instance), address(Agora_Instance));
             }else{
                 require(!Delegation_Address_List.contains(delegation_address), "Delegation already registered");
                 //return(false,bytes("Delegation already registered"));
@@ -320,15 +327,15 @@ contract Constitution is Register{
             
             
 
-            Delegation(delegation_address).Update_Legislatif_Process(Uint256_Legislatifs_Arg[0], Uint256_Legislatifs_Arg[1], Uint256_Legislatifs_Arg[2], Uint256_Legislatifs_Arg[3], Uint256_Legislatifs_Arg[4], Uint256_Legislatifs_Arg[5], Revert_Proposition_Petition_Rate, Revert_Penalty_Rate);
-            Delegation(delegation_address).Update_Internal_Governance(Uint256_Governance_Arg[0], Uint256_Governance_Arg[1], Uint256_Governance_Arg[2], Num_Max_Members, New_Election_Petition_Rate);
+            Delegation(delegation_address).Update_Legislatif_Process(Uint256_Legislatifs_Arg[0], Uint256_Legislatifs_Arg[1], Uint256_Legislatifs_Arg[2], Uint256_Legislatifs_Arg[3], Uint256_Legislatifs_Arg[4], Uint256_Legislatifs_Arg[5], Revert_Proposition_Petition_Rate, Revert_Penalty_Rate, Ivote_address_legislatif);
+            Delegation(delegation_address).Update_Internal_Governance(Uint256_Governance_Arg[0], Uint256_Governance_Arg[1], Uint256_Governance_Arg[2], Uint256_Governance_Arg[3], Num_Max_Members, New_Election_Petition_Rate, Ivote_address_governance);
             
             //Delegations[delegation_address]._Set_Delegation_Legislatif_Process(Uint256_Legislatifs_Arg[0], Uint256_Legislatifs_Arg[1], Uint256_Legislatifs_Arg[2], Uint256_Legislatifs_Arg[3], Uint256_Legislatifs_Arg[4], Uint256_Legislatifs_Arg[5], Revert_Proposition_Petition_Rate, Revert_Penalty_Rate);
             //Delegations[delegation_address]._Set_Delegation_Internal_Governance(Uint256_Governance_Arg[0], Uint256_Governance_Arg[1], Uint256_Governance_Arg[2], Num_Max_Members, New_Election_Petition_Rate);
             
             Delegation_Address_List.add(delegation_address);
             
-            if(Uint256_Governance_Arg[3]>0){
+            if(Uint256_Governance_Arg[4]>0){
                 Democoin.Mint(delegation_address, Uint256_Governance_Arg[3]);
             }
          }
@@ -355,7 +362,7 @@ contract Constitution is Register{
     
     function Set_Delegation_Legislatif_Process(address delegation_address, uint Member_Max_Token_Usage, uint Law_Initialisation_Price, uint FunctionCall_Price, uint Proposition_Duration,
          uint Vote_Duration, uint Law_Revertable_Period_Duration, uint8 Revert_Proposition_Petition_Rate, 
-         uint8 Revert_Penalty_Rate) 
+         uint8 Revert_Penalty_Rate, address Ivote_address) 
          external Register_Authorities_Only{ //returns(bool, bytes memory){
              
              require(Delegation_Address_List.contains(delegation_address), "Non Existing Delegation");
@@ -365,14 +372,14 @@ contract Constitution is Register{
                  revert("Bad Argument Value");
              }
              
-             Delegation(delegation_address).Update_Legislatif_Process(Member_Max_Token_Usage, Law_Initialisation_Price, FunctionCall_Price, Proposition_Duration, Vote_Duration, Law_Revertable_Period_Duration, Revert_Proposition_Petition_Rate, Revert_Penalty_Rate);
+             Delegation(delegation_address).Update_Legislatif_Process(Member_Max_Token_Usage, Law_Initialisation_Price, FunctionCall_Price, Proposition_Duration, Vote_Duration, Law_Revertable_Period_Duration, Revert_Proposition_Petition_Rate, Revert_Penalty_Rate, Ivote_address);
              //Delegations[delegation_address]._Set_Delegation_Legislatif_Process(Member_Max_Token_Usage, Law_Initialisation_Price, FunctionCall_Price, Proposition_Duration, Vote_Duration, Law_Revertable_Period_Duration, Revert_Proposition_Petition_Rate, Revert_Penalty_Rate);
          }
          
          
          
-    function Set_Delegation_Internal_Governance(address delegation_address, uint Election_Duration, uint Mandate_Duration, uint Immunity_Duration,
-        uint16 Num_Max_Members, uint8 New_Election_Petition_Rate, uint Mint_Token) external Register_Authorities_Only{
+    function Set_Delegation_Internal_Governance(address delegation_address, uint Election_Duration, uint Mandate_Duration, uint Immunity_Duration, uint Validation_Duration,
+        uint16 Num_Max_Members, uint8 New_Election_Petition_Rate, uint Mint_Token, address Ivote_address) external Register_Authorities_Only{
             require(Delegation_Address_List.contains(delegation_address), "Non Existing Delegation");
             
             if(Election_Duration==0 || Mandate_Duration==0 || Num_Max_Members==0 || New_Election_Petition_Rate ==0 || New_Election_Petition_Rate>100 ){
@@ -383,7 +390,7 @@ contract Constitution is Register{
                  Democoin.Mint(delegation_address, Mint_Token);
              }
             
-            Delegation(delegation_address).Update_Internal_Governance(Election_Duration, Mandate_Duration, Immunity_Duration, Num_Max_Members, New_Election_Petition_Rate);
+            Delegation(delegation_address).Update_Internal_Governance(Election_Duration, Validation_Duration, Mandate_Duration, Immunity_Duration, Num_Max_Members, New_Election_Petition_Rate, Ivote_address);
          }
          
          

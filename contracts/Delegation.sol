@@ -120,7 +120,7 @@ library Delegation_Uils{
             }
         }else{
             for(uint i =0; i<results.length; i++){
-                Mandates[new_mandate_num].Members.add(Mandates[last_mandate_num].Next_Mandate_Candidats.at(results[i]));
+                Mandates[new_mandate_num].Members.add(Mandates[last_mandate_num].Next_Mandate_Candidats.at(results[i]-1));
             }
         }
         
@@ -149,11 +149,11 @@ library Delegation_Uils{
         emit Sign();
     }
     
-    function New_Election(mapping(uint=>Mandate) storage Mandates, Mandate_Parameter storage mandate_version, uint citizen_number, uint num_mandate, bytes4 contain_function_selector)external returns(bool new_election){
+    function New_Election(mapping(uint=>Mandate) storage Mandates, Mandate_Parameter storage mandate_version, uint num_mandate, address citizen_register_address)external returns(bool new_election){
         uint candidats_number = Mandates[num_mandate].Next_Mandate_Candidats.length();
-        
+        Citizens_Register citizen = Citizens_Register(citizen_register_address);
         require(candidats_number>0, "No Candidats");
-        require(Mandates[num_mandate].New_Election_Petitions.length() >= Percentage(mandate_version.New_Election_Petition_Rate, citizen_number) || (block.timestamp - Mandates[num_mandate].Inauguration_Timestamps) > mandate_version.Mandate_Duration, "New election impossible for now");
+        require(Mandates[num_mandate].New_Election_Petitions.length() >= Percentage(mandate_version.New_Election_Petition_Rate, citizen.Get_Citizen_Number()) || (block.timestamp - Mandates[num_mandate].Inauguration_Timestamps) > mandate_version.Mandate_Duration, "New election impossible for now");
         if(candidats_number <= mandate_version.Next_Mandate_Max_Members){
             uint new_mandate_num = num_mandate+1;
             for(uint i =0; i<candidats_number; i++){
@@ -167,7 +167,7 @@ library Delegation_Uils{
             Mandates[num_mandate].Election_Timestamps = block.timestamp;
             IVote Vote_Instance = IVote(mandate_version.Ivote_address);
             bytes32 key = keccak256(abi.encodePacked(address(this),block.timestamp));
-            Vote_Instance.Create_Ballot(key, address(this), contain_function_selector, mandate_version.Election_Duration, mandate_version.Validation_Duration, candidats_number, mandate_version.Next_Mandate_Max_Members);
+            Vote_Instance.Create_Ballot(key, citizen_register_address, Citizens_Register(citizen_register_address).Contains_Function_Selector(), mandate_version.Election_Duration, mandate_version.Validation_Duration, candidats_number, mandate_version.Next_Mandate_Max_Members);
             emit New_election(key);
             return true;
         }
@@ -364,7 +364,7 @@ library Delegation_Uils{
     function New_Election() external Citizen_Only {
         require(!In_election_stage, "An Election is Pending");
         uint num_mandate = Actual_Mandate;
-        if(Delegation_Uils.New_Election(Mandates,Mandates_Versions[Mandates[num_mandate].Version], Citizens.Get_Citizen_Number(), num_mandate, Contains_Function_Selector)){
+        if(Delegation_Uils.New_Election(Mandates,Mandates_Versions[Mandates[num_mandate].Version], num_mandate, address(Citizens))){
             In_election_stage= true;
         }else{
             uint new_mandate_num = num_mandate+1;
@@ -438,7 +438,10 @@ library Delegation_Uils{
         
         List_Delegation_Law_Projects.push(key);
         
-        List_Law_Project[key].Add_Law_Project(Title, Description);
+        List_Law_Project[key].Title = Title;
+        List_Law_Project[key].Description = Description;
+        
+        //List_Law_Project[key].Add_Law_Project(Title, Description);
         //Add_Law_Project(Title,  Description, key);
     }
     
