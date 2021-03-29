@@ -1,1 +1,1 @@
-# Web3_Referendum
+# Web3 Direct Democracy
