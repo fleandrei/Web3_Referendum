@@ -136,6 +136,7 @@ library Initiative_Legislative_Lib{
         uint insert;
         for(uint i =0; i<New_Items.length; i++){
             index = Indexs[i];
+            require(index>0, "Add_item: index 0");
             require(index<= counter.add(1), "Add_item: index out of range");
             Project_Law.All_Proposed_Function_Calls.push(New_Items[i]);
             insert = Project_Law.All_Proposed_Function_Calls.length.sub(1);
@@ -146,6 +147,7 @@ library Initiative_Legislative_Lib{
             counter = counter.add(1);
             Project_Law.Proposals_Tree[Proposal].Function_Calls[index] = insert;
         }
+        Project_Law.Proposals_Tree[Proposal].Function_Call_Counter = counter;
     }
     
     //function Remove_Item_Proposal
@@ -175,8 +177,8 @@ library Initiative_Legislative_Lib{
     
     
     /*GETTER*/
-    function Get_Proposal_Infos(Law_Project storage law_project, uint Id) external view returns(bytes memory, uint[] memory, uint, uint){
-        return (law_project.Proposals_Tree[Id].Description, law_project.Proposals_Tree[Id].Children, law_project.Proposals_Tree[Id].Function_Call_Counter, law_project.Proposals_Tree[Id].Parent);
+    function Get_Proposal_Infos(Law_Project storage law_project, uint Id) external view returns(bytes memory, uint[] memory, uint, uint, address){
+        return (law_project.Proposals_Tree[Id].Description, law_project.Proposals_Tree[Id].Children, law_project.Proposals_Tree[Id].Function_Call_Counter, law_project.Proposals_Tree[Id].Parent, law_project.Proposals_Tree[Id].Author);
     }
     
     function Get_Proposal_FunctionCall_List(Law_Project storage law_project, uint Id) external view returns(bytes[] memory){

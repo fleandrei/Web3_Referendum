@@ -288,6 +288,18 @@ library Delegation_Uils{
     event Controled_Register_Added(address register);
     event Controled_Register_Canceled(address register);
     event Controled_Register_Removed(address register);
+    event New_Law(bytes32 key);
+    event New_Proposal(bytes32 key, uint proposal_index);
+    event Proposal_Modified(bytes32 key, uint proposal_index);
+    event Voting_Stage_Started(bytes32 key);
+    event Voting_Stage_Achieved(bytes32 key);
+    event Law_Aborted(bytes32 key);
+    event Law_Adopted(bytes32 key);
+    event Law_executed(bytes32 key);
+    
+    
+    
+    //event New_Proposal(bytes32 key, uint num);
     
     
     bytes4 constant Contains_Function_Selector = 0x57f98d32;
@@ -418,8 +430,9 @@ library Delegation_Uils{
     }
     
     
-    /*Legislatif Process related functions*/
     
+    
+    /*Legislatif Process related functions*/
     
     function Add_Law_Project(address register_address, bytes calldata Title, bytes calldata Description)external Delegation_Only{
         //_Update_Law_Project();
@@ -429,11 +442,11 @@ library Delegation_Uils{
         require(Delegation_Law_Projects[key].Version==0,"Law project already created");
         
         uint version =Legislatif_Process_Version;
-        Token_Consumption_Handler(msg.sender, Law_Parameters_Versions[version].Law_Initialisation_Price, key );
+        Delegation_Law_Projects[key].Version = version;
+        Token_Consumption_Handler(msg.sender, Law_Parameters_Versions[version].Law_Initialisation_Price, key);
         
         
         Delegation_Law_Projects[key].Institution_Address = register_address;
-        Delegation_Law_Projects[key].Version = version;
         Delegation_Law_Projects[key].Creation_Timestamp = block.timestamp;
         
         List_Delegation_Law_Projects.push(key);
@@ -441,6 +454,9 @@ library Delegation_Uils{
         List_Law_Project[key].Title = Title;
         List_Law_Project[key].Description = Description;
         
+        Controled_Registers[register_address].Law_Project_Counter++;
+        
+        emit New_Law(key);
         //List_Law_Project[key].Add_Law_Project(Title, Description);
         //Add_Law_Project(Title,  Description, key);
     }
@@ -456,6 +472,7 @@ library Delegation_Uils{
         List_Law_Project[law_project].Proposals_Tree[proposal_index].Author = msg.sender;
        // Add_Corpus_Proposal( law_project, Parent, Parent_Proposals_Reuse, New_Function_Call, Description) ;
        List_Law_Project[law_project].Add_Corpus_Proposal(Parent, Parent_Proposals_Reuse, New_Function_Call, Description);
+       emit New_Proposal( law_project, proposal_index);
     }
     
     function Add_Item(bytes32 law_project, uint Proposal, bytes[] calldata New_Items, uint[] calldata Indexs) external Delegation_Only{
@@ -467,6 +484,7 @@ library Delegation_Uils{
         
         //Add_Item_Proposal(law_project, Proposal, New_Items, Indexs, msg.sender);
         List_Law_Project[law_project].Add_Item_Proposal( Proposal, New_Items, Indexs, msg.sender);
+        emit Proposal_Modified(law_project, Proposal);
     }
     
     function Start_Vote(bytes32 law_project)external Delegation_Only{
@@ -480,6 +498,9 @@ library Delegation_Uils{
         
         Delegation_Law_Projects[law_project].Start_Vote_Timestamps = block.timestamp;
         Delegation_Law_Projects[law_project].Law_Project_Status = Status.VOTE;
+        
+        emit Voting_Stage_Started(law_project);
+    
     }
     
     function Achiev_Vote(bytes32 law_project) external Delegation_Only{
@@ -488,10 +509,17 @@ library Delegation_Uils{
         //require(block.timestamp.sub(Delegation_Law_Projects[law_project].Start_Vote_Timestamps) > Law_Parameters_Versions[version].Vote_Duration, "VOTE stage not finished");
         
         IVote Vote_Instance = IVote(Law_Parameters_Versions[Delegation_Law_Projects[law_project].Version].Ivote_address);
-        List_Law_Project[law_project].Winning_Proposal = Vote_Instance.Get_Winning_Proposition_byId(law_project,0);
+        uint winning_proposal= Vote_Instance.Get_Winning_Proposition_byId(law_project,0);
+        List_Law_Project[law_project].Winning_Proposal = winning_proposal;
         
-        Delegation_Law_Projects[law_project].Start_Censor_Law_Period_Timestamps = block.timestamp;
-        Delegation_Law_Projects[law_project].Law_Project_Status = Status.CENSOR_LAW_PERIOD;
+        if(winning_proposal==0){
+            Delegation_Law_Projects[law_project].Law_Project_Status = Status.ABORTED;
+            emit Law_Aborted(law_project);
+        }else{
+            Delegation_Law_Projects[law_project].Start_Censor_Law_Period_Timestamps = block.timestamp;
+            Delegation_Law_Projects[law_project].Law_Project_Status = Status.CENSOR_LAW_PERIOD;
+            emit Voting_Stage_Achieved(law_project);
+        }
     }
     
     function Censor_Law(bytes32 law_project)external Citizen_Only{
@@ -509,6 +537,7 @@ library Delegation_Uils{
             Potentialy_Lost_Amount = Potentialy_Lost_Amount.sub(law_total_potentialy_lost);
             Update_Controled_Registers(Delegation_Law_Projects[law_project].Institution_Address);
             Democoin.transfer(Agora_address,law_total_potentialy_lost);
+            emit Law_Aborted(law_project);
         }
         
         Delegation_Law_Projects[law_project].Censor_Law_Petition_Counter = counter;
@@ -519,6 +548,7 @@ library Delegation_Uils{
         require(block.timestamp.sub(Delegation_Law_Projects[law_project].Start_Censor_Law_Period_Timestamps) > Law_Parameters_Versions[Delegation_Law_Projects[law_project].Version].Law_Censor_Period_Duration, "CENSOR LAW PERIOD not over");
         
         Delegation_Law_Projects[law_project].Law_Project_Status = Status.ADOPTED;
+        emit Law_Adopted(law_project);
     }
     
     function Execute_Law(bytes32 law_project, uint num_function_call_ToExecute)external Delegation_Only nonReentrant{
@@ -528,6 +558,7 @@ library Delegation_Uils{
             Delegation_Law_Projects[law_project].Law_Project_Status = Status.EXECUTED;
             Potentialy_Lost_Amount = Potentialy_Lost_Amount.sub(Delegation_Law_Projects[law_project].Law_Total_Potentialy_Lost);
             Update_Controled_Registers(Delegation_Law_Projects[law_project].Institution_Address);
+            emit Law_executed(law_project);
         }
     }
     
@@ -649,6 +680,7 @@ library Delegation_Uils{
         Legislatif_Process_Version = new_version;
     }*/
     
+
     /**
      * @notice Handle token consumption in the context of law project elaboration
      * @dev The function: check that:
@@ -661,13 +693,14 @@ library Delegation_Uils{
     function Token_Consumption_Handler(address sender, uint amount, bytes32 key) internal{
         
         uint version = Delegation_Law_Projects[key].Version;
-        require(Delegation_Law_Projects[key].Members_Token_Consumption[sender] <= Law_Parameters_Versions[version].Member_Max_Token_Usage, "Member consumption exceeded");
+        require(Delegation_Law_Projects[key].Members_Token_Consumption[sender] +amount <= Law_Parameters_Versions[version].Member_Max_Token_Usage, "Member consumption exceeded");
+        
         
         uint amount_potentialy_lost = Percentage(Law_Parameters_Versions[version].Censor_Penalty_Rate, amount);
         uint new_potentialy_lost_amount = Potentialy_Lost_Amount.add(amount_potentialy_lost);
         require(new_potentialy_lost_amount <= Democoin.balanceOf(address(this)), "No enough colaterals funds");
-        
-        Delegation_Law_Projects[key].Members_Token_Consumption[sender].add(amount);
+
+        Delegation_Law_Projects[key].Members_Token_Consumption[sender] += amount;
         Delegation_Law_Projects[key].Law_Total_Potentialy_Lost = Delegation_Law_Projects[key].Law_Total_Potentialy_Lost.add(amount_potentialy_lost);
         Potentialy_Lost_Amount = new_potentialy_lost_amount;
     }
@@ -697,6 +730,7 @@ library Delegation_Uils{
     function Get_List_Law_Register()external view returns(bytes32[] memory Law_Project_List, bytes32[] memory Controled_Register ){
         return (List_Delegation_Law_Projects, List_Controled_Registers._inner._values);
     }
+    
         
     function Get_Mandate(uint Id)external view returns(uint version, uint Inauguration_Timestamps, uint Election_Timestamps, uint New_Election_Petition_Number, bytes32[] memory Members, bytes32[] memory Candidats){
         version = Mandates[Id].Version;
@@ -706,17 +740,23 @@ library Delegation_Uils{
         Members = Mandates[Id].Members._inner._values;
         Candidats = Mandates[Id].Next_Mandate_Candidats._inner._values;
     }
-    /*function Get_Member_Amount_Consumed(bytes32 key, address member)external view returns(uint amount){
+    
+    function Get_Member_Amount_Consumed(bytes32 key, address member)external view returns(uint amount){
         return Delegation_Law_Projects[key].Members_Token_Consumption[member];
     }
- */
+ 
     function Get_Delegation_Infos()external view returns (uint legislatif_process_version, uint internal_governance_version, uint actual_mandate, uint potentialy_lost_amount, bool in_election_stage){
         return (Legislatif_Process_Version, Internal_Governance_Version, Actual_Mandate, Potentialy_Lost_Amount, In_election_stage);
     }
     
-    function Get_Proposal(bytes32 key, uint id)external view returns(bytes memory description, uint[] memory childrens, bytes[] memory function_calls, uint func_call_counter, uint parent){
+    function Get_Law_Results(bytes32 key)external view returns(uint Winning_Proposal, Initiative_Legislative_Lib.Function_Call_Result[] memory Receipts){
+        return(List_Law_Project[key].Winning_Proposal, List_Law_Project[key].Function_Call_Receipts);
+    }
+    
+    
+    function Get_Proposal(bytes32 key, uint id)external view returns(bytes memory description, uint[] memory childrens, bytes[] memory function_calls, uint func_call_counter, uint parent, address author){
         function_calls = List_Law_Project[key].Get_Proposal_FunctionCall_List(id);
-        (description, childrens,func_call_counter, parent) = List_Law_Project[key].Get_Proposal_Infos(id);
+        (description, childrens,func_call_counter, parent, author) = List_Law_Project[key].Get_Proposal_Infos(id);
     }
     /*Overite functions*/
     /*function Before_Add_Law_Project(bytes calldata Title, bytes calldata Description) internal override returns(bytes32){

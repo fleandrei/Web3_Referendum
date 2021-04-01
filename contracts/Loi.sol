@@ -218,7 +218,11 @@ import "contracts/Register.sol";
     function Get_Law_Info(bytes calldata law) external view returns(bytes memory description, uint timestamp){
         return (Lois[law].Description, Lois[law].Timestamp);
     }
-    
+        
+
+    fallback() external payable{
+        require(msg.value!=0,"Loi: Non existing function");
+    }
     
     /*Utils Temporaire*/
     

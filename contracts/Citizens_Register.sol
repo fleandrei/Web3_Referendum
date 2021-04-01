@@ -25,6 +25,8 @@ contract Citizens_Register is Register{
      event Banning_Authority_Added(address authority);
      event Registering_Authority_Removed(address authority);
      event Banning_Authority_Removed(address authority);
+
+     bytes4 constant public Contains_Function_Selector = 0x57f98d32;
      
      mapping(address=>Citizen) public Citizens;
      EnumerableSet.AddressSet Citizens_List;
