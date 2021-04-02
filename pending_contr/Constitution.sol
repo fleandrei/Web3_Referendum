@@ -230,6 +230,8 @@ contract Constitution is Register{
             revert("Not Register Type");
         }
         
+        require(!Registers_Address_List.contains(new_register_address), "Register Already Existing");
+        
         if(Assembly_Associated_Delegation != address(0) && !Delegation_Address_List.contains(Assembly_Associated_Delegation)){
             //return (false, bytes("Delegation doesn't exist"));
             revert("Delegation doesn't exist");

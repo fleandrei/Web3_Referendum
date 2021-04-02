@@ -36,7 +36,7 @@ contract('TEST: Loi.sol (and Register.sol)', function(accounts){
 	describe("Test Institution.sol Register.sol (inherited) contract",()=>{
 		let Law_initialisation_res;
 		beforeEach(async function () {
-			Loi_Instance = await LOI.new(Agora_Address, {from: Constitution_Address});	
+			Loi_Instance = await LOI.new("Loi",Agora_Address, {from: Constitution_Address});	
 		});
 
 		/*it("Institution created", async function(){
@@ -100,12 +100,16 @@ contract('TEST: Loi.sol (and Register.sol)', function(accounts){
 	describe("Initial State ", ()=>{
 
 		beforeEach(async function () {
-			this.Loi_Instance = await LOI.new(Agora_Address, {from: Constitution_Address});
+			this.Loi_Instance = await LOI.new("Loi",Agora_Address, {from: Constitution_Address});
 			
 		});
 
 		it("Has correct Constitution",async function(){
 			expect(await this.Loi_Instance.Constitution_Address()).to.equal(Constitution_Address);
+		});
+
+		it("Has correct Name",async function(){
+			expect(await this.Loi_Instance.Name()).to.equal("Loi");
 		});
 
 		it("Has correct Institution Type",async function(){
@@ -127,7 +131,7 @@ contract('TEST: Loi.sol (and Register.sol)', function(accounts){
 		let Title, Description;
 
 		beforeEach(async function () {
-			Loi_Instance = await LOI.new(Agora_Address, {from: Constitution_Address});
+			Loi_Instance = await LOI.new("Loi", Agora_Address, {from: Constitution_Address});
 
 			var Title_bytes_size = chance.natural({min:1, max:32});
 			var Description_bytes_size = chance.natural({min:1, max:50});
@@ -184,7 +188,7 @@ contract('TEST: Loi.sol (and Register.sol)', function(accounts){
 		let Law_Title, Law_Description, Article_Title, Article_Content; 
 
 		beforeEach(async function () {
-			Loi_Instance = await LOI.new(Agora_Address, {from: Constitution_Address});
+			Loi_Instance = await LOI.new("Loi",Agora_Address, {from: Constitution_Address});
 
 			Law_Title = web3.utils.randomHex(chance.natural({min:1, max:32}));
 			Law_Description = web3.utils.randomHex(chance.natural({min:1, max:50}));
@@ -234,7 +238,7 @@ contract('TEST: Loi.sol (and Register.sol)', function(accounts){
 		let Law_Title, Law_Description, Article_Title1, Article_Content1, Article_Title2, Article_Content2, key1, key2; 
 
 		beforeEach(async function () {
-			Loi_Instance = await LOI.new(Agora_Address, {from: Constitution_Address});
+			Loi_Instance = await LOI.new("Loi", Agora_Address, {from: Constitution_Address});
 
 			Law_Title1 = web3.utils.randomHex(chance.natural({min:1, max:32}));
 			Law_Description1 = web3.utils.randomHex(chance.natural({min:1, max:50}));

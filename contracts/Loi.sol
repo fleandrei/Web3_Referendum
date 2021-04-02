@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "contracts/Register.sol";
-
+//import "Register.sol";
 /**
  * @notice Contract registering written laws. 
  * @dev Laws can be edited (add, remove) by address contained in {Register_Authorities} list (Defined in the "Register" inherited contract)
@@ -63,7 +63,7 @@ import "contracts/Register.sol";
      * 
      * @param agora Address of Agora contract
      * */
-    constructor(address agora){
+    constructor(string memory Name, address agora) Register(Name){
         Type_Institution = Institution_Type.LOI;
         Register_Authorities.add(agora);
     }
@@ -218,11 +218,7 @@ import "contracts/Register.sol";
     function Get_Law_Info(bytes calldata law) external view returns(bytes memory description, uint timestamp){
         return (Lois[law].Description, Lois[law].Timestamp);
     }
-        
-
-    fallback() external payable{
-        require(msg.value!=0,"Loi: Non existing function");
-    }
+    
     
     /*Utils Temporaire*/
     

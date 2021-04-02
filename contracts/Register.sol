@@ -6,7 +6,7 @@ pragma solidity ^0.8.0;
 import "contracts/Institution.sol";
 //import "Institution.sol";
 
-abstract contract  Register is Institution{
+ contract  Register is Institution{
     using EnumerableSet for EnumerableSet.AddressSet;
     
     modifier Register_Authorities_Only(){
@@ -23,9 +23,9 @@ abstract contract  Register is Institution{
     //mapping(bytes4=>Function_Argument) public Register_API;
     //bytes4[] Register_Function_List;
     
-   
-    
-    
+   constructor(string memory name) Institution(name){
+       
+   }
     
     
     function Add_Authority(address authority) virtual external Constitution_Only(){

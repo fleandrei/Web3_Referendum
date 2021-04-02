@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 //import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/structs/EnumerableSet.sol";
 //import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/SafeMath.sol";
+//import "Institution.sol";
 import "contracts/Institution.sol";
 library Initiative_Legislative_Lib{
     using EnumerableSet for EnumerableSet.Bytes32Set;
@@ -34,7 +35,7 @@ library Initiative_Legislative_Lib{
     }
     
     
-    event New_Law_Project(bytes32 Key);
+    event Law_Project_Created(bytes32 Key);
     event New_Proposal(bytes32 Law_Project, uint Index);
     
     
@@ -50,6 +51,7 @@ library Initiative_Legislative_Lib{
         //require(List_Law_Project[key].Proposal_Count == 0, "Already existing Law_Project");
         law_project.Title= Title;
         law_project.Description = Description;
+        emit Law_Project_Created(keccak256(abi.encode(Title,Description)));
         //List_Law_Project[key].Global_Function_Calls.push();
         //Pending_Law_Project.add(key);
         
@@ -121,13 +123,14 @@ library Initiative_Legislative_Lib{
         }
         
         Project_Law.Proposals_Tree[proposal_index].Function_Call_Counter = function_call_counter;
-        //emit New_Proposal(law_project, proposal_index);
+        //emit New_Proposal(Project_Law, proposal_index);
     }
     
     
     function Add_Item_Proposal(Law_Project storage Project_Law, uint Proposal, bytes[] calldata New_Items, uint[] calldata Indexs, address author) external{
         //require(List_Law_Project[law_project].Proposal_Count >= Proposal, "Proposal doesn't exist");
         require(Project_Law.Proposals_Tree[Proposal].Author == author, "You're Not author of proposal" );
+        require(New_Items.length == Indexs.length, "Array different size");
         //Before_Add_Item_Proposal( law_project,  Proposal, New_Items, Indexs);
         
         uint counter = Project_Law.Proposals_Tree[Proposal].Function_Call_Counter;
@@ -147,6 +150,7 @@ library Initiative_Legislative_Lib{
             counter = counter.add(1);
             Project_Law.Proposals_Tree[Proposal].Function_Calls[index] = insert;
         }
+        
         Project_Law.Proposals_Tree[Proposal].Function_Call_Counter = counter;
     }
     

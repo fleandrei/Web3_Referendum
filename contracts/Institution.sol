@@ -75,11 +75,12 @@ contract Institution is ReentrancyGuard{
     event LogAddress(address);*/
     
     /*STATE*/
-    string public name;
+    string public Name;
     address public Constitution_Address;
     Institution_Type public Type_Institution;
     
-    constructor(){
+    constructor(string memory name){
+        Name=name;
         Constitution_Address = msg.sender;
     }
     

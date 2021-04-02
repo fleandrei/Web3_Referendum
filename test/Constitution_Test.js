@@ -7,7 +7,8 @@ const DELEGATION = artifacts.require('Delegation');
 const MAJORITY_JUDGMENT = artifacts.require('Majority_Judgment_Ballot');
 const DEMOCOIN = artifacts.require('DemoCoin');
 const CITIZEN_REGISTER = artifacts.require('Citizens_Register');
-const LOI = artifacts.require('Loi')
+const LOI = artifacts.require('Loi');
+const CONSTITUTION = artifact.require("Constitution");
 const chance = require("chance").Chance();
 
 
@@ -15,16 +16,15 @@ function Bytes32ToAddress(str){
 	return str.slice(0,2) + str.slice(26);
 }
 
-contract('TEST: Delegation.sol', function(accounts){
+contract('TEST: Constitution.sol', function(accounts){
 	/*Accounts*/
 	const Nbr_Account = accounts.length;
-	const Constitution_Address = accounts[0];
-	const Agora_Address = accounts[1];
-	const External_Account = accounts[2];
+	
+	const External_Account = accounts[0];
 
-	const Citizens = accounts.slice(3);
-	let member_ratio = 30
-	let first_member_indice = Math.floor(Citizens.length*(100-member_ratio)/100);
+	const Citizens = accounts.slice(1);
+	let delegation_member_ratio = 10;
+	let first_member_indice = Math.floor(Citizens.length*(100-delegation_member_ratio)/100);
 	let Members = Citizens.slice(first_member_indice);
 
 	/*Contracts*/
@@ -34,10 +34,14 @@ contract('TEST: Delegation.sol', function(accounts){
 	let DemoCoin_Instance;
 	let Citizen_Register_Instance;
 	let Delegation_Instance;
+	let Agora_Instance;
+	let Constitution_Instance;
 
 	/*TEST PARAMETERS*/
-	const Delegation_Name = "Délégation";
+	const Citizen_Register_Name = "Citoyens";
 	const Loi_Name = "Loi";
+	const Agora_Name = "Agora";
+	const Delegation_Name = "Delegation",
 	const Citizen_Initial_Ammounts=100;
 	const Delegation_Token_Amount = 1000;
 	const Initital_Token_Ammount = Citizen_Initial_Ammounts*Citizens.length + Delegation_Token_Amount;
@@ -56,6 +60,8 @@ contract('TEST: Delegation.sol', function(accounts){
 	const validation_duration_max = time.duration.days(1).toNumber();
 	const mandate_duration_min = time.duration.days(3).toNumber();
 	const mandate_duration_max = time.duration.days(10).toNumber();
+	const petition_duration_min = time.duration.minutes(5).toNumber();
+	const petition_duration_max = time.duration.days(10).toNumber();
 	const Immunity_duration_rate = 30;
 
 	const Proposition_Duration_min = time.duration.minutes(5).toNumber();
@@ -70,9 +76,8 @@ contract('TEST: Delegation.sol', function(accounts){
 	const newItem_max = 5;
 
 
-	/*Delegation Parameters*/
-	let Vote_Duration;
-	let Validation_Duration;
+	/*Delegation Variables*/
+	
 	let Mandate_Duration;
 	let Immunity_Duration;
 	let Next_Mandate_Max_Members;
@@ -80,16 +85,23 @@ contract('TEST: Delegation.sol', function(accounts){
 
 
 	let Member_Max_Token_Usage;
-	let Law_Initialisation_Price;
-	let FunctionCall_Price;
 	let Proposition_Duration;
 	let Legislatif_Vote_Duration;
 	let Law_Censor_Period_Duration;
 	let Censor_Proposition_Petition_Rate;
 	let Censor_Penalty_Rate;
 	let Uint256_arg = Array.from({length:6});
-	
 
+
+	/*Agora variables*/
+	let Petition_Duration;
+	let Required_Petition_Rate;
+	
+	/*Common variables*/
+	let Vote_Duration;
+	let Validation_Duration;
+	let Law_Initialisation_Price;
+	let FunctionCall_Price;
 	let Ivote_address;
 
 	class Citizen_Register{
@@ -130,7 +142,7 @@ contract('TEST: Delegation.sol', function(accounts){
 
 	beforeEach(async function () {
 			DemoCoin_Instance = await DEMOCOIN.new("Token", "TOK",Citizens, new Array(Citizens.length).fill(Citizen_Initial_Ammounts), {from: Constitution_Address});
-			Citizen_Register_Instance = await CITIZEN_REGISTER.new("Citoyens", Citizens, DemoCoin_Instance.address, New_Citizen_Mint_Amount, {from: Constitution_Address});	
+			Citizen_Register_Instance = await CITIZEN_REGISTER.new(Citizens, DemoCoin_Instance.address, New_Citizen_Mint_Amount, {from: Constitution_Address});	
 			await DemoCoin_Instance.Add_Minter(Citizen_Register_Instance.address);
 			//Ballot_Instance = await MAJORITY_JUDGMENT.new();
 			Delegation_Utils_Library = await DELEGATION_UTILS.new();
@@ -139,9 +151,7 @@ contract('TEST: Delegation.sol', function(accounts){
 			await DELEGATION.link("Delegation_Uils", Delegation_Utils_Library.address);
 			await DELEGATION.link("Initiative_Legislative_Lib" , Initiative_Legislative_Lib_Library.address);
 			
-			Delegation_Instance = await DELEGATION.new(Delegation_Name, Members, DemoCoin_Instance.address, Citizen_Register_Instance.address, Agora_Address, {from: Constitution_Address});
-			key = web3.utils.randomHex(32);
-
+			Delegation_Instance = await DELEGATION.new(Members, DemoCoin_Instance.address, Citizen_Register_Instance.address, Agora_Address, {from: Constitution_Address});
 		});
 
 	describe("Delegation Creation", ()=>{
@@ -149,7 +159,6 @@ contract('TEST: Delegation.sol', function(accounts){
 		it("Check globals Delegation parameters", async function(){ 
 			expect(await Delegation_Instance.Constitution_Address()).to.equal(Constitution_Address);
 			expect(await Delegation_Instance.Type_Institution()).to.be.bignumber.equal(new BN(5));
-			expect(await Delegation_Instance.Name()).to.equal(Delegation_Name);
 			var General_info = await Delegation_Instance.Get_Delegation_Infos();
 			var BN_0 = new BN(0);
 			expect(General_info.legislatif_process_version).to.be.bignumber.equal(BN_0);
@@ -310,7 +319,7 @@ contract('TEST: Delegation.sol', function(accounts){
 			});
 
 			it("Constitution_Address removes \"Loi_instance\"controled_register from the Delegation", async function(){
-				var Loi_instance = await LOI.new(Loi_Name, Agora_Address, {from: Constitution_Address});
+				var Loi_instance = await LOI.new(Agora_Address, {from: Constitution_Address});
 				await Delegation_Instance.Add_Controled_Register(Loi_instance.address, {from:Constitution_Address});
 				await Loi_instance.Add_Authority(Delegation_Instance.address, {from:Constitution_Address});
 
@@ -848,7 +857,7 @@ contract('TEST: Delegation.sol', function(accounts){
 		context("Add New Proposal", ()=>{
 
 			beforeEach(async function (){
-				Loi_instance = await LOI.new(Loi_Name, Agora_Address, {from: Constitution_Address});
+				Loi_instance = await LOI.new(Agora_Address, {from: Constitution_Address});
 				await Loi_instance.Add_Authority(Delegation_Instance.address,{from: Constitution_Address});
 				Title = web3.utils.randomHex(Title_Size_max);
 				Law_Description = web3.utils.randomHex(Description_Size_max);
@@ -1019,7 +1028,7 @@ contract('TEST: Delegation.sol', function(accounts){
 			var functioncall_num;
 			var proposal_arrays;
 			beforeEach(async function (){
-				Loi_instance = await LOI.new(Loi_Name, Agora_Address, {from: Constitution_Address});
+				Loi_instance = await LOI.new(Agora_Address, {from: Constitution_Address});
 				await Loi_instance.Add_Authority(Delegation_Instance.address,{from: Constitution_Address});
 
 				Title = web3.utils.randomHex(Title_Size_max);
@@ -1111,7 +1120,7 @@ contract('TEST: Delegation.sol', function(accounts){
 			var Proposal1, Proposal2, Proposal3;
 
 			beforeEach(async function (){
-				Loi_instance = await LOI.new(Loi_Name, Agora_Address, {from: Constitution_Address});
+				Loi_instance = await LOI.new(Agora_Address, {from: Constitution_Address});
 				await Loi_instance.Add_Authority(Delegation_Instance.address,{from: Constitution_Address});
 
 				Title = web3.utils.randomHex(Title_Size_max);
@@ -1283,7 +1292,7 @@ contract('TEST: Delegation.sol', function(accounts){
 			var Proposal1, Proposal2, Proposal3;
 
 			beforeEach(async function (){
-				Loi_instance = await LOI.new(Loi_Name, Agora_Address, {from: Constitution_Address});
+				Loi_instance = await LOI.new(Agora_Address, {from: Constitution_Address});
 				await Loi_instance.Add_Authority(Delegation_Instance.address,{from: Constitution_Address});
 
 				Title = web3.utils.randomHex(Title_Size_max);
@@ -1427,7 +1436,7 @@ contract('TEST: Delegation.sol', function(accounts){
 			var Winning_Proposal;
 
 			beforeEach(async function (){
-				Loi_instance = await LOI.new(Loi_Name, Agora_Address, {from: Constitution_Address});
+				Loi_instance = await LOI.new(Agora_Address, {from: Constitution_Address});
 				await Loi_instance.Add_Authority(Delegation_Instance.address,{from: Constitution_Address});
 
 				Title = web3.utils.randomHex(Title_Size_max);

@@ -23,4 +23,6 @@ interface IVote{
     function HasVoted(bytes32 key, address voter_address) external view returns(bool hasvoted);
     
 	function HasValidated(bytes32 key, address voter_address) external view returns(bool Validated, bytes32 Choice);    
+	
+	function Get_Voter_Number(bytes32 key)external view returns(uint voter_num);
 }

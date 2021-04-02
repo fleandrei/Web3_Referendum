@@ -6,7 +6,8 @@ pragma solidity ^0.8.0;
 import "contracts/IVote.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 
-
+/*import "IVote.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/SafeMath.sol";*/
 
 contract Majority_Judgment_Ballot is IVote{
     using SafeMath for uint; 
@@ -109,7 +110,8 @@ contract Majority_Judgment_Ballot is IVote{
         
         Ballots[key].Voter_Number = Ballots[key].Voter_Number.add(1);
         
-    
+        
+        
         Ballots[key].Voters[msg.sender].Voted = true;
         for(uint i=0; i< choice_len; i++){
             for(uint j=Choices[i]; j<5; j++){
@@ -168,6 +170,7 @@ contract Majority_Judgment_Ballot is IVote{
                 //Ballots[key].Proposition_Cumulated_Score[i][j]++;
             }
         }
+        
         emit Validated_Vote(key, msg.sender);
     }
     
@@ -180,7 +183,6 @@ contract Majority_Judgment_Ballot is IVote{
         
     }
     
-
     function _Talling_Votes(bytes32 key) internal{
         uint number_propositions = Ballots[key].Propositions_Number;
         uint half_voters = Ballots[key].Voter_Number.div(2) +  Ballots[key].Voter_Number.mod(2);
@@ -196,7 +198,7 @@ contract Majority_Judgment_Ballot is IVote{
         //uint counter;
         //uint Temp_mention;
         
-        //Assessement of each proposition
+        //Assessement of eaxh proposition
         for(uint prop=0; prop<=number_propositions; prop++){
             while(Ballots[key].Propositions_Results[prop].Cumulated_Score[mention]<half_voters){
             //while(Ballots[key].Proposition_Cumulated_Score[prop][mention]<half_voters){
@@ -209,7 +211,7 @@ contract Majority_Judgment_Ballot is IVote{
          //Fetching the "winning_propositions_number" winning propositions.
             continu=true;
             while(continu && rank<winning_list_size){
-                if(winning_propositions_grades[rank]<mention || (winning_propositions_grades[rank]==mention && Order_Proposition_Result(key,  winning_propositions[rank], prop, mention)!=prop)){
+                if(winning_propositions_grades[rank]<mention || (winning_propositions_grades[rank]==mention && Order_Proposition_Result(key, winning_propositions[rank], prop, mention)!=prop)){
                     rank++;
                 }else{
                     continu=false;
@@ -221,6 +223,7 @@ contract Majority_Judgment_Ballot is IVote{
             }
             
             Temp_prop=prop;
+            
             while(rank<winning_list_size){
                 if(rank+1<winning_list_size){
                     (winning_propositions[rank], Temp_prop) = (Temp_prop, winning_propositions[rank]);
@@ -252,15 +255,15 @@ contract Majority_Judgment_Ballot is IVote{
         
     }
     
-    
     function Order_Proposition_Result(bytes32 key, uint prop1, uint prop2, uint median_grade)internal view returns(uint){
         if(median_grade==0){
             return (Ballots[key].Propositions_Results[prop1].Cumulated_Score[0]<Ballots[key].Propositions_Results[prop2].Cumulated_Score[0])? prop2:prop1;
         }else{
             return (Ballots[key].Propositions_Results[prop1].Cumulated_Score[median_grade-1]<Ballots[key].Propositions_Results[prop2].Cumulated_Score[median_grade-1])? prop2:prop1;
-        }  
+        }
+        
     }
-
+    
     function Check_Voter_Address(bytes32 key, address voter_address) internal returns(bool){
         (bool success, bytes memory Data) = Ballots[key].Voters_Register_Address.call(abi.encodeWithSelector(Ballots[key].Check_Voter_Selector, voter_address));
         require(success, "Voter check function reverted");
@@ -289,7 +292,11 @@ contract Majority_Judgment_Ballot is IVote{
     function HasValidated(bytes32 key, address voter_address) external view override returns(bool Validated, bytes32 Choice){
          return (Ballots[key].Voters[voter_address].Validated, Ballots[key].Voters[voter_address].Choice);
     }
-
+    
+    function Get_Voter_Number(bytes32 key)external view override returns(uint voter_num){
+        return Ballots[key].Voter_Number;
+    }
+    
     function Get_Propositions_Result(bytes32 key, uint proposition_Id) external view returns(Propositions_Result memory proposition_result){
         return Ballots[key].Propositions_Results[proposition_Id];
     }

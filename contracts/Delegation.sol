@@ -338,7 +338,7 @@ library Delegation_Uils{
     bool In_election_stage;
     
     
-    constructor(address[] memory Initial_members, address token_address, address citizen_address, address agora_address){
+    constructor(string memory Name, address[] memory Initial_members, address token_address, address citizen_address, address agora_address) Institution(Name) {
         Type_Institution = Institution_Type.DELEGATION;
         Democoin = DemoCoin(token_address);
         Citizens = Citizens_Register(citizen_address);
@@ -479,7 +479,7 @@ library Delegation_Uils{
         require(Delegation_Law_Projects[law_project].Law_Project_Status == Status.PROPOSITION, "Law Not at PROPOSITION status");
         uint version = Delegation_Law_Projects[law_project].Version;
         require( version != 0, "No existing Law Project");
-        require(New_Items.length == Indexs.length, "Array different size");
+        
         Token_Consumption_Handler(msg.sender, Law_Parameters_Versions[version].FunctionCall_Price.mul(New_Items.length), law_project);
         
         //Add_Item_Proposal(law_project, Proposal, New_Items, Indexs, msg.sender);
@@ -749,14 +749,14 @@ library Delegation_Uils{
         return (Legislatif_Process_Version, Internal_Governance_Version, Actual_Mandate, Potentialy_Lost_Amount, In_election_stage);
     }
     
-    function Get_Law_Results(bytes32 key)external view returns(uint Winning_Proposal, Initiative_Legislative_Lib.Function_Call_Result[] memory Receipts){
-        return(List_Law_Project[key].Winning_Proposal, List_Law_Project[key].Function_Call_Receipts);
-    }
-    
     
     function Get_Proposal(bytes32 key, uint id)external view returns(bytes memory description, uint[] memory childrens, bytes[] memory function_calls, uint func_call_counter, uint parent, address author){
         function_calls = List_Law_Project[key].Get_Proposal_FunctionCall_List(id);
         (description, childrens,func_call_counter, parent, author) = List_Law_Project[key].Get_Proposal_Infos(id);
+    }
+    
+    function Get_Law_Results(bytes32 key)external view returns(uint Winning_Proposal, Initiative_Legislative_Lib.Function_Call_Result[] memory Receipts){
+        return(List_Law_Project[key].Winning_Proposal, List_Law_Project[key].Function_Call_Receipts);
     }
     /*Overite functions*/
     /*function Before_Add_Law_Project(bytes calldata Title, bytes calldata Description) internal override returns(bytes32){

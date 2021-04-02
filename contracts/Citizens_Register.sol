@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-
+//import "Register.sol";
 import "contracts/Register.sol";
 
 contract Citizens_Register is Register{
@@ -25,7 +25,7 @@ contract Citizens_Register is Register{
      event Banning_Authority_Added(address authority);
      event Registering_Authority_Removed(address authority);
      event Banning_Authority_Removed(address authority);
-
+     
      bytes4 constant public Contains_Function_Selector = 0x57f98d32;
      
      mapping(address=>Citizen) public Citizens;
@@ -39,7 +39,7 @@ contract Citizens_Register is Register{
      
      uint public New_Citizen_Mint_Amount; //Each new citizen get "New_Citizen_Mint_Amount" token that are mint.
     
-     constructor(address[] memory Initial_Citizens, address token_address, uint new_citizen_mint_amount){
+     constructor(string memory Name, address[] memory Initial_Citizens, address token_address, uint new_citizen_mint_amount) Register(Name){
          Type_Institution = Institution_Type.CITIZENS_REGISTRATION;
          Constitution_Address = msg.sender;
          
@@ -58,8 +58,7 @@ contract Citizens_Register is Register{
      }
      
      
-     function Set_Citizen_Mint_Amount(uint amount)external {
-         require(msg.sender == Constitution_Address, "Constitution Only");
+     function Set_Citizen_Mint_Amount(uint amount)external Constitution_Only{
          New_Citizen_Mint_Amount = amount;
          emit new_citizen_mint_amount_Set(amount);
      }
@@ -173,7 +172,7 @@ contract Citizens_Register is Register{
             revert("Not existing authority");
          }
      }
-
+    
     /*GETTER*/
     
     function Contains(address citizen)external view returns(bool){

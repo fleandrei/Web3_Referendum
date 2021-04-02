@@ -18,6 +18,7 @@ contract('TEST: Citizen_Register.sol', function(accounts){
 
 	const Initial_Citizens = accounts.slice(4,7);
 
+	const Citizen_Name = "Citoyens";
 	
 	let Citizen_Register_Instance;
 	let DemoCoin_Instance;
@@ -32,7 +33,7 @@ contract('TEST: Citizen_Register.sol', function(accounts){
 
 	beforeEach(async function () {
 			DemoCoin_Instance = await DEMOCOIN.new("Token", "TOK",Initial_Citizens, Initial_Ammounts);
-			Citizen_Register_Instance = await CITIZEN_REGISTER.new(Initial_Citizens, DemoCoin_Instance.address, New_Citizen_Mint_Amount, {from: Constitution_Address});	
+			Citizen_Register_Instance = await CITIZEN_REGISTER.new(Citizen_Name,Initial_Citizens, DemoCoin_Instance.address, New_Citizen_Mint_Amount, {from: Constitution_Address});	
 			await DemoCoin_Instance.Add_Minter(Citizen_Register_Instance.address);
 		});
 
@@ -44,6 +45,7 @@ contract('TEST: Citizen_Register.sol', function(accounts){
 			for (var i = 0; i < Initial_Citizens.length; i++) {
 				expect(citizens_list.includes(Initial_Citizens[i].toLowerCase())).to.equal(true);
 				var citizen = await Citizen_Register_Instance.Citizens(Initial_Citizens[i]);
+				expect(await Citizen_Register_Instance.Name()).to.equal(Citizen_Name);
 				expect(citizen.Active).to.equal(true);
 				expect(citizen.Registration_Timestamps).not.be.bignumber.equal(new BN(0));
 				expect(citizen.End_Ban_Timestamp).be.bignumber.equal(new BN(0));
