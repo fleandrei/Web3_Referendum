@@ -10,6 +10,7 @@ import "contracts/Initiative_Legislative_lib.sol";
 import "contracts/Citizens_Register.sol";
 import "contracts/IVote.sol";
 
+//import "Constitution.sol";
 
 interface IConstitution_Agora{
     function Get_Register_Parameter(address register) external view returns(uint,uint);
@@ -139,7 +140,7 @@ contract Agora is Institution{
         //uint Description_Max_Size = Registers_Referendums[register_address].Parameters_Versions[version].Description_Max_Size;
         
         /*Token operations AND Size checking*/
-        require(Democoin.allowance(msg.sender, address(this)) >= Law_Initialisation_Price, "Increase Tooken Allowance");
+        require(Democoin.allowance(msg.sender, address(this)) >= Law_Initialisation_Price, "Increase Token Allowance");
         
         bytes32 key = keccak256(abi.encode(Title,Description));
         require(Referendums[key].Version==0,"Referendums project already created");
@@ -163,13 +164,14 @@ contract Agora is Institution{
     
     function Add_Proposal(address register_address, bytes32 referendum_key, uint Parent, uint[] calldata Parent_Proposals_Reuse, bytes[] calldata New_Function_Call, bytes calldata Description) external Citizen_Only{
         uint version = Referendums[referendum_key].Version;
+        require(Referendums_Registers[register_address].Last_Version!=0,"Register unknown");
         require(version!=0,"No existing Referendum Project");
         require(Referendums[referendum_key].Referendum_Status == Status.PETITIONS, "Not at PETITIONS status");
         
         
         uint Cost = Referendums_Registers[register_address].Parameters_Versions[version].FunctionCall_Price*New_Function_Call.length;
         
-        require(Democoin.allowance(msg.sender, address(this)) >= Cost, "Increase Tooken Allowance");
+        require(Democoin.allowance(msg.sender, address(this)) >= Cost, "Increase Token Allowance");
         Democoin.transferFrom(msg.sender, address(this), Cost);
         Referendums[referendum_key].Token_Amount_Consummed +=Cost;
         Total_Token_To_Redistribute+=Cost;
@@ -187,12 +189,13 @@ contract Agora is Institution{
     
     function Add_Item(address register_address, bytes32 referendum_key, uint Proposal, bytes[] calldata New_Items, uint[] calldata Indexs) external Citizen_Only{
         uint version = Referendums[referendum_key].Version;
+        require(Referendums_Registers[register_address].Last_Version!=0,"Register unknown");
         require(version!=0,"No existing Referendum Project");
         require(Referendums[referendum_key].Referendum_Status == Status.PETITIONS, "Not at PETITIONS status");
         
         uint Cost = Referendums_Registers[register_address].Parameters_Versions[version].FunctionCall_Price*New_Items.length;
         
-        require(Democoin.allowance(msg.sender, address(this)) >= Cost, "Increase Tooken Allowance");
+        require(Democoin.allowance(msg.sender, address(this)) >= Cost, "Increase Token Allowance");
         Democoin.transferFrom(msg.sender, address(this), Cost);
         Referendums[referendum_key].Token_Amount_Consummed +=Cost;
         Total_Token_To_Redistribute+=Cost;
@@ -202,16 +205,19 @@ contract Agora is Institution{
     }
     
     function Sign_Petition(address register_address, bytes32 referendum_key) external Citizen_Only{
+        require(Referendums_Registers[register_address].Last_Version!=0,"Register unknown");
         uint version = Referendums[referendum_key].Version;
         require(version!=0,"No existing Referendum Project");
         require(Referendums[referendum_key].Referendum_Status == Status.PETITIONS, "Not at PETITIONS status");
         require(!Referendums[referendum_key].Petitions[msg.sender], "Already Signed");
         Referendums[referendum_key].Petitions[msg.sender]=true;
+        Referendums[referendum_key].Petition_Counter++;
         emit Projet_Signed(register_address, referendum_key);
     }
     
-    function Achiev_Proposition(address register_address, bytes32 referendum_key)external Citizen_Only{
+    function End_Proposition_Stage(address register_address, bytes32 referendum_key)external Citizen_Only{
         uint version = Referendums[referendum_key].Version;
+        require(Referendums_Registers[register_address].Last_Version!=0,"Register unknown");
         require(version!=0,"No existing Referendum Project");
         require(Referendums[referendum_key].Referendum_Status == Status.PETITIONS, "Not at PETITIONS status");
         require(block.timestamp - Referendums[referendum_key].Creation_Timestamps > Referendums_Registers[register_address].Parameters_Versions[version].Petition_Duration, "PETITIONS stage not finished");
@@ -235,6 +241,7 @@ contract Agora is Institution{
     function End_Vote(address register_address, bytes32 referendum_key)external Citizen_Only{
         uint version = Referendums[referendum_key].Version;
         //require(version!=0,"No existing Referendum Project");
+        require(Referendums_Registers[register_address].Last_Version!=0,"Register unknown");
         require(Referendums[referendum_key].Referendum_Status == Status.VOTE, "Not at VOTE status");
         
         IVote Vote_Instance = IVote(Referendums_Registers[register_address].Parameters_Versions[version].Ivote_address);
@@ -251,6 +258,7 @@ contract Agora is Institution{
     }
     
     function Execute_Law(address register_address, bytes32 referendum_key, uint num_function_call_ToExecute)external Citizen_Only nonReentrant{
+        require(Referendums_Registers[register_address].Last_Version!=0,"Register unknown");
         require(Referendums[referendum_key].Referendum_Status ==  Status.ADOPTED, "Project Not ADOPTED");
         //if(Execute_Winning_Proposal(law_project, num_function_call_ToExecute, Delegation_Law_Projects[law_project].Institution_Address)){
         if(List_Law_Project[referendum_key].Execute_Winning_Proposal(num_function_call_ToExecute, register_address)){
@@ -270,6 +278,7 @@ contract Agora is Institution{
     }
     
     function Get_Voter_Reward(address register_address, bytes32 referendum_key)external {
+        require(Referendums_Registers[register_address].Last_Version!=0,"Register unknown");
         require(!Referendums[referendum_key].Voter_Rewarded[msg.sender], "Voter already rewarded");
         require(Referendums[referendum_key].Referendum_Status ==  Status.EXECUTED, "Project Not EXECUTED");
         uint version = Referendums[referendum_key].Version;
@@ -349,12 +358,21 @@ contract Agora is Institution{
 
     /*GETTER*/
     
-    function Get_Referendum_Register(address register_address) external view returns(uint last_version, Institution_Type institution_type){
-        return (Referendums_Registers[register_address].Last_Version, Referendums_Registers[register_address].Type);
+    function Get_Referendum_Register(address register_address) external view returns(uint last_version, Institution_Type institution_type, bytes32[] memory list_referendums){
+        return (Referendums_Registers[register_address].Last_Version, Referendums_Registers[register_address].Type, Referendums_Registers[register_address].List_Referendums);
     }
     
     function Get_Referendum_Register_Parameters(address register_address, uint version) external view returns(Referendum_Parameters memory){
         return (Referendums_Registers[register_address].Parameters_Versions[version]);
+    }
+    
+    function Get_Proposal(bytes32 key, uint id)external view returns(bytes memory description, uint[] memory childrens, bytes[] memory function_calls, uint func_call_counter, uint parent, address author){
+        function_calls = List_Law_Project[key].Get_Proposal_FunctionCall_List(id);
+        (description, childrens,func_call_counter, parent, author) = List_Law_Project[key].Get_Proposal_Infos(id);
+    }
+    
+    function Get_Law_Results(bytes32 key)external view returns(uint Winning_Proposal, Initiative_Legislative_Lib.Function_Call_Result[] memory Receipts){
+        return(List_Law_Project[key].Winning_Proposal, List_Law_Project[key].Function_Call_Receipts);
     }
     
     /*TEMP*/
