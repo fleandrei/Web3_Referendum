@@ -4,13 +4,12 @@ pragma solidity ^0.8.0;
 
 /*pragma solidity >=0.6.0 <0.8.0;*/
 import "contracts/IVote.sol";
-import "@openzeppelin/contracts/math/SafeMath.sol";
+//import "@openzeppelin/contracts/math/SafeMath.sol";
 
 /*import "IVote.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/SafeMath.sol";*/
-
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/SafeMath.sol";
+*/
 contract Majority_Judgment_Ballot is IVote{
-    using SafeMath for uint; 
     
     enum Assessement{
         EXCELENT,
@@ -106,9 +105,9 @@ contract Majority_Judgment_Ballot is IVote{
         require(Check_Voter_Address(key, msg.sender), "Address Not Allowed");
         require(Ballots[key].Vote_Validation_Duration == 0, "Should Use Vote_Hashed");
         uint choice_len = Choices.length ;
-        require(Ballots[key].Propositions_Number.add(1) == choice_len, "Choices argument wrong size");
+        require(Ballots[key].Propositions_Number + 1 == choice_len, "Choices argument wrong size");
         
-        Ballots[key].Voter_Number = Ballots[key].Voter_Number.add(1);
+        Ballots[key].Voter_Number = Ballots[key].Voter_Number +1;
         
         
         
@@ -122,7 +121,7 @@ contract Majority_Judgment_Ballot is IVote{
         emit Voted_Clear(key, msg.sender);
     }
     
-    function Vote_Hashed(bytes32 key, bytes32 Choice) external override{
+    function Vote_Hashed(bytes32 key, bytes32 Hash) external override{
         //require(Ballots[key].Vote_Duration > block.timestamp.sub(Ballots[key].Creation_Timestamp), "Voting is over");
         require(Ballots[key].Status == Ballot_Status.VOTE, "Not at voting stage");
         require(!Ballots[key].Voters[msg.sender].Voted, "Already Voted");
@@ -131,14 +130,14 @@ contract Majority_Judgment_Ballot is IVote{
         //require(Ballots[key].Propositions_Number.add(1) == choice_len);
         
         Ballots[key].Voters[msg.sender].Voted = true;
-        Ballots[key].Voters[msg.sender].Choice = Choice;
+        Ballots[key].Voters[msg.sender].Choice = Hash;
         
         emit Voted_Hashed( key, msg.sender);
     }
     
     function End_Vote(bytes32 key)external override{
         require(Ballots[key].Status==Ballot_Status.VOTE, "Not at voting stage");
-        require(Ballots[key].Vote_Duration < block.timestamp.sub(Ballots[key].Creation_Timestamp), "Voting stage not finished");
+        require(Ballots[key].Vote_Duration < block.timestamp - Ballots[key].Creation_Timestamp, "Voting stage not finished");
         if(Ballots[key].Vote_Validation_Duration>0){
             Ballots[key].Status = Ballot_Status.VOTE_VALIDATION;
             emit Begin_Validation(key);
@@ -156,13 +155,13 @@ contract Majority_Judgment_Ballot is IVote{
         //require(Check_Voter_Address(key, msg.sender), "Address Not Allowed");
         require(!Ballots[key].Voters[msg.sender].Validated, "Vote Already Validated");
         uint choice_len = Choices.length ;
-        require(Ballots[key].Propositions_Number.add(1) == choice_len, "Choices argument wrong size");
+        require(Ballots[key].Propositions_Number+1 == choice_len, "Choices argument wrong size");
         
         bytes32 hash = keccak256(abi.encode(Choices, salt));
         require(hash==Ballots[key].Voters[msg.sender].Choice, "Hashes don't match");
         
         Ballots[key].Voters[msg.sender].Validated = true;
-        Ballots[key].Voter_Number = Ballots[key].Voter_Number.add(1);
+        Ballots[key].Voter_Number = Ballots[key].Voter_Number+1;
         
         for(uint i=0; i<Choices.length; i++){
             for(uint j=Choices[i]; j<5; j++){
@@ -176,7 +175,7 @@ contract Majority_Judgment_Ballot is IVote{
     
     
     function End_Validation_Vote(bytes32 key) external override{
-        require( (Ballots[key].Status == Ballot_Status.VOTE_VALIDATION && Ballots[key].Vote_Validation_Duration < block.timestamp.sub(Ballots[key].End_Vote_Timestamp)), "Not at vote counting stage");
+        require( (Ballots[key].Status == Ballot_Status.VOTE_VALIDATION && Ballots[key].Vote_Validation_Duration < block.timestamp - Ballots[key].End_Vote_Timestamp), "Not at vote counting stage");
         _Talling_Votes(key);
         Ballots[key].Status = Ballot_Status.FINISHED;
         emit Vote_Finished(key);
@@ -185,7 +184,7 @@ contract Majority_Judgment_Ballot is IVote{
     
     function _Talling_Votes(bytes32 key) internal{
         uint number_propositions = Ballots[key].Propositions_Number;
-        uint half_voters = Ballots[key].Voter_Number.div(2) +  Ballots[key].Voter_Number.mod(2);
+        uint half_voters = Ballots[key].Voter_Number/2 +  Ballots[key].Voter_Number%2;
         uint winning_propositions_number = Ballots[key].Max_Winning_Propositions_Number;
         //uint[][2] memory winning_propositions = new uint[][2](winning_propositions_number+1);
         uint[] memory winning_propositions = new uint[](winning_propositions_number+1);

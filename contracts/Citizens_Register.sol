@@ -6,7 +6,6 @@ import "contracts/Register.sol";
 
 contract Citizens_Register is Register{
      using EnumerableSet for EnumerableSet.AddressSet;
-     using SafeMath for uint;
      
      struct Citizen{
          bool Active;
@@ -96,7 +95,7 @@ contract Citizens_Register is Register{
          require(Citizens_List.contains(citizen), "Not Registered Citizen");
          Citizens[citizen].Active=false;
          if(duration>0){
-             Citizens[citizen].End_Ban_Timestamp = duration.add(block.timestamp);
+             Citizens[citizen].End_Ban_Timestamp = duration+block.timestamp;
          }
          
          emit Citizen_Banned(citizen);
