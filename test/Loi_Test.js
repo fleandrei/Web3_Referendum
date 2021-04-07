@@ -20,8 +20,6 @@ contract('TEST: Loi.sol (and Register.sol)', function(accounts){
 	const Random_Account = accounts[3];
 	
 	
-	//var Loi_Instance = await LOI.new(Agora_Address, {from: Constitution_Address});
-
 	let Loi_Instance;
 
 	/*function Test(){

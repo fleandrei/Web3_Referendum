@@ -121,8 +121,8 @@ contract Constitution is Register{
      
      Agora public Agora_Instance;
      Citizens_Register public Citizen_Instance;
-     DemoCoin public Democoin;
-     IVote public majority_judgment_ballot;
+     DemoCoin public Democoin_Instance;
+     //IVote public majority_judgment_ballot;
      //address public Citizens_Address;
      
      address public Transitional_Government;
@@ -131,32 +131,33 @@ contract Constitution is Register{
      EnumerableSet.AddressSet Registers_Address_List;
      
      //mapping(address=>Constitution_Delegation.Delegation_Parameters) Delegations;
-    EnumerableSet.AddressSet Delegation_Address_List;
-    
-     
-     address public Citizen_Registering_Address;
- 
+     EnumerableSet.AddressSet Delegation_Address_List;
+        
      
      
      //uint8 public Account_Max_Token_Rate;  //Each account can't pocess more than "Account_Max_Token_Rate"% of the entire token supply.
      
      
-     constructor(string memory Constitution_Name, string memory Citizen_Name, string memory Agora_Name,address transition_government, address[] memory initial_citizens, string memory Token_Name, string memory Token_Symbole, uint[] memory initial_citizens_token_amount, uint new_citizen_mint_amount) Register(Constitution_Name) {
-         require(transition_government !=address(0));
+    // constructor(string memory Constitution_Name, string memory Citizen_Name, string memory Agora_Name,address transition_government, address[] memory initial_citizens, string memory Token_Name, string memory Token_Symbole, uint[] memory initial_citizens_token_amount, uint new_citizen_mint_amount) Register(Constitution_Name) {
+      constructor(string memory Constitution_Name, address DemoCoin_Address, address Citizen_Address, address Agora_Address, address transition_government) Register(Constitution_Name){   
+        require(transition_government !=address(0));
          
          Constitution_Address = address(this);
          //Type_Institution = Institution_Type.CONSTITUTION;
-         Democoin = new DemoCoin(Token_Name, Token_Symbole, initial_citizens, initial_citizens_token_amount);
-         
+         /*Democoin = new DemoCoin(Token_Name, Token_Symbole, initial_citizens, initial_citizens_token_amount);
          Citizen_Instance = new Citizens_Register(Citizen_Name, initial_citizens, address(Democoin), new_citizen_mint_amount);
-         Agora_Instance = new Agora(Agora_Name, address(Democoin), address(Citizen_Instance));
+         Agora_Instance = new Agora(Agora_Name, address(Democoin), address(Citizen_Instance));*/
+         
+         Democoin_Instance = DemoCoin(DemoCoin_Address);
+         Citizen_Instance = Citizens_Register(Citizen_Address);
+         Agora_Instance = Agora(Agora_Address);
          
          //majority_judgment_ballot = new majority_judgment_ballot();
          //Citizens_Address = Constitution_Register.Create_Citizens(initial_citizens);
          
          Transitional_Government = transition_government;
          Register_Authorities.add(Transitional_Government);
-         Register_Authorities.add(address(Agora_Instance));
+         Register_Authorities.add(Agora_Address);
          
      }
      
@@ -190,10 +191,10 @@ contract Constitution is Register{
         uint add_len=Add_Minter.length;
         uint remove_len = Remove_Minter.length;
         for(uint i =0; i<add_len;i++){
-            Democoin.Add_Minter(Add_Minter[i]);
+            Democoin_Instance.Add_Minter(Add_Minter[i]);
         }
         for(uint j=0; j<remove_len; j++){
-            Democoin.Remove_Minter(Remove_Minter[j]);
+            Democoin_Instance.Remove_Minter(Remove_Minter[j]);
         }
     }
     
@@ -201,10 +202,10 @@ contract Constitution is Register{
         uint add_len=Add_Burner.length;
         uint remove_len = Remove_Burner.length;
         for(uint i =0; i<add_len;i++){
-            Democoin.Add_Burner(Add_Burner[i]);
+            Democoin_Instance.Add_Burner(Add_Burner[i]);
         }
         for(uint j=0; j<remove_len; j++){
-            Democoin.Remove_Burner(Remove_Burner[j]);
+            Democoin_Instance.Remove_Burner(Remove_Burner[j]);
         }
     }
     
@@ -234,7 +235,7 @@ contract Constitution is Register{
     
     
     /*Register/Agora Handling*/
-    function Create_Register(string memory Name, uint8 register_type, address register_address, uint Petition_Duration, uint Vote_Duration, uint Vote_Checking_Duration, uint Law_Initialisation_Price, uint FunctionCall_Price, uint16 Required_Petition_Rate, address Ivote_address)
+    function Create_Register(string memory Name, uint8 register_type, uint Petition_Duration, uint Vote_Duration, uint Vote_Checking_Duration, uint Law_Initialisation_Price, uint FunctionCall_Price, uint16 Required_Petition_Rate, address Ivote_address)
     external Register_Authorities_Only{ //returns(bool, bytes memory){
         
         
@@ -260,12 +261,12 @@ contract Constitution is Register{
         Registers_Address_List.add(new_register_address);
      
         Agora_Instance.Create_Register_Referendum(new_register_address, register_type);
-        _Set_Register_Param(register_address, Petition_Duration, Vote_Duration, Vote_Checking_Duration, Law_Initialisation_Price, FunctionCall_Price, Required_Petition_Rate, Ivote_address);
+        _Set_Register_Param(new_register_address, Petition_Duration, Vote_Duration, Vote_Checking_Duration, Law_Initialisation_Price, FunctionCall_Price, Required_Petition_Rate, Ivote_address);
          
          
          //Registers[new_register_address].Register_Type = register_type;
          //Registers[new_register_address].Actual_Version = 1;
-         emit Register_Created(register_address);
+         emit Register_Created(new_register_address);
          
         //return (true, bytes(""));
         //return Registers[new_register_address]._Set_Register_Param(new_register_address, Uint256_Arg, Uint16_Arg, Uint8_Arg, OffChain_Vote_Delegation, Assembly_Associated_Delegation);
@@ -343,7 +344,7 @@ contract Constitution is Register{
                  for(uint i =0; i<Initial_members.length; i++){
                      require(Citizen_Instance.Contains(Initial_members[i]), "member is not citizen");
                  }
-                 delegation_address = Constitution_Delegation.Create_Delegation(Name, Initial_members, address(Democoin), address(Citizen_Instance), address(Agora_Instance));
+                 delegation_address = Constitution_Delegation.Create_Delegation(Name, Initial_members, address(Democoin_Instance), address(Citizen_Instance), address(Agora_Instance));
             }else{
                 require(!Delegation_Address_List.contains(delegation_address), "Delegation already registered");
                 //return(false,bytes("Delegation already registered"));
@@ -361,7 +362,7 @@ contract Constitution is Register{
             Delegation_Address_List.add(delegation_address);
             
             if(Uint256_Governance_Arg[4]>0){
-                Democoin.Mint(delegation_address, Uint256_Governance_Arg[3]);
+                Democoin_Instance.Mint(delegation_address, Uint256_Governance_Arg[3]);
             }
             
             emit Delegation_Created(delegation_address);
@@ -418,7 +419,7 @@ contract Constitution is Register{
              }
             
             if(Mint_Token>0){
-                 Democoin.Mint(delegation_address, Mint_Token);
+                 Democoin_Instance.Mint(delegation_address, Mint_Token);
              }
             
             Delegation(delegation_address).Update_Internal_Governance(Election_Duration, Validation_Duration, Mandate_Duration, Immunity_Duration, Num_Max_Members, New_Election_Petition_Rate, Ivote_address);

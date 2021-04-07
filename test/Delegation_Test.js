@@ -138,7 +138,8 @@ contract('TEST: Delegation.sol', function(accounts){
 			
 			await DELEGATION.link("Delegation_Uils", Delegation_Utils_Library.address);
 			await DELEGATION.link("Initiative_Legislative_Lib" , Initiative_Legislative_Lib_Library.address);
-			
+			//DELEGATION.link(Delegation_Utils_Library);
+
 			Delegation_Instance = await DELEGATION.new(Delegation_Name, Members, DemoCoin_Instance.address, Citizen_Register_Instance.address, Agora_Address, {from: Constitution_Address});
 			key = web3.utils.randomHex(32);
 

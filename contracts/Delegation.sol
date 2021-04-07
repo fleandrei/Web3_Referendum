@@ -285,6 +285,14 @@ library Delegation_Uils{
         _;
     }
     
+    event Governance_Parameters_Updated();
+    event Legislatif_Parameters_Updated();
+    event New_Candidat(address Candidat);
+    event Remove_Candidat(address Candidat);
+    event Sign();
+    event New_election(bytes32 Vote_key);
+    event New_Mandate();
+    
     event Controled_Register_Added(address register);
     event Controled_Register_Canceled(address register);
     event Controled_Register_Removed(address register);
@@ -359,6 +367,7 @@ library Delegation_Uils{
     function Candidate_Election() external Citizen_Only{
         require(!In_election_stage, "Election Time");
         Mandates[Actual_Mandate].Add_Candidats(msg.sender);
+        emit New_Candidat(msg.sender);
         /*uint num_mandate = Actual_Mandate;
         require(!Mandates[num_mandate].Next_Mandate_Candidats.contains(msg.sender), "Already Candidate");
         Mandates[num_mandate].Next_Mandate_Candidats.add(msg.sender);*/
@@ -367,6 +376,7 @@ library Delegation_Uils{
     function Remove_Candidature()external{
         require(!In_election_stage, "Election Time");
         Mandates[Actual_Mandate].Remove_Candidats(msg.sender);
+        emit Remove_Candidat(msg.sender);
         /*uint num_mandate = Actual_Mandate;
         require(Mandates[num_mandate].Next_Mandate_Candidats.contains(msg.sender), "Not Candidate");
         require(!In_election_stage, "Election Time");
@@ -378,10 +388,12 @@ library Delegation_Uils{
         uint num_mandate = Actual_Mandate;
         if(Delegation_Uils.New_Election(Mandates,Mandates_Versions[Mandates[num_mandate].Version], num_mandate, address(Citizens))){
             In_election_stage= true;
+            emit New_election(keccak256(abi.encodePacked(address(this),block.timestamp)));
         }else{
             uint new_mandate_num = num_mandate+1;
             Actual_Mandate = new_mandate_num;
             Mandates[new_mandate_num].Version = Internal_Governance_Version;
+            emit New_Mandate();
         }
         
         //Mandates[num_mandate].New_Election(Mandates_Versions[Mandates[num_mandate].Version], Citizens.Get_Citizen_Number(), num_mandate, Contains_Function_Selector);
@@ -399,6 +411,7 @@ library Delegation_Uils{
     function Sign_New_Election_Petition() external Citizen_Only{
         uint num_mandate = Actual_Mandate;
         Mandates[num_mandate].Sign_Petition(Mandates_Versions[Mandates[num_mandate].Version].Immunity_Duration, msg.sender);
+        emit Sign();
         /*require(block.timestamp.sub(Mandates[num_mandate].Inauguration_Timestamps) > Mandates_Versions[Mandates[num_mandate].Version].Immunity_Duration);
         require(!Mandates[num_mandate].New_Election_Petitions.contains(msg.sender), "Already signed petition");
         Mandates[num_mandate].New_Election_Petitions.add(msg.sender);*/
@@ -427,6 +440,7 @@ library Delegation_Uils{
         Delegation_Uils.Transition_Mandate(Mandates, Mandates_Versions[Mandates[num_mandate].Version].Ivote_address, num_mandate, Internal_Governance_Version);
         Actual_Mandate = num_mandate + 1;
         In_election_stage=false;
+        emit New_Mandate();
     }
     
     
@@ -584,6 +598,7 @@ library Delegation_Uils{
              Law_Parameters_Versions[version].Ivote_address = Ivote_address;
              
              Legislatif_Process_Version = version;
+             
     }*/
          
     function Update_Legislatif_Process(uint[6] calldata Uint256_Legislatifs_Arg, uint16 Censor_Proposition_Petition_Rate, 
@@ -605,7 +620,7 @@ library Delegation_Uils{
              
              Legislatif_Process_Version = version;
              
-            //emit Legilsatif_Parameters_Updated();
+            emit Legislatif_Parameters_Updated();
     }  
          
     function Update_Internal_Governance( uint Election_Duration, uint Validation_Duration, uint Mandate_Duration, uint Immunity_Duration,
@@ -625,7 +640,7 @@ library Delegation_Uils{
             Mandates_Versions[version].Ivote_address = Ivote_address;*/
             
             Internal_Governance_Version = version;
-            //emit Governance_Parameters_Updated();
+            emit Governance_Parameters_Updated();
     }
          
          

@@ -11,7 +11,6 @@ import "contracts/Register.sol";
  contract Loi is Register{
     using EnumerableSet for EnumerableSet.AddressSet;
     using EnumerableSet for EnumerableSet.Bytes32Set;
-    using SafeMath for uint;
     
     /*struct Clear_Article{
         string Title;
@@ -84,7 +83,7 @@ import "contracts/Register.sol";
         require(Lois[Title].Timestamp == 0, "Loi: Title already existing");
       
         List_Lois.push(Title);
-        Lois[Title].Index = List_Lois.length.sub(1);
+        Lois[Title].Index = List_Lois.length - 1;
         Lois[Title].Description = Description;
         Lois[Title].Timestamp = block.timestamp;
         emit Law_Created(Title);

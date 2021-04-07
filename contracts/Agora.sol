@@ -80,7 +80,6 @@ contract Agora is Institution{
         uint Version;
         uint Creation_Timestamps;
         uint Start_Vote_Timestamps;
-        uint Winning_Proposition;
         uint Voter_Reward;
         Status Referendum_Status;
         mapping(address=>bool) Petitions;
@@ -103,6 +102,7 @@ contract Agora is Institution{
     event Projet_Signed(address register, bytes32 key);
     event Projet_Rejected(address register, bytes32 key);
     event Project_Adopted(address register, bytes32 key);
+    event Function_Call_Executed(address register, bytes32 key, uint Function_Call_Nbr);
     event Project_Executed(address register, bytes32 key);
     
     /*STATE*/
@@ -275,6 +275,7 @@ contract Agora is Institution{
             Total_Token_To_Redistribute-=Total_Reward%num_voter;   
             emit Project_Executed(register_address, referendum_key);
         }
+        emit Function_Call_Executed( register_address, referendum_key, num_function_call_ToExecute);
     }
     
     function Get_Voter_Reward(address register_address, bytes32 referendum_key)external {
@@ -282,6 +283,7 @@ contract Agora is Institution{
         require(!Referendums[referendum_key].Voter_Rewarded[msg.sender], "Voter already rewarded");
         require(Referendums[referendum_key].Referendum_Status ==  Status.EXECUTED, "Project Not EXECUTED");
         uint version = Referendums[referendum_key].Version;
+        uint voter_reward=Referendums[referendum_key].Voter_Reward;
         IVote Vote_Instance = IVote(Referendums_Registers[register_address].Parameters_Versions[version].Ivote_address);
         
         if(Referendums_Registers[register_address].Parameters_Versions[version].Vote_Checking_Duration>0){
@@ -290,9 +292,12 @@ contract Agora is Institution{
         }else{
             require(Vote_Instance.HasVoted(referendum_key, msg.sender), "You haven't voted");
         }
-        
-        Democoin.transfer(msg.sender, Referendums[referendum_key].Voter_Reward);
+        Referendums[referendum_key].Voter_Rewarded[msg.sender]=true;
+        Total_Token_To_Redistribute-= voter_reward;
+        Democoin.transfer(msg.sender, voter_reward);
     }
+    
+    
     
     
     
