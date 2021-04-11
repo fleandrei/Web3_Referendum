@@ -211,9 +211,7 @@ contract('TEST: Agora.sol', function(accounts){
 
 			Required_Petition_Rate = chance.natural({min:Math.floor(10000*2/Citizens.length), max:petition_rate_max});
 
-			console.debug("Petition_Duration",Petition_Duration,"Vote_Duration",Vote_Duration,"Validation_Duration",Validation_Duration,
-				"Law_Initialisation_Price",Law_Initialisation_Price,"FunctionCall_Price",FunctionCall_Price,"Required_Petition_Rate",
-				Required_Petition_Rate,"Ballot address:",Ballot_Instance.address, "Loi_instance address",Loi_instance.address);
+			
 		});
 
 
@@ -397,7 +395,7 @@ contract('TEST: Agora.sol', function(accounts){
 
 
 		it("Citizen account attempts to add a proposal but token allowance is too low", async function (){
-			functioncall_num = chance.natural({min:0,max:functionCall_max});
+			functioncall_num = chance.natural({min:1,max:functionCall_max});
 			var proposal_arrays = Create_Proposal_Data(functioncall_num, 0, 0, loi, web3);
 
 			//await DemoCoin_Instance.approve(Agora_Instance.address, FunctionCall_Price*functioncall_num, {from:Citizens[1]});
@@ -665,9 +663,11 @@ contract('TEST: Agora.sol', function(accounts){
 
 			await time.increase(Petition_Duration+1);
 			res=await Agora_Instance.End_Proposition_Stage(Loi_instance.address, referendum_key, {from:Citizens[0]});
-			
-			var ballot= await Ballot_Instance.Ballots(referendum_key);
 			var Referendum = await Agora_Instance.Referendums(referendum_key);
+			var ballot_key = web3.utils.soliditySha3(referendum_key, Referendum.Start_Vote_Timestamps);
+
+			var ballot= await Ballot_Instance.Ballots(ballot_key);
+			
 
 			expect(Referendum.Referendum_Status).to.be.bignumber.equal(new BN(1));
 
@@ -679,16 +679,18 @@ contract('TEST: Agora.sol', function(accounts){
 			expect(ballot.Propositions_Number).to.be.bignumber.equal(new BN(1));
 			expect(ballot.Max_Winning_Propositions_Number).to.be.bignumber.equal(new BN(1));
 
-			await expectEvent(res, "Voting_Stage_Started", {register:Loi_instance.address , key:referendum_key}, "Voting_Stage_Started event incorrect");
+			await expectEvent(res, "Voting_Stage_Started", {register:Loi_instance.address , key:referendum_key, ballot_key: ballot_key}, "Voting_Stage_Started event incorrect");
 		});
 
 		it("citizen account end proposition stage. There is not enough signatures to begin the vote stage: The referendum project is rejected", async function (){
 			var Total_Token_To_Redistribute_before = await Agora_Instance.Total_Token_To_Redistribute();
 			await time.increase(Petition_Duration+1);
 			res=await Agora_Instance.End_Proposition_Stage(Loi_instance.address, referendum_key, {from:Citizens[0]});
-			 
-			var ballot= await Ballot_Instance.Ballots(referendum_key);
+
 			var Referendum = await Agora_Instance.Referendums(referendum_key);
+			var ballot_key = web3.utils.soliditySha3(referendum_key, Referendum.Start_Vote_Timestamps);
+			var ballot= await Ballot_Instance.Ballots(ballot_key);
+			
 			var Total_Token_To_Redistribute_after = await Agora_Instance.Total_Token_To_Redistribute();
 
 			var amount_transfered = new BN(Law_Initialisation_Price+FunctionCall_Price*functioncall_num);
@@ -713,6 +715,7 @@ contract('TEST: Agora.sol', function(accounts){
 		let Description;
 		let proposal_Description
 		let referendum_key;
+		let ballot_key;
 		let functioncall_num1;
 		let functioncall_num2;
 		let functioncall_num3;
@@ -766,6 +769,9 @@ contract('TEST: Agora.sol', function(accounts){
 
 			await time.increase(Petition_Duration+1);
 			res=await Agora_Instance.End_Proposition_Stage(Loi_instance.address, referendum_key, {from:Citizens[0]});
+
+			var Referendum = await Agora_Instance.Referendums(referendum_key);
+			ballot_key = web3.utils.soliditySha3(referendum_key, Referendum.Start_Vote_Timestamps);
 		});
 
 
@@ -800,7 +806,7 @@ contract('TEST: Agora.sol', function(accounts){
 		it("External_Account attempts to end vote stage", async function (){
 			var Citizens_Votes = Cleared_Votes_Creation(3, Citizens.length);
 			Citizens_Votes.forEach(async (elem,i,arr)=>{
-				await Ballot_Instance.Vote_Clear(referendum_key, elem, {from:Citizens[i]});
+				await Ballot_Instance.Vote_Clear(ballot_key, elem, {from:Citizens[i]});
 			});
 			await time.increase(Vote_Duration+1);
 			await expectRevert(Agora_Instance.End_Vote(Loi_instance.address, referendum_key, {from:External_Account}), "Citizen Only");
@@ -809,7 +815,7 @@ contract('TEST: Agora.sol', function(accounts){
 		it("citizen account attempts to end vote stage but register address is unknown", async function (){
 			var Citizens_Votes = Cleared_Votes_Creation(3, Citizens.length);
 			Citizens_Votes.forEach(async (elem,i,arr)=>{
-				await Ballot_Instance.Vote_Clear(referendum_key, elem, {from:Citizens[i]});
+				await Ballot_Instance.Vote_Clear(ballot_key, elem, {from:Citizens[i]});
 			});
 			await expectRevert(Agora_Instance.End_Vote(web3.utils.randomHex(20), referendum_key, {from:Citizens[0]}), "Register unknown");
 		});
@@ -817,7 +823,7 @@ contract('TEST: Agora.sol', function(accounts){
 		it("citizen account attempts to end proposition stage for not existing referendum project ", async function (){
 			var Citizens_Votes = Cleared_Votes_Creation(3, Citizens.length);
 			Citizens_Votes.forEach(async (elem,i,arr)=>{
-				await Ballot_Instance.Vote_Clear(referendum_key, elem, {from:Citizens[i]});
+				await Ballot_Instance.Vote_Clear(ballot_key, elem, {from:Citizens[i]});
 			});
 			await expectRevert(Agora_Instance.End_Vote(Loi_instance.address, web3.utils.randomHex(32), {from:Citizens[0]}), "Not at VOTE status");
 		});
@@ -825,7 +831,7 @@ contract('TEST: Agora.sol', function(accounts){
 		it("citizen account attempts to end vote stage altought it's not over yet", async function (){
 			var Citizens_Votes = Cleared_Votes_Creation(3, Citizens.length);
 			Citizens_Votes.forEach(async (elem,i,arr)=>{
-				await Ballot_Instance.Vote_Clear(referendum_key, elem, {from:Citizens[i]});
+				await Ballot_Instance.Vote_Clear(ballot_key, elem, {from:Citizens[i]});
 			});
 			await expectRevert(Agora_Instance.End_Vote(Loi_instance.address, referendum_key, {from:Citizens[0]}), "Id exceed Winning length");
 		});
@@ -834,11 +840,11 @@ contract('TEST: Agora.sol', function(accounts){
 			var Citizens_Votes = Cleared_Votes_Creation(3, Citizens.length);
 			Citizens_Votes.forEach(async (elem,i,arr)=>{
 					elem[0]=0;
-					await Ballot_Instance.Vote_Clear(referendum_key, elem, {from:Citizens[i]});
+					await Ballot_Instance.Vote_Clear(ballot_key, elem, {from:Citizens[i]});
 			});
 
 			await time.increase(Vote_Duration+1);
-			await Ballot_Instance.End_Vote(referendum_key);
+			await Ballot_Instance.End_Vote(ballot_key);
 			res=await Agora_Instance.End_Vote(Loi_instance.address, referendum_key, {from:Citizens[0]});
 
 			var Referendum = await Agora_Instance.Referendums(referendum_key);
@@ -851,11 +857,11 @@ contract('TEST: Agora.sol', function(accounts){
 			var Citizens_Votes = Cleared_Votes_Creation(3, Citizens.length);
 			Citizens_Votes.forEach(async (elem,i,arr)=>{
 					elem[0]=4;
-					await Ballot_Instance.Vote_Clear(referendum_key, elem, {from:Citizens[i]});
+					await Ballot_Instance.Vote_Clear(ballot_key, elem, {from:Citizens[i]});
 			});
 
 			await time.increase(Vote_Duration+1);
-			await Ballot_Instance.End_Vote(referendum_key);
+			await Ballot_Instance.End_Vote(ballot_key);
 			res=await Agora_Instance.End_Vote(Loi_instance.address, referendum_key, {from:Citizens[0]});
 
 			var Referendum = await Agora_Instance.Referendums(referendum_key);
@@ -877,6 +883,7 @@ contract('TEST: Agora.sol', function(accounts){
 		let Description;
 		let proposal_Description
 		let referendum_key;
+		let ballot_key;
 		let functioncall_num1;
 		let functioncall_num2;
 		let functioncall_num3;
@@ -935,16 +942,19 @@ contract('TEST: Agora.sol', function(accounts){
 			await time.increase(Petition_Duration+1);
 			res=await Agora_Instance.End_Proposition_Stage(Loi_instance.address, referendum_key, {from:Citizens[0]});
 
+			var Referendum = await Agora_Instance.Referendums(referendum_key);
+			ballot_key = web3.utils.soliditySha3(referendum_key, Referendum.Start_Vote_Timestamps);
+
 			/*Voting*/
 			var Citizens_Votes = Cleared_Votes_Creation(3, Citizens.length);
 			Citizens_Votes.forEach(async (elem,i,arr)=>{
 					elem[0]=4;
-					await Ballot_Instance.Vote_Clear(referendum_key, elem, {from:Citizens[i]});
+					await Ballot_Instance.Vote_Clear(ballot_key, elem, {from:Citizens[i]});
 			});
 
 			/*End vote*/
 			await time.increase(Vote_Duration+1);
-			await Ballot_Instance.End_Vote(referendum_key);
+			await Ballot_Instance.End_Vote(ballot_key);
 			res=await Agora_Instance.End_Vote(Loi_instance.address, referendum_key, {from:Citizens[0]});
 
 			Winning_Proposal = (await Agora_Instance.List_Law_Project(referendum_key)).Winning_Proposal;
@@ -1017,6 +1027,7 @@ contract('TEST: Agora.sol', function(accounts){
 		let Description;
 		let proposal_Description
 		let referendum_key;
+		let ballot_key;
 		let functioncall_num1;
 		let functioncall_num2;
 		let functioncall_num3;
@@ -1075,6 +1086,9 @@ contract('TEST: Agora.sol', function(accounts){
 			await time.increase(Petition_Duration+1);
 			res=await Agora_Instance.End_Proposition_Stage(Loi_instance.address, referendum_key, {from:Citizens[0]});
 
+			var Referendum = await Agora_Instance.Referendums(referendum_key);
+			ballot_key = web3.utils.soliditySha3(referendum_key, Referendum.Start_Vote_Timestamps);
+
 		});
 	
 
@@ -1084,13 +1098,13 @@ contract('TEST: Agora.sol', function(accounts){
 			Citizens_Votes.forEach(async (elem,i,arr)=>{
 					if(i!=0){ //The first citizen doesn't vote
 						elem[0]=4;
-						await Ballot_Instance.Vote_Clear(referendum_key, elem, {from:Citizens[i]});
+						await Ballot_Instance.Vote_Clear(ballot_key, elem, {from:Citizens[i]});
 					}
 			});
 
 			/*End vote*/
 			await time.increase(Vote_Duration+1);
-			await Ballot_Instance.End_Vote(referendum_key);
+			await Ballot_Instance.End_Vote(ballot_key);
 			res=await Agora_Instance.End_Vote(Loi_instance.address, referendum_key, {from:Citizens[0]});
 
 			Winning_Proposal = (await Agora_Instance.List_Law_Project(referendum_key)).Winning_Proposal;
@@ -1108,13 +1122,13 @@ contract('TEST: Agora.sol', function(accounts){
 			Citizens_Votes.forEach(async (elem,i,arr)=>{
 					if(i!=0){ //The first citizen doesn't vote
 						elem[0]=4;
-						await Ballot_Instance.Vote_Clear(referendum_key, elem, {from:Citizens[i]});
+						await Ballot_Instance.Vote_Clear(ballot_key, elem, {from:Citizens[i]});
 					}
 			});
 
 			/*End vote*/
 			await time.increase(Vote_Duration+1);
-			await Ballot_Instance.End_Vote(referendum_key);
+			await Ballot_Instance.End_Vote(ballot_key);
 			res=await Agora_Instance.End_Vote(Loi_instance.address, referendum_key, {from:Citizens[0]});
 
 			Winning_Proposal = (await Agora_Instance.List_Law_Project(referendum_key)).Winning_Proposal;
@@ -1132,13 +1146,13 @@ contract('TEST: Agora.sol', function(accounts){
 			Citizens_Votes.forEach(async (elem,i,arr)=>{
 					if(i!=0){ //The first citizen doesn't vote
 						elem[0]=4;
-						await Ballot_Instance.Vote_Clear(referendum_key, elem, {from:Citizens[i]});
+						await Ballot_Instance.Vote_Clear(ballot_key, elem, {from:Citizens[i]});
 					}
 			});
 
 			/*End vote*/
 			await time.increase(Vote_Duration+1);
-			await Ballot_Instance.End_Vote(referendum_key);
+			await Ballot_Instance.End_Vote(ballot_key);
 			res=await Agora_Instance.End_Vote(Loi_instance.address, referendum_key, {from:Citizens[0]});
 
 			Winning_Proposal = (await Agora_Instance.List_Law_Project(referendum_key)).Winning_Proposal;
@@ -1156,13 +1170,13 @@ contract('TEST: Agora.sol', function(accounts){
 			Citizens_Votes.forEach(async (elem,i,arr)=>{
 					if(i!=0){ //The first citizen doesn't vote
 						elem[0]=4;
-						await Ballot_Instance.Vote_Clear(referendum_key, elem, {from:Citizens[i]});
+						await Ballot_Instance.Vote_Clear(ballot_key, elem, {from:Citizens[i]});
 					}
 			});
 
 			/*End vote*/
 			await time.increase(Vote_Duration+1);
-			await Ballot_Instance.End_Vote(referendum_key);
+			await Ballot_Instance.End_Vote(ballot_key);
 			res=await Agora_Instance.End_Vote(Loi_instance.address, referendum_key, {from:Citizens[0]});
 
 			await expectRevert(Agora_Instance.Get_Voter_Reward(Loi_instance.address, referendum_key, {from:Citizens[1]}), "Project Not EXECUTED");
@@ -1174,13 +1188,13 @@ contract('TEST: Agora.sol', function(accounts){
 			Citizens_Votes.forEach(async (elem,i,arr)=>{
 					if(i!=0){ //The first citizen doesn't vote
 						elem[0]=4;
-						await Ballot_Instance.Vote_Clear(referendum_key, elem, {from:Citizens[i]});
+						await Ballot_Instance.Vote_Clear(ballot_key, elem, {from:Citizens[i]});
 					}
 			});
 
 			/*End vote*/
 			await time.increase(Vote_Duration+1);
-			await Ballot_Instance.End_Vote(referendum_key);
+			await Ballot_Instance.End_Vote(ballot_key);
 			res=await Agora_Instance.End_Vote(Loi_instance.address, referendum_key, {from:Citizens[0]});
 
 			Winning_Proposal = (await Agora_Instance.List_Law_Project(referendum_key)).Winning_Proposal;
@@ -1199,12 +1213,12 @@ contract('TEST: Agora.sol', function(accounts){
 			var Citizens_Votes = Cleared_Votes_Creation(3, Citizens.length);
 			Citizens_Votes.forEach(async (elem,i,arr)=>{	
 				elem[0]=4;
-				await Ballot_Instance.Vote_Clear(referendum_key, elem, {from:Citizens[i]});
+				await Ballot_Instance.Vote_Clear(ballot_key, elem, {from:Citizens[i]});
 			});
 
 			/*End vote*/
 			await time.increase(Vote_Duration+1);
-			await Ballot_Instance.End_Vote(referendum_key);
+			await Ballot_Instance.End_Vote(ballot_key);
 			res=await Agora_Instance.End_Vote(Loi_instance.address, referendum_key, {from:Citizens[0]});
 
 			Winning_Proposal = (await Agora_Instance.List_Law_Project(referendum_key)).Winning_Proposal;
@@ -1235,12 +1249,12 @@ contract('TEST: Agora.sol', function(accounts){
 			var Citizens_Votes = Cleared_Votes_Creation(3, Citizens.length);
 			Citizens_Votes.forEach(async (elem,i,arr)=>{	
 				elem[0]=4;
-				await Ballot_Instance.Vote_Clear(referendum_key, elem, {from:Citizens[i]});
+				await Ballot_Instance.Vote_Clear(ballot_key, elem, {from:Citizens[i]});
 			});
 
 			/*End vote*/
 			await time.increase(Vote_Duration+1);
-			await Ballot_Instance.End_Vote(referendum_key);
+			await Ballot_Instance.End_Vote(ballot_key);
 			res=await Agora_Instance.End_Vote(Loi_instance.address, referendum_key, {from:Citizens[0]});
 
 			Winning_Proposal = (await Agora_Instance.List_Law_Project(referendum_key)).Winning_Proposal;
@@ -1317,6 +1331,9 @@ contract('TEST: Agora.sol', function(accounts){
 
 			await time.increase(Petition_Duration+1);
 			res=await Agora_Instance.End_Proposition_Stage(Loi_instance.address, referendum_key, {from:Citizens[0]});
+			var Referendum = await Agora_Instance.Referendums(referendum_key);
+			var ballot_key = web3.utils.soliditySha3(referendum_key, Referendum.Start_Vote_Timestamps);
+
 
 			/*Voting*/
 			var Citizens_Votes = Hashed_Votes_Creation(3, Citizens.length);
@@ -1326,26 +1343,26 @@ contract('TEST: Agora.sol', function(accounts){
 					arr[i].Choice[0]=4	
 					arr[i].Salt = web3.utils.randomHex(32);
 					arr[i].Hash = web3.utils.soliditySha3(web3.eth.abi.encodeParameters(["uint[]", "bytes32"],[arr[i].Choice, arr[i].Salt]));
-					await Ballot_Instance.Vote_Hashed(referendum_key, arr[i].Hash, {from:Citizens[i]});
+					await Ballot_Instance.Vote_Hashed(ballot_key, arr[i].Hash, {from:Citizens[i]});
 				}
 			});
 
 			/*End vote, start validation*/
 			await time.increase(Vote_Duration+1);
-			await Ballot_Instance.End_Vote(referendum_key);
+			await Ballot_Instance.End_Vote(ballot_key);
 
 			for (var i = 1; i <Citizens.length; i++) {
 				console.log("i",i,"  Citizens_Votes[i]=",Citizens_Votes[i]);
 				console.log("Citizens_Votes[i].Choice=",Citizens_Votes[i].Choice);
 				console.log("Citizens_Votes[i].Salt=",Citizens_Votes[i].Salt,"\nTypeof",typeof Citizens_Votes[i].Salt);
 				console.log("\n Hash de Choice et Salt:",web3.utils.soliditySha3(web3.eth.abi.encodeParameters(["uint[]", "bytes32"],[Citizens_Votes[i].Choice, Citizens_Votes[i].Salt])));
-				console.log("\n Hash of ballot:",await Ballot_Instance.HasValidated(referendum_key, Citizens[i], {from:Citizens[i]}))
-				await Ballot_Instance.Valdiate_Vote(referendum_key, Citizens_Votes[i].Choice, Citizens_Votes[i].Salt, {from:Citizens[i]});
+				console.log("\n Hash of ballot:",await Ballot_Instance.HasValidated(ballot_key, Citizens[i], {from:Citizens[i]}))
+				await Ballot_Instance.Valdiate_Vote(ballot_key, Citizens_Votes[i].Choice, Citizens_Votes[i].Salt, {from:Citizens[i]});
 			}
 
 			/*End validation*/
 			await time.increase(Validation_Duration+1);
-			await Ballot_Instance.End_Validation_Vote(referendum_key);
+			await Ballot_Instance.End_Validation_Vote(ballot_key);
 			res=await Agora_Instance.End_Vote(Loi_instance.address, referendum_key, {from:Citizens[0]});
 
 			Winning_Proposal = (await Agora_Instance.List_Law_Project(referendum_key)).Winning_Proposal;

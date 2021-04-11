@@ -98,7 +98,7 @@ contract Agora is Institution{
     event New_Referendum(address register_address, bytes32 key);
     event New_Proposal(address register, bytes32 key, uint proposal_index);
     event Proposal_Modified(address register, bytes32 key, uint proposal_index);
-    event Voting_Stage_Started(address register, bytes32 key);
+    event Voting_Stage_Started(address register, bytes32 key, bytes32 ballot_key);
     event Projet_Signed(address register, bytes32 key);
     event Projet_Rejected(address register, bytes32 key);
     event Project_Adopted(address register, bytes32 key);
@@ -223,13 +223,14 @@ contract Agora is Institution{
         require(block.timestamp - Referendums[referendum_key].Creation_Timestamps > Referendums_Registers[register_address].Parameters_Versions[version].Petition_Duration, "PETITIONS stage not finished");
         
         if(Referendums[referendum_key].Petition_Counter >= Percentage(Referendums_Registers[register_address].Parameters_Versions[version].Required_Petition_Rate, Citizens.Get_Citizen_Number()) ){
+            bytes32 ballot_key= keccak256(abi.encodePacked(referendum_key,block.timestamp));
             IVote Vote_Instance = IVote(Referendums_Registers[register_address].Parameters_Versions[version].Ivote_address);
-            Vote_Instance.Create_Ballot(referendum_key, address(Citizens), Citizens.Contains_Function_Selector(), Referendums_Registers[register_address].Parameters_Versions[version].Vote_Duration, Referendums_Registers[register_address].Parameters_Versions[version].Vote_Checking_Duration, List_Law_Project[referendum_key].Proposal_Count, 1);
+            Vote_Instance.Create_Ballot(ballot_key, address(Citizens), Citizens.Contains_Function_Selector(), Referendums_Registers[register_address].Parameters_Versions[version].Vote_Duration, Referendums_Registers[register_address].Parameters_Versions[version].Vote_Checking_Duration, List_Law_Project[referendum_key].Proposal_Count, 1);
             
             Referendums[referendum_key].Start_Vote_Timestamps = block.timestamp;
             Referendums[referendum_key].Referendum_Status = Status.VOTE;
             
-            emit Voting_Stage_Started(register_address, referendum_key);
+            emit Voting_Stage_Started(register_address, referendum_key, ballot_key);
         }else{
             Referendums[referendum_key].Referendum_Status = Status.REJECTED;
             Total_Token_To_Redistribute -= Referendums[referendum_key].Token_Amount_Consummed;
@@ -243,9 +244,10 @@ contract Agora is Institution{
         //require(version!=0,"No existing Referendum Project");
         require(Referendums_Registers[register_address].Last_Version!=0,"Register unknown");
         require(Referendums[referendum_key].Referendum_Status == Status.VOTE, "Not at VOTE status");
+        bytes32 ballot_key = keccak256(abi.encodePacked(referendum_key,  Referendums[referendum_key].Start_Vote_Timestamps));
         
         IVote Vote_Instance = IVote(Referendums_Registers[register_address].Parameters_Versions[version].Ivote_address);
-        uint winning_proposal= Vote_Instance.Get_Winning_Proposition_byId(referendum_key,0);
+        uint winning_proposal= Vote_Instance.Get_Winning_Proposition_byId(ballot_key,0);
         List_Law_Project[referendum_key].Winning_Proposal = winning_proposal;
         
         if(winning_proposal==0){
@@ -262,10 +264,12 @@ contract Agora is Institution{
         require(Referendums[referendum_key].Referendum_Status ==  Status.ADOPTED, "Project Not ADOPTED");
         //if(Execute_Winning_Proposal(law_project, num_function_call_ToExecute, Delegation_Law_Projects[law_project].Institution_Address)){
         if(List_Law_Project[referendum_key].Execute_Winning_Proposal(num_function_call_ToExecute, register_address)){
+            bytes32 ballot_key = keccak256(abi.encodePacked(referendum_key,  Referendums[referendum_key].Start_Vote_Timestamps));
+            
             Referendums[referendum_key].Referendum_Status = Status.EXECUTED;
             uint Total_Reward = Referendums[referendum_key].Token_Amount_Consummed;
             IVote Vote_Instance = IVote(Referendums_Registers[register_address].Parameters_Versions[Referendums[referendum_key].Version].Ivote_address);
-            uint num_voter = Vote_Instance.Get_Voter_Number(referendum_key);
+            uint num_voter = Vote_Instance.Get_Voter_Number(ballot_key);
             uint bonnus_amount = Democoin.balanceOf(address(this)) - Total_Token_To_Redistribute; //If there is an amount of token on Agora account that doesn't come from proposition submission, it is redistributed to voters
             if(bonnus_amount>0){
                  Total_Token_To_Redistribute +=bonnus_amount;
@@ -285,19 +289,18 @@ contract Agora is Institution{
         uint version = Referendums[referendum_key].Version;
         uint voter_reward=Referendums[referendum_key].Voter_Reward;
         IVote Vote_Instance = IVote(Referendums_Registers[register_address].Parameters_Versions[version].Ivote_address);
+        bytes32 ballot_key = keccak256(abi.encodePacked(referendum_key,  Referendums[referendum_key].Start_Vote_Timestamps));
         
         if(Referendums_Registers[register_address].Parameters_Versions[version].Vote_Checking_Duration>0){
-            (bool HasValidated,)= Vote_Instance.HasValidated(referendum_key, msg.sender);
+            (bool HasValidated,)= Vote_Instance.HasValidated(ballot_key, msg.sender);
             require(HasValidated, "Vote hasn't been validated");
         }else{
-            require(Vote_Instance.HasVoted(referendum_key, msg.sender), "You haven't voted");
+            require(Vote_Instance.HasVoted(ballot_key, msg.sender), "You haven't voted");
         }
         Referendums[referendum_key].Voter_Rewarded[msg.sender]=true;
         Total_Token_To_Redistribute-= voter_reward;
         Democoin.transfer(msg.sender, voter_reward);
     }
-    
-    
     
     
     

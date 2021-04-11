@@ -1172,7 +1172,8 @@ contract('TEST: Delegation.sol', function(accounts){
 				res = await Delegation_Instance.Start_Vote(law_key, {from:Members[0]});
 
 				var delegation_law=await Delegation_Instance.Delegation_Law_Projects(law_key);
-				var ballot = await Ballot_Instance.Ballots(law_key);
+				var ballot_key = web3.utils.soliditySha3(law_key, delegation_law.Start_Vote_Timestamps);
+				var ballot = await Ballot_Instance.Ballots(ballot_key);
 				var law_projet = await Delegation_Instance.List_Law_Project(law_key);
 
 				expect(delegation_law.Law_Project_Status).to.be.bignumber.equal(new BN(1));
@@ -1185,7 +1186,7 @@ contract('TEST: Delegation.sol', function(accounts){
 				expect(ballot.Propositions_Number).to.be.bignumber.equal(new BN(law_projet.Proposal_Count));
 				expect(ballot.Max_Winning_Propositions_Number).to.be.bignumber.equal(new BN(1));
 
-				await expectEvent(res, "Voting_Stage_Started", {key:law_key}, "Voting_Stage_Started event incorrect");
+				await expectEvent(res, "Voting_Stage_Started", {law_project: law_key, key:ballot_key}, "Voting_Stage_Started event incorrect");
 			});
 
 
@@ -1193,14 +1194,17 @@ contract('TEST: Delegation.sol', function(accounts){
 				await time.increase(Uint256_arg[3]+1);
 				await Delegation_Instance.Start_Vote(law_key, {from:Members[0]});
 
+				var delegation_law=await Delegation_Instance.Delegation_Law_Projects(law_key);
+				var ballot_key = web3.utils.soliditySha3(law_key, delegation_law.Start_Vote_Timestamps);
+
 				var Citizens_Votes = Cleared_Votes_Creation(3, Members.length);
 
 				Citizens_Votes.forEach(async (elem,i,arr)=>{
-					await Ballot_Instance.Vote_Clear(law_key, elem, {from:Members[i]});
+					await Ballot_Instance.Vote_Clear(ballot_key, elem, {from:Members[i]});
 				});
 
 				await time.increase(Uint256_arg[4]+1);
-				await Ballot_Instance.End_Vote(law_key);
+				await Ballot_Instance.End_Vote(ballot_key);
 				
 				await expectRevert(Delegation_Instance.Achiev_Vote(law_key, {from:External_Account}), "Delegation Only");
 
@@ -1208,11 +1212,14 @@ contract('TEST: Delegation.sol', function(accounts){
 
 			it("Delegation member account attempts to achieve voting stage before the end", async function(){
 				await time.increase(Uint256_arg[3]+1);
-				await Delegation_Instance.Start_Vote(law_key, {from:Members[0]})
 				
+				await Delegation_Instance.Start_Vote(law_key, {from:Members[0]})
+				var delegation_law=await Delegation_Instance.Delegation_Law_Projects(law_key);
+				var ballot_key = web3.utils.soliditySha3(law_key, delegation_law.Start_Vote_Timestamps);
+
 				var Citizens_Votes = Cleared_Votes_Creation(3, Members.length);
 				Citizens_Votes.forEach(async (elem,i,arr)=>{
-					await Ballot_Instance.Vote_Clear(law_key, elem, {from:Members[i]});
+					await Ballot_Instance.Vote_Clear(ballot_key, elem, {from:Members[i]});
 				});
 
 				await expectRevert(Delegation_Instance.Achiev_Vote(law_key, {from:Members[0]}), "Id exceed Winning length");
@@ -1221,22 +1228,24 @@ contract('TEST: Delegation.sol', function(accounts){
 
 			it("Delegation member account achieves voting stage. Default proposition isn't chosen.", async function(){
 				await time.increase(Uint256_arg[3]+1);
-				await Delegation_Instance.Start_Vote(law_key, {from:Members[0]})
+				await Delegation_Instance.Start_Vote(law_key, {from:Members[0]});
+				var delegation_law=await Delegation_Instance.Delegation_Law_Projects(law_key);
+				var ballot_key = web3.utils.soliditySha3(law_key, delegation_law.Start_Vote_Timestamps);
 				
 				var Citizens_Votes = Cleared_Votes_Creation(3, Members.length);
 				Citizens_Votes.forEach(async (elem,i,arr)=>{
 					elem[0]=4
-					await Ballot_Instance.Vote_Clear(law_key, elem, {from:Members[i]});
+					await Ballot_Instance.Vote_Clear(ballot_key, elem, {from:Members[i]});
 				});
 
 				await time.increase(Uint256_arg[4]+1);
-				await Ballot_Instance.End_Vote(law_key);
+				await Ballot_Instance.End_Vote(ballot_key);
 				
 				res=await Delegation_Instance.Achiev_Vote(law_key, {from:Members[0]});
 
 				var law_projet = await Delegation_Instance.List_Law_Project(law_key);
-				var delegation_law = await Delegation_Instance.Delegation_Law_Projects(law_key);
-				var Winning_proposals = await Ballot_Instance.Get_Winning_Proposition_byId(law_key,0);
+				delegation_law = await Delegation_Instance.Delegation_Law_Projects(law_key);
+				var Winning_proposals = await Ballot_Instance.Get_Winning_Proposition_byId(ballot_key,0);
 
 				expect(delegation_law.Law_Project_Status).to.be.bignumber.equal(new BN(2));
 				expect(law_projet.Winning_Proposal).to.be.bignumber.equal(new BN(Winning_proposals));
@@ -1245,21 +1254,23 @@ contract('TEST: Delegation.sol', function(accounts){
 
 			it("Delegation member account achieves voting stage. Default proposition is chosen.", async function(){
 				await time.increase(Uint256_arg[3]+1);
-				await Delegation_Instance.Start_Vote(law_key, {from:Members[0]})
+				await Delegation_Instance.Start_Vote(law_key, {from:Members[0]});
+				var delegation_law=await Delegation_Instance.Delegation_Law_Projects(law_key);
+				var ballot_key = web3.utils.soliditySha3(law_key, delegation_law.Start_Vote_Timestamps);
 				
 				var Citizens_Votes = Cleared_Votes_Creation(3, Members.length);
 				Citizens_Votes.forEach(async (elem,i,arr)=>{
 					elem[0]=0
-					await Ballot_Instance.Vote_Clear(law_key, elem, {from:Members[i]});
+					await Ballot_Instance.Vote_Clear(ballot_key, elem, {from:Members[i]});
 				});
 
 				await time.increase(Uint256_arg[4]+1);
-				await Ballot_Instance.End_Vote(law_key);
+				await Ballot_Instance.End_Vote(ballot_key);
 				
 				res=await Delegation_Instance.Achiev_Vote(law_key, {from:Members[0]});
 
 				var law_projet = await Delegation_Instance.List_Law_Project(law_key);
-				var delegation_law = await Delegation_Instance.Delegation_Law_Projects(law_key);
+				 delegation_law = await Delegation_Instance.Delegation_Law_Projects(law_key);
 
 				expect(delegation_law.Law_Project_Status).to.be.bignumber.equal(new BN(5));
 				expect(law_projet.Winning_Proposal).to.be.bignumber.equal(new BN(0));
@@ -1325,16 +1336,18 @@ contract('TEST: Delegation.sol', function(accounts){
 				Proposal3 = await Delegation_Instance.Get_Proposal(law_key, 3);
 				
 				await time.increase(Uint256_arg[3]+1);
-				await Delegation_Instance.Start_Vote(law_key, {from:Members[0]})
+				await Delegation_Instance.Start_Vote(law_key, {from:Members[0]});
+				var delegation_law=await Delegation_Instance.Delegation_Law_Projects(law_key);
+				var ballot_key = web3.utils.soliditySha3(law_key, delegation_law.Start_Vote_Timestamps);
 				
 				var Citizens_Votes = Cleared_Votes_Creation(3, Members.length);
 				Citizens_Votes.forEach(async (elem,i,arr)=>{
 					elem[0]=4;
-					await Ballot_Instance.Vote_Clear(law_key, elem, {from:Members[i]});
+					await Ballot_Instance.Vote_Clear(ballot_key, elem, {from:Members[i]});
 				});
 
 				await time.increase(Uint256_arg[4]+1);
-				await Ballot_Instance.End_Vote(law_key);
+				await Ballot_Instance.End_Vote(ballot_key);
 				
 				await Delegation_Instance.Achiev_Vote(law_key, {from:Members[0]});
 
@@ -1469,16 +1482,18 @@ contract('TEST: Delegation.sol', function(accounts){
 				Proposal3 = await Delegation_Instance.Get_Proposal(law_key, 3);
 				
 				await time.increase(Uint256_arg[3]+1);
-				await Delegation_Instance.Start_Vote(law_key, {from:Members[0]})
+				await Delegation_Instance.Start_Vote(law_key, {from:Members[0]});
+				var delegation_law=await Delegation_Instance.Delegation_Law_Projects(law_key);
+				var ballot_key = web3.utils.soliditySha3(law_key, delegation_law.Start_Vote_Timestamps);
 				
 				var Citizens_Votes = Cleared_Votes_Creation(3, Members.length);
 				Citizens_Votes.forEach(async (elem,i,arr)=>{
 					elem[0]=4;
-					await Ballot_Instance.Vote_Clear(law_key, elem, {from:Members[i]});
+					await Ballot_Instance.Vote_Clear(ballot_key, elem, {from:Members[i]});
 				});
 
 				await time.increase(Uint256_arg[4]+1);
-				await Ballot_Instance.End_Vote(law_key);
+				await Ballot_Instance.End_Vote(ballot_key);
 				
 				await Delegation_Instance.Achiev_Vote(law_key, {from:Members[0]});
 

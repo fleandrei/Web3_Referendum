@@ -1,5 +1,6 @@
 //Test: Delegation.sol 
-const { BN, ether, expectEvent, expectRevert, constants, time } = require('@openzeppelin/test-helpers'); // BN: Big Number
+const { BN, ether, expectEvent, expectRevert, constants, time} = require('@openzeppelin/test-helpers'); // BN: Big Number
+const sha3 = require('js-sha3').keccak_256
 const { expect } = require('chai');
 const DELEGATION_UTILS = artifacts.require('Delegation_Uils');
 const INITIATIVE_LEGISLATIV_LIB = artifacts.require('Initiative_Legislative_Lib');
@@ -87,7 +88,7 @@ contract('TEST: Constitution.sol', function(accounts){
 	const Description_Size_max= 50;
 	const functionCall_max =10;
 	const newItem_max = 5;
-
+	const Delegation_Mint_max =10;
 
 	/*Delegation Variables*/
 	
@@ -95,7 +96,7 @@ contract('TEST: Constitution.sol', function(accounts){
 	let Immunity_Duration;
 	let Next_Mandate_Max_Members;
 	let New_Election_Petition_Rate;
-
+	let Uint256_Governance_arg = Array.from({length:5});
 
 	let Member_Max_Token_Usage;
 	let Proposition_Duration;
@@ -103,7 +104,7 @@ contract('TEST: Constitution.sol', function(accounts){
 	let Law_Censor_Period_Duration;
 	let Censor_Proposition_Petition_Rate;
 	let Censor_Penalty_Rate;
-	let Uint256_arg = Array.from({length:6});
+	let Uint256_Legislatif_arg = Array.from({length:6});
 
 
 	/*Agora variables*/
@@ -167,7 +168,6 @@ contract('TEST: Constitution.sol', function(accounts){
 			await AGORA.link("Initiative_Legislative_Lib", Initiative_Legislative_Lib_Library.address);
 
 			DemoCoin_Instance = await DEMOCOIN.new(Token_Name, Token_Symbol,Citizens, new Array(Citizens.length).fill(Citizen_Initial_Ammounts), {from: External_Account});
-			//console.log("DemoCoin_Address",DemoCoin_Instance.address);
 			Citizen_Register_Instance = await CITIZEN_REGISTER.new(Citizen_Register_Name, Citizens, DemoCoin_Instance.address, New_Citizen_Mint_Amount, {from: External_Account});	
 			await DemoCoin_Instance.Add_Minter(Citizen_Register_Instance.address, {from:External_Account});
 			Agora_Instance = await AGORA.new(Agora_Name, DemoCoin_Instance.address, Citizen_Register_Instance.address, {from: External_Account});
@@ -232,7 +232,6 @@ contract('TEST: Constitution.sol', function(accounts){
 			var Minter_List = await DemoCoin_Instance.Get_Mint_Authorities();
 			Minter_List=Minter_List.map(Bytes32ToAddress);
 
-			console.log("Minter_List",Minter_List);
 			expect(Minter_List.includes(External_Account.toLowerCase())).to.equal(true);
 			expect(Minter_List.includes(Transition_Government_Account.toLowerCase())).to.equal(true);
 			expect(Minter_List.includes(Constitution_Instance.address.toLowerCase())).to.equal(true);
@@ -317,56 +316,901 @@ contract('TEST: Constitution.sol', function(accounts){
 		});
 	});
 
+
+
 	describe("Register Handling", ()=>{
 
-		beforeEach(async function () {
-			Ballot_Instance = await MAJORITY_JUDGMENT.new();
-			Petition_Duration = chance.natural({min:petition_duration_min, max:petition_duration_max});
-			Vote_Duration= chance.natural({min:vote_duration_min, max:vote_duration_max});
-			Validation_Duration = chance.natural({min:validation_duration_min, max:validation_duration_max});
+		context("Register Creation",()=>{
 
-			Law_Initialisation_Price= Math.floor(Citizen_Initial_Ammounts*Law_Initialisation_Price_Ratio/100);
-			FunctionCall_Price = Math.floor(Citizen_Initial_Ammounts*FunctionCall_Price_Ratio/100);
+			beforeEach(async function () {
+				Ballot_Instance = await MAJORITY_JUDGMENT.new();
+				Petition_Duration = chance.natural({min:petition_duration_min, max:petition_duration_max});
+				Vote_Duration= chance.natural({min:vote_duration_min, max:vote_duration_max});
+				Validation_Duration = chance.natural({min:validation_duration_min, max:validation_duration_max});
 
-			Required_Petition_Rate = chance.natural({min:Math.floor(10000*2/Citizens.length), max:petition_rate_max});
-		});
+				Law_Initialisation_Price= Math.floor(Citizen_Initial_Ammounts*Law_Initialisation_Price_Ratio/100);
+				FunctionCall_Price = Math.floor(Citizen_Initial_Ammounts*FunctionCall_Price_Ratio/100);
+
+				Required_Petition_Rate = chance.natural({min:Math.floor(10000*2/Citizens.length), max:petition_rate_max});
+			});
 
 
-		it("External_Account attempts to create a new Loi register", async function(){ 
-			await expectRevert(Constitution_Instance.Create_Register("Loi", 3, Petition_Duration, Vote_Duration, Validation_Duration,
-			 Law_Initialisation_Price, FunctionCall_Price, Required_Petition_Rate, Ballot_Instance.address, {from:External_Account}), "Authorities Only");
-		});
+			it("External_Account attempts to create a new Loi register", async function(){ 
+				await expectRevert(Constitution_Instance.Create_Register("Loi", 3, Petition_Duration, Vote_Duration, Validation_Duration,
+				 Law_Initialisation_Price, FunctionCall_Price, Required_Petition_Rate, Ballot_Instance.address, {from:External_Account}), "Authorities Only");
+			});
 
-		it("Authority account attempts to create a new register but the register type is not correct (must be 0, 3 or 4)", async function(){ 
-			await expectRevert(Constitution_Instance.Create_Register("Loi", 2, Petition_Duration, Vote_Duration, Validation_Duration,
-			 Law_Initialisation_Price, FunctionCall_Price, Required_Petition_Rate, Ballot_Instance.address, {from:Transition_Government_Account}), "Not Register Type");
-		});
+			it("Authority account attempts to create a new register but the register type is not correct (must be 0, 3 or 4)", async function(){ 
+				await expectRevert(Constitution_Instance.Create_Register("Loi", 2, Petition_Duration, Vote_Duration, Validation_Duration,
+				 Law_Initialisation_Price, FunctionCall_Price, Required_Petition_Rate, Ballot_Instance.address, {from:Transition_Government_Account}), "Not Register Type");
+			});
 
-		it("Authority account creates a new Loi register", async function(){ 
-			res= await Constitution_Instance.Create_Register("Loi", 3, Petition_Duration, Vote_Duration, Validation_Duration,
-			 Law_Initialisation_Price, FunctionCall_Price, Required_Petition_Rate, Ballot_Instance.address, {from:Transition_Government_Account});
+			it("Authority account creates a new Loi register", async function(){ 
+				res= await Constitution_Instance.Create_Register("Loi", 3, Petition_Duration, Vote_Duration, Validation_Duration,
+				 Law_Initialisation_Price, FunctionCall_Price, Required_Petition_Rate, Ballot_Instance.address, {from:Transition_Government_Account});
+				
+				var Register_List = (await Constitution_Instance.Get_Register_List()).map(Bytes32ToAddress);
+				var loi_address=Register_List[0];
+				var Referendum_Register= await Agora_Instance.Get_Referendum_Register(loi_address);
+				var Parameters= await Agora_Instance.Get_Referendum_Register_Parameters(loi_address,1);
+				
+				expect(Referendum_Register.last_version).to.be.bignumber.equal(new BN(1));
+				expect(Referendum_Register.institution_type).to.be.bignumber.equal(new BN(3));
+
+				expect(Parameters.Petition_Duration).to.be.bignumber.equal(new BN(Petition_Duration));
+				expect(Parameters.Vote_Duration).to.be.bignumber.equal(new BN(Vote_Duration));
+				expect(Parameters.Vote_Checking_Duration).to.be.bignumber.equal(new BN(Validation_Duration));
+				expect(Parameters.Law_Initialisation_Price).to.be.bignumber.equal(new BN(Law_Initialisation_Price));
+				expect(Parameters.FunctionCall_Price).to.be.bignumber.equal(new BN(FunctionCall_Price));
+				expect(Parameters.Required_Petition_Rate).to.be.bignumber.equal(new BN(Required_Petition_Rate));
+				expect(Parameters.Ivote_address).to.equal(Ballot_Instance.address);
+
+				//await expectEvent(res, "Register_Created", {register:loi_address}, "Register_Created event incorrect");
+			});
+
+			it("Authority account creates a new API register", async function(){ 
+				res= await Constitution_Instance.Create_Register("API", 4, Petition_Duration, Vote_Duration, Validation_Duration,
+				 Law_Initialisation_Price, FunctionCall_Price, Required_Petition_Rate, Ballot_Instance.address, {from:Transition_Government_Account});
+				
+				var Register_List = (await Constitution_Instance.Get_Register_List()).map(Bytes32ToAddress);
+				var api_address=Register_List[0];
+				var Referendum_Register= await Agora_Instance.Get_Referendum_Register(api_address);
+				var Parameters= await Agora_Instance.Get_Referendum_Register_Parameters(api_address,1);
 			
-			var Register_List = (await Constitution_Instance.Get_Register_List()).map(Bytes32ToAddress);
-			var loi_address=Register_List[0];
-			console.log("Register_List:",Register_List);
-			var Referendum_Register= await Agora_Instance.Get_Referendum_Register(loi_address);
-			var Parameters= await Agora_Instance.Get_Referendum_Register_Parameters(loi_address,1);
-			console.log(Referendum_Register);
-			console.log(Parameters);
 
-			expect(Referendum_Register.last_version).to.be.bignumber.equal(new BN(1));
-			expect(Referendum_Register.institution_type).to.be.bignumber.equal(new BN(3));
+				expect(Referendum_Register.last_version).to.be.bignumber.equal(new BN(1));
+				expect(Referendum_Register.institution_type).to.be.bignumber.equal(new BN(4));
 
-			expect(Parameters.Petition_Duration).to.be.bignumber.equal(new BN(Petition_Duration));
-			expect(Parameters.Vote_Duration).to.be.bignumber.equal(new BN(Vote_Duration));
-			expect(Parameters.Vote_Checking_Duration).to.be.bignumber.equal(new BN(Validation_Duration));
-			expect(Parameters.Law_Initialisation_Price).to.be.bignumber.equal(new BN(Law_Initialisation_Price));
-			expect(Parameters.FunctionCall_Price).to.be.bignumber.equal(new BN(FunctionCall_Price));
-			expect(Parameters.Required_Petition_Rate).to.be.bignumber.equal(new BN(Required_Petition_Rate));
-			expect(Parameters.Ivote_address).to.equal(Ballot_Instance.address);
+				expect(Parameters.Petition_Duration).to.be.bignumber.equal(new BN(Petition_Duration));
+				expect(Parameters.Vote_Duration).to.be.bignumber.equal(new BN(Vote_Duration));
+				expect(Parameters.Vote_Checking_Duration).to.be.bignumber.equal(new BN(Validation_Duration));
+				expect(Parameters.Law_Initialisation_Price).to.be.bignumber.equal(new BN(Law_Initialisation_Price));
+				expect(Parameters.FunctionCall_Price).to.be.bignumber.equal(new BN(FunctionCall_Price));
+				expect(Parameters.Required_Petition_Rate).to.be.bignumber.equal(new BN(Required_Petition_Rate));
+				expect(Parameters.Ivote_address).to.equal(Ballot_Instance.address);
 
-			await expectEvent(res, "Register_Created", {register:loi_address}, "Register_Created event incorrect");
+				//await expectEvent(res, "Register_Created", {register:api_address}, "Register_Created event incorrect");
+			});
+
+			it("Authority account creates the Constitution register", async function(){ 
+				res= await Constitution_Instance.Create_Register("Constitution", 0, Petition_Duration, Vote_Duration, Validation_Duration,
+				 Law_Initialisation_Price, FunctionCall_Price, Required_Petition_Rate, Ballot_Instance.address, {from:Transition_Government_Account});
+				
+				var Register_List = (await Constitution_Instance.Get_Register_List()).map(Bytes32ToAddress);
+				var constitution_address=Register_List[0];
+				var Referendum_Register= await Agora_Instance.Get_Referendum_Register(constitution_address);
+				var Parameters= await Agora_Instance.Get_Referendum_Register_Parameters(constitution_address,1);
+				
+
+				var expected_constitution_address= Constitution_Instance.address
+				expect(constitution_address).to.equal(expected_constitution_address.toLowerCase());
+				expect(Referendum_Register.last_version).to.be.bignumber.equal(new BN(1));
+				expect(Referendum_Register.institution_type).to.be.bignumber.equal(new BN(0));
+
+				expect(Parameters.Petition_Duration).to.be.bignumber.equal(new BN(Petition_Duration));
+				expect(Parameters.Vote_Duration).to.be.bignumber.equal(new BN(Vote_Duration));
+				expect(Parameters.Vote_Checking_Duration).to.be.bignumber.equal(new BN(Validation_Duration));
+				expect(Parameters.Law_Initialisation_Price).to.be.bignumber.equal(new BN(Law_Initialisation_Price));
+				expect(Parameters.FunctionCall_Price).to.be.bignumber.equal(new BN(FunctionCall_Price));
+				expect(Parameters.Required_Petition_Rate).to.be.bignumber.equal(new BN(Required_Petition_Rate));
+				expect(Parameters.Ivote_address).to.equal(Ballot_Instance.address);
+
+				await expectEvent(res, "Register_Created", {register:Constitution_Instance.address}, "Register_Created event incorrect");
+			});
+
+			it("Authority account attempts to creates the Constitution register twice", async function(){ 
+				res= await Constitution_Instance.Create_Register("Constitution", 0, Petition_Duration, Vote_Duration, Validation_Duration,
+				 Law_Initialisation_Price, FunctionCall_Price, Required_Petition_Rate, Ballot_Instance.address, {from:Transition_Government_Account});
+
+				await expectRevert(Constitution_Instance.Create_Register("Constitution", 0, Petition_Duration, Vote_Duration, Validation_Duration,
+				 Law_Initialisation_Price, FunctionCall_Price, Required_Petition_Rate, Ballot_Instance.address, {from:Transition_Government_Account}), "Register Already Existing");
+
+			});
+
+		});
+
+		context("Register parameters setting",()=>{
+			let register_address;
+
+			beforeEach(async function () {
+				Ballot_Instance = await MAJORITY_JUDGMENT.new();
+				Petition_Duration = chance.natural({min:petition_duration_min, max:petition_duration_max});
+				Vote_Duration= chance.natural({min:vote_duration_min, max:vote_duration_max});
+				Validation_Duration = chance.natural({min:validation_duration_min, max:validation_duration_max});
+
+				Law_Initialisation_Price= Math.floor(Citizen_Initial_Ammounts*Law_Initialisation_Price_Ratio/100);
+				FunctionCall_Price = Math.floor(Citizen_Initial_Ammounts*FunctionCall_Price_Ratio/100);
+
+				Required_Petition_Rate = chance.natural({min:Math.floor(10000*2/Citizens.length), max:petition_rate_max});
+
+				await Constitution_Instance.Create_Register("Constitution", 0, Petition_Duration, Vote_Duration, Validation_Duration,
+				 Law_Initialisation_Price, FunctionCall_Price, Required_Petition_Rate, Ballot_Instance.address, {from:Transition_Government_Account});
+
+				var Register_List = (await Constitution_Instance.Get_Register_List()).map(Bytes32ToAddress);
+				register_address = Register_List[0];
+			});
+
+			it("External_Account attempts to edit parameters of Constitution register", async function(){ 
+				await expectRevert(Constitution_Instance.Set_Register_Param(register_address, Petition_Duration, Vote_Duration, Validation_Duration,
+				 Law_Initialisation_Price, FunctionCall_Price, Required_Petition_Rate, Ballot_Instance.address, {from:External_Account}), "Authorities Only");
+			});
+
+			it("Authority account attempts to edit parameters of not existing register", async function(){ 
+				await expectRevert(Constitution_Instance.Set_Register_Param(web3.utils.randomHex(20), Petition_Duration, Vote_Duration, Validation_Duration,
+				 Law_Initialisation_Price, FunctionCall_Price, Required_Petition_Rate, Ballot_Instance.address, {from:Transition_Government_Account}), "Register doesn't exist");
+			});
+
+			it("Authority account attempts to edit parameters but Petition_Duration is null", async function(){ 
+				await expectRevert(Constitution_Instance.Set_Register_Param(register_address, 0, Vote_Duration, Validation_Duration,
+				 Law_Initialisation_Price, FunctionCall_Price, Required_Petition_Rate, Ballot_Instance.address, {from:Transition_Government_Account}), "Bad arguments value");
+			});
+
+			it("Authority account attempts to edit parameters but Vote_Duration is null", async function(){ 
+				await expectRevert(Constitution_Instance.Set_Register_Param(register_address, Petition_Duration, 0, Validation_Duration,
+				 Law_Initialisation_Price, FunctionCall_Price, Required_Petition_Rate, Ballot_Instance.address, {from:Transition_Government_Account}), "Bad arguments value");
+			});
+
+			it("Authority account attempts to edit parameters but Required_Petition_Rate is null", async function(){ 
+				await expectRevert(Constitution_Instance.Set_Register_Param(register_address, Petition_Duration, Vote_Duration, Validation_Duration,
+				 Law_Initialisation_Price, FunctionCall_Price, 0, Ballot_Instance.address, {from:Transition_Government_Account}), "Bad arguments value");
+			});
+
+			it("Authority account attempts to edit parameters but Required_Petition_Rate is greater than 10000 (ratio greater than 100%) ", async function(){ 
+				await expectRevert(Constitution_Instance.Set_Register_Param(register_address, Petition_Duration, Vote_Duration, Validation_Duration,
+				 Law_Initialisation_Price, FunctionCall_Price, 10001, Ballot_Instance.address, {from:Transition_Government_Account}), "Bad arguments value");
+			});
+
+			it("Authority account attempts to edit parameters but Ivote_address is address(0)", async function(){ 
+				await expectRevert(Constitution_Instance.Set_Register_Param(register_address, Petition_Duration, Vote_Duration, Validation_Duration,
+				 Law_Initialisation_Price, FunctionCall_Price, Required_Petition_Rate, constants.ZERO_ADDRESS, {from:Transition_Government_Account}), "Bad arguments value");
+			});
+
+			it("Authority account edit parameters of Constitution register ", async function(){ 
+
+				var Referendum_Register= await Agora_Instance.Get_Referendum_Register(Constitution_Instance.address);
+				var Parameters= await Agora_Instance.Get_Referendum_Register_Parameters(Constitution_Instance.address,2);
+			
+
+				Petition_Duration = chance.natural({min:petition_duration_min, max:petition_duration_max});
+				Vote_Duration= chance.natural({min:vote_duration_min, max:vote_duration_max});
+				Validation_Duration = chance.natural({min:validation_duration_min, max:validation_duration_max});
+
+				Law_Initialisation_Price= Math.floor(Citizen_Initial_Ammounts*Law_Initialisation_Price_Ratio/100);
+				FunctionCall_Price = Math.floor(Citizen_Initial_Ammounts*FunctionCall_Price_Ratio/100);
+
+				Required_Petition_Rate = chance.natural({min:Math.floor(10000*2/Citizens.length), max:petition_rate_max});
+
+				res= await Constitution_Instance.Set_Register_Param(register_address, Petition_Duration, Vote_Duration, Validation_Duration,
+				 Law_Initialisation_Price, FunctionCall_Price, Required_Petition_Rate, Ballot_Instance.address, {from:Transition_Government_Account});
+
+				var Referendum_Register= await Agora_Instance.Get_Referendum_Register(Constitution_Instance.address);
+				var Parameters= await Agora_Instance.Get_Referendum_Register_Parameters(Constitution_Instance.address,2);
+				
+
+				expect(Referendum_Register.last_version).to.be.bignumber.equal(new BN(2));
+
+				expect(Parameters.Petition_Duration).to.be.bignumber.equal(new BN(Petition_Duration));
+				expect(Parameters.Vote_Duration).to.be.bignumber.equal(new BN(Vote_Duration));
+				expect(Parameters.Vote_Checking_Duration).to.be.bignumber.equal(new BN(Validation_Duration));
+				expect(Parameters.Law_Initialisation_Price).to.be.bignumber.equal(new BN(Law_Initialisation_Price));
+				expect(Parameters.FunctionCall_Price).to.be.bignumber.equal(new BN(FunctionCall_Price));
+				expect(Parameters.Required_Petition_Rate).to.be.bignumber.equal(new BN(Required_Petition_Rate));
+				expect(Parameters.Ivote_address).to.equal(Ballot_Instance.address);
+				
+				var past_event = await Agora_Instance.getPastEvents( 'Referendum_Parameters_Updated', { fromBlock: 0, toBlock: 'latest' } );
+
+				var event= '0x' + sha3("Referendum_Parameters_Updated()");
+				var Referendum_Parameters_Updated_event = past_event.some(l => { 
+					
+					return (l.transactionHash == res.tx && l.returnValues.register_address.toLowerCase() == register_address && l.returnValues.new_version==2);
+				});
+				expect(Referendum_Parameters_Updated_event).to.equal(true);
+			});
+
 		});
 
 	});
+
+
+
+	describe("Delegation Handling", ()=>{
+
+		beforeEach(async function () {
+				Ballot_Instance = await MAJORITY_JUDGMENT.new();
+
+				/*Legislatig Process*/
+				Uint256_Legislatif_arg[0] = Math.floor(Initital_Token_Ammount/Members.length); //Member_Max_Token_Usage
+				Uint256_Legislatif_arg[1] = Math.floor(Uint256_Legislatif_arg[0]*Law_Initialisation_Price_Ratio/100); //Law_Initialisation_Price
+				Uint256_Legislatif_arg[2] = Math.floor(Uint256_Legislatif_arg[0]*FunctionCall_Price_Ratio/100); //FunctionCall_Price
+				Uint256_Legislatif_arg[3] = chance.natural({min:Proposition_Duration_min, max:Proposition_Duration_max}); //Proposition_Duration
+				Uint256_Legislatif_arg[4] = chance.natural({min:vote_duration_min, max:vote_duration_max}); //Vote_Duration
+				Uint256_Legislatif_arg[5] = chance.natural({min:Law_Censor_Period_Duration_min, max:Law_Censor_Period_Duration_min}); //Law_Censor_Period_Duration
+				Censor_Proposition_Petition_Rate= chance.natural({min:1, max:Censor_Proposition_Petition_Rate_max});
+				Censor_Penalty_Rate = chance.natural({min:1, max:Censor_Penalty_Rate_max});
+
+				/*Internal Governance*/
+				Uint256_Governance_arg[0] = chance.natural({min:vote_duration_min, max:vote_duration_max});
+				Uint256_Governance_arg[1] = chance.natural({min:validation_duration_min, max:validation_duration_max});
+				Uint256_Governance_arg[2] = chance.natural({min:mandate_duration_min, max:mandate_duration_max});
+				Uint256_Governance_arg[3] = Math.floor(Immunity_duration_rate*Uint256_Governance_arg[2]/100);
+				Uint256_Governance_arg[4] = chance.natural({min:0, max:Delegation_Mint_max});
+				/*Vote_Duration = chance.natural({min:vote_duration_min, max:vote_duration_max});
+				Validation_Duration = chance.natural({min:validation_duration_min, max:validation_duration_max});
+				Mandate_Duration = chance.natural({min:mandate_duration_min, max:mandate_duration_max});
+				Immunity_Duration = Math.floor(Immunity_duration_rate*Mandate_Duration/100);*/
+				Next_Mandate_Max_Members = Members.length;
+				New_Election_Petition_Rate = chance.natural({min:10000/Citizens.length, max:5000}); //We assure that the ratio will correspond at least at 1 citizen 	
+			});
+
+
+		context("Delegation Creation",()=>{
+
+			//Legislatif process bad parameters
+			it("External_Account attempts to create new Delegation", async function(){ 
+
+				await expectRevert(Constitution_Instance.Create_Delegation("Delegation", constants.ZERO_ADDRESS, Uint256_Legislatif_arg,
+				 Uint256_Governance_arg,  Next_Mandate_Max_Members, Censor_Proposition_Petition_Rate, Censor_Penalty_Rate,
+				 New_Election_Petition_Rate, Members, Ballot_Instance.address, Ballot_Instance.address, {from:External_Account}), "Authorities Only");
+			});
+
+			it("Authority account attempts to create new Delegation but Proposition_Duration is null", async function(){ 
+				Uint256_Legislatif_arg[3]=0;
+				await expectRevert(Constitution_Instance.Create_Delegation("Delegation", constants.ZERO_ADDRESS, Uint256_Legislatif_arg,
+				 Uint256_Governance_arg,  Next_Mandate_Max_Members, Censor_Proposition_Petition_Rate, Censor_Penalty_Rate,
+				 New_Election_Petition_Rate, Members, Ballot_Instance.address, Ballot_Instance.address, {from:Transition_Government_Account}), "Legislatif: Bad Argument Value");
+			});
+
+			it("Authority account attempts to create new Delegation but législatif Vote_Duration is null", async function(){ 
+				Uint256_Legislatif_arg[4]=0;
+				await expectRevert(Constitution_Instance.Create_Delegation("Delegation", constants.ZERO_ADDRESS, Uint256_Legislatif_arg,
+				 Uint256_Governance_arg,  Next_Mandate_Max_Members, Censor_Proposition_Petition_Rate, Censor_Penalty_Rate,
+				 New_Election_Petition_Rate, Members, Ballot_Instance.address, Ballot_Instance.address, {from:Transition_Government_Account}), "Legislatif: Bad Argument Value");
+			});
+
+			it("Authority account attempts to create new Delegation but Censor_Proposition_Petition_Rate is bigger than 10000 (ratio is bigger than 100%)", async function(){ 
+				Censor_Proposition_Petition_Rate=10001;
+				await expectRevert(Constitution_Instance.Create_Delegation("Delegation", constants.ZERO_ADDRESS, Uint256_Legislatif_arg,
+				 Uint256_Governance_arg,  Next_Mandate_Max_Members, Censor_Proposition_Petition_Rate, Censor_Penalty_Rate,
+				 New_Election_Petition_Rate, Members, Ballot_Instance.address, Ballot_Instance.address, {from:Transition_Government_Account}), "Legislatif: Bad Argument Value");
+			});
+
+			it("Authority account attempts to create new Delegation but Censor_Penalty_Rate is bigger than 10000 (ratio is bigger than 100%)", async function(){ 
+				Censor_Penalty_Rate=10001;
+				await expectRevert(Constitution_Instance.Create_Delegation("Delegation", constants.ZERO_ADDRESS, Uint256_Legislatif_arg,
+				 Uint256_Governance_arg,  Next_Mandate_Max_Members, Censor_Proposition_Petition_Rate, Censor_Penalty_Rate,
+				 New_Election_Petition_Rate, Members, Ballot_Instance.address, Ballot_Instance.address, {from:Transition_Government_Account}), "Legislatif: Bad Argument Value");
+			});
+
+			it("Authority account attempts to create new Delegation but Legislatif Ivote_address is address(0)", async function(){ 
+				await expectRevert(Constitution_Instance.Create_Delegation("Delegation", constants.ZERO_ADDRESS, Uint256_Legislatif_arg,
+				 Uint256_Governance_arg,  Next_Mandate_Max_Members, Censor_Proposition_Petition_Rate, Censor_Penalty_Rate,
+				 New_Election_Petition_Rate, Members, constants.ZERO_ADDRESS, Ballot_Instance.address, {from:Transition_Government_Account}), "Legislatif: Bad Argument Value");
+			});
+
+
+			//Internal governance bad parameters
+
+			it("Authority account attempts to create new Delegation but election Vote_Duration is null", async function(){ 
+				Uint256_Governance_arg[0]=0;
+				await expectRevert(Constitution_Instance.Create_Delegation("Delegation", constants.ZERO_ADDRESS, Uint256_Legislatif_arg,
+				 Uint256_Governance_arg,  Next_Mandate_Max_Members, Censor_Proposition_Petition_Rate, Censor_Penalty_Rate,
+				 New_Election_Petition_Rate, Members, Ballot_Instance.address, Ballot_Instance.address, {from:Transition_Government_Account}), "Governance: Bad Argument Value");
+			});
+
+			
+			it("Authority account attempts to create new Delegation but Mandate_Duration is null", async function(){ 
+				Uint256_Governance_arg[2]=0;
+				await expectRevert(Constitution_Instance.Create_Delegation("Delegation", constants.ZERO_ADDRESS, Uint256_Legislatif_arg,
+				 Uint256_Governance_arg,  Next_Mandate_Max_Members, Censor_Proposition_Petition_Rate, Censor_Penalty_Rate,
+				 New_Election_Petition_Rate, Members, Ballot_Instance.address, Ballot_Instance.address, {from:Transition_Government_Account}), "Governance: Bad Argument Value");
+			});
+
+			it("Authority account attempts to create new Delegation but Next_Mandate_Max_Members is null", async function(){ 
+				Next_Mandate_Max_Members=0;
+				await expectRevert(Constitution_Instance.Create_Delegation("Delegation", constants.ZERO_ADDRESS, Uint256_Legislatif_arg,
+				 Uint256_Governance_arg,  Next_Mandate_Max_Members, Censor_Proposition_Petition_Rate, Censor_Penalty_Rate,
+				 New_Election_Petition_Rate, Members, Ballot_Instance.address, Ballot_Instance.address, {from:Transition_Government_Account}), "Governance: Bad Argument Value");
+			});
+
+			it("Authority account attempts to create new Delegation but New_Election_Petition_Rate is null", async function(){ 
+				New_Election_Petition_Rate=0;
+				await expectRevert(Constitution_Instance.Create_Delegation("Delegation", constants.ZERO_ADDRESS, Uint256_Legislatif_arg,
+				 Uint256_Governance_arg,  Next_Mandate_Max_Members, Censor_Proposition_Petition_Rate, Censor_Penalty_Rate,
+				 New_Election_Petition_Rate, Members, Ballot_Instance.address, Ballot_Instance.address, {from:Transition_Government_Account}), "Governance: Bad Argument Value");
+			});
+
+			it("Authority account attempts to create new Delegation but New_Election_Petition_Rate is bigger than 10000 (ratio is bigger than 100%)", async function(){ 
+				New_Election_Petition_Rate=10001;
+				await expectRevert(Constitution_Instance.Create_Delegation("Delegation", constants.ZERO_ADDRESS, Uint256_Legislatif_arg,
+				 Uint256_Governance_arg,  Next_Mandate_Max_Members, Censor_Proposition_Petition_Rate, Censor_Penalty_Rate,
+				 New_Election_Petition_Rate, Members, Ballot_Instance.address, Ballot_Instance.address, {from:Transition_Government_Account}), "Governance: Bad Argument Value");
+			});
+
+			it("Authority account attempts to create new Delegation but Initials members number exceed Next_Mandate_Max_Members value", async function(){ 
+				var bad_member = [...Members];
+				bad_member.push(web3.utils.randomHex(20));
+				await expectRevert(Constitution_Instance.Create_Delegation("Delegation", constants.ZERO_ADDRESS, Uint256_Legislatif_arg,
+				 Uint256_Governance_arg,  Next_Mandate_Max_Members, Censor_Proposition_Petition_Rate, Censor_Penalty_Rate,
+				 New_Election_Petition_Rate, bad_member, Ballot_Instance.address, Ballot_Instance.address, {from:Transition_Government_Account}), "Governance: Bad Argument Value");
+			});
+
+			it("Authority account attempts to create new Delegation but Governance Ivote_address is address(0)", async function(){ 
+				await expectRevert(Constitution_Instance.Create_Delegation("Delegation", constants.ZERO_ADDRESS, Uint256_Legislatif_arg,
+				 Uint256_Governance_arg,  Next_Mandate_Max_Members, Censor_Proposition_Petition_Rate, Censor_Penalty_Rate,
+				 New_Election_Petition_Rate, Members, Ballot_Instance.address, constants.ZERO_ADDRESS, {from:Transition_Government_Account}), "Governance: Bad Argument Value");
+			});
+
+			it("Authority account attempts to create new Delegation but an initial member is not a citizen", async function(){ 
+				var bad_member = [...Members];
+				bad_member[0]=web3.utils.randomHex(20);
+				await expectRevert(Constitution_Instance.Create_Delegation("Delegation", constants.ZERO_ADDRESS, Uint256_Legislatif_arg,
+				 Uint256_Governance_arg,  Next_Mandate_Max_Members, Censor_Proposition_Petition_Rate, Censor_Penalty_Rate,
+				 New_Election_Petition_Rate, bad_member, Ballot_Instance.address, Ballot_Instance.address, {from:Transition_Government_Account}), "Member is not citizen");
+			});
+
+			it("Authority account creates a new Delegation", async function(){ 
+
+				res= await Constitution_Instance.Create_Delegation("Delegation", constants.ZERO_ADDRESS, Uint256_Legislatif_arg,
+				 Uint256_Governance_arg,  Next_Mandate_Max_Members, Censor_Proposition_Petition_Rate, Censor_Penalty_Rate,
+				 New_Election_Petition_Rate, Members, Ballot_Instance.address, Ballot_Instance.address, {from:Transition_Government_Account});
+
+				var Delegation_List = (await Constitution_Instance.Get_Delegation_List()).map(Bytes32ToAddress);
+				var delegation_address= Delegation_List[0];
+
+				Delegation_Instance = await DELEGATION.at(delegation_address);
+
+				var Mandates_Versions = await Delegation_Instance.Mandates_Versions(1);
+				var Law_Parameters_Versions = await Delegation_Instance.Law_Parameters_Versions(1);
+				var delegation_info = await Delegation_Instance.Get_Delegation_Infos();
+
+
+				expect(delegation_info.legislatif_process_version).to.be.bignumber.equal(new BN(1));
+				expect(delegation_info.internal_governance_version).to.be.bignumber.equal(new BN(1));
+
+				expect(Law_Parameters_Versions.Member_Max_Token_Usage).to.be.bignumber.equal(new BN(Uint256_Legislatif_arg[0]));
+				expect(Law_Parameters_Versions.Law_Initialisation_Price).to.be.bignumber.equal(new BN(Uint256_Legislatif_arg[1]));
+				expect(Law_Parameters_Versions.FunctionCall_Price).to.be.bignumber.equal(new BN(Uint256_Legislatif_arg[2]));
+				expect(Law_Parameters_Versions.Proposition_Duration).to.be.bignumber.equal(new BN(Uint256_Legislatif_arg[3]));
+				expect(Law_Parameters_Versions.Vote_Duration).to.be.bignumber.equal(new BN(Uint256_Legislatif_arg[4]));
+				expect(Law_Parameters_Versions.Law_Censor_Period_Duration).to.be.bignumber.equal(new BN(Uint256_Legislatif_arg[5]));
+				expect(Law_Parameters_Versions.Censor_Proposition_Petition_Rate).to.be.bignumber.equal(new BN(Censor_Proposition_Petition_Rate));
+				expect(Law_Parameters_Versions.Censor_Penalty_Rate).to.be.bignumber.equal(new BN(Censor_Penalty_Rate));
+				expect(Law_Parameters_Versions.Ivote_address).to.equal(Ballot_Instance.address);
+
+				expect(Mandates_Versions.Election_Duration).to.be.bignumber.equal(new BN(Uint256_Governance_arg[0]));
+				expect(Mandates_Versions.Validation_Duration).to.be.bignumber.equal(new BN(Uint256_Governance_arg[1]));
+				expect(Mandates_Versions.Mandate_Duration).to.be.bignumber.equal(new BN(Uint256_Governance_arg[2]));
+				expect(Mandates_Versions.Immunity_Duration).to.be.bignumber.equal(new BN(Uint256_Governance_arg[3]));
+				expect(Mandates_Versions.Next_Mandate_Max_Members).to.be.bignumber.equal(new BN(Next_Mandate_Max_Members));
+				expect(Mandates_Versions.New_Election_Petition_Rate).to.be.bignumber.equal(new BN(New_Election_Petition_Rate));
+				expect(Mandates_Versions.Ivote_address).to.equal(Ballot_Instance.address);
+
+				expect(await DemoCoin_Instance.balanceOf(delegation_address)).to.be.bignumber.equal(new BN(Uint256_Governance_arg[4]));
+
+				await expectEvent(res, "Delegation_Created", (ev)=>{return ev.delegation.toLowerCase()==delegation_address}, "Delegation_Created event incorrect");
+			});
+
+			it("Authority account add an already existing yet not registered Delegation to the DAO", async function(){ 
+				Delegation_Utils_Library = await DELEGATION_UTILS.new();
+				Initiative_Legislative_Lib_Library = await INITIATIVE_LEGISLATIV_LIB.new();
+				
+				await DELEGATION.link("Delegation_Uils", Delegation_Utils_Library.address);
+				await DELEGATION.link("Initiative_Legislative_Lib" , Initiative_Legislative_Lib_Library.address);
+				Delegation_Instance = await DELEGATION.new("Delegation",Members, DemoCoin_Instance.address, Citizen_Register_Instance.address, Agora_Instance.address);
+				await Delegation_Instance.Set_Constitution(Constitution_Instance.address);
+
+				res= await Constitution_Instance.Create_Delegation("Delegation", Delegation_Instance.address, Uint256_Legislatif_arg,
+				 Uint256_Governance_arg,  Next_Mandate_Max_Members, Censor_Proposition_Petition_Rate, Censor_Penalty_Rate,
+				 New_Election_Petition_Rate, Members, Ballot_Instance.address, Ballot_Instance.address, {from:Transition_Government_Account});
+
+				var Delegation_List = (await Constitution_Instance.Get_Delegation_List()).map(Bytes32ToAddress);
+				var delegation_address= Delegation_List[0];
+
+				var Mandates_Versions = await Delegation_Instance.Mandates_Versions(1);
+				var Law_Parameters_Versions = await Delegation_Instance.Law_Parameters_Versions(1);
+				var delegation_info = await Delegation_Instance.Get_Delegation_Infos();
+
+
+				expect(delegation_info.legislatif_process_version).to.be.bignumber.equal(new BN(1));
+				expect(delegation_info.internal_governance_version).to.be.bignumber.equal(new BN(1));
+				
+				expect(Law_Parameters_Versions.Member_Max_Token_Usage).to.be.bignumber.equal(new BN(Uint256_Legislatif_arg[0]));
+				expect(Law_Parameters_Versions.Law_Initialisation_Price).to.be.bignumber.equal(new BN(Uint256_Legislatif_arg[1]));
+				expect(Law_Parameters_Versions.FunctionCall_Price).to.be.bignumber.equal(new BN(Uint256_Legislatif_arg[2]));
+				expect(Law_Parameters_Versions.Proposition_Duration).to.be.bignumber.equal(new BN(Uint256_Legislatif_arg[3]));
+				expect(Law_Parameters_Versions.Vote_Duration).to.be.bignumber.equal(new BN(Uint256_Legislatif_arg[4]));
+				expect(Law_Parameters_Versions.Law_Censor_Period_Duration).to.be.bignumber.equal(new BN(Uint256_Legislatif_arg[5]));
+				expect(Law_Parameters_Versions.Censor_Proposition_Petition_Rate).to.be.bignumber.equal(new BN(Censor_Proposition_Petition_Rate));
+				expect(Law_Parameters_Versions.Censor_Penalty_Rate).to.be.bignumber.equal(new BN(Censor_Penalty_Rate));
+				expect(Law_Parameters_Versions.Ivote_address).to.equal(Ballot_Instance.address);
+
+				expect(Mandates_Versions.Election_Duration).to.be.bignumber.equal(new BN(Uint256_Governance_arg[0]));
+				expect(Mandates_Versions.Validation_Duration).to.be.bignumber.equal(new BN(Uint256_Governance_arg[1]));
+				expect(Mandates_Versions.Mandate_Duration).to.be.bignumber.equal(new BN(Uint256_Governance_arg[2]));
+				expect(Mandates_Versions.Immunity_Duration).to.be.bignumber.equal(new BN(Uint256_Governance_arg[3]));
+				expect(Mandates_Versions.Next_Mandate_Max_Members).to.be.bignumber.equal(new BN(Next_Mandate_Max_Members));
+				expect(Mandates_Versions.New_Election_Petition_Rate).to.be.bignumber.equal(new BN(New_Election_Petition_Rate));
+				expect(Mandates_Versions.Ivote_address).to.equal(Ballot_Instance.address);
+				
+				expect(await DemoCoin_Instance.balanceOf(delegation_address)).to.be.bignumber.equal(new BN(Uint256_Governance_arg[4]));
+
+				await expectEvent(res, "Delegation_Created", (ev)=>{return ev.delegation.toLowerCase()==delegation_address}, "Delegation_Created event incorrect");
+			});
+
+			it("Authority account attempts to add an already registered Delegation to the DAO", async function(){ 
+
+				await Constitution_Instance.Create_Delegation("Delegation", constants.ZERO_ADDRESS, Uint256_Legislatif_arg,
+				 Uint256_Governance_arg,  Next_Mandate_Max_Members, Censor_Proposition_Petition_Rate, Censor_Penalty_Rate,
+				 New_Election_Petition_Rate, Members, Ballot_Instance.address, Ballot_Instance.address, {from:Transition_Government_Account});
+
+				var Delegation_List = (await Constitution_Instance.Get_Delegation_List()).map(Bytes32ToAddress);
+				var delegation_address= Delegation_List[0];
+
+				await expectRevert(Constitution_Instance.Create_Delegation("Delegation", delegation_address, Uint256_Legislatif_arg,
+				 Uint256_Governance_arg,  Next_Mandate_Max_Members, Censor_Proposition_Petition_Rate, Censor_Penalty_Rate,
+				 New_Election_Petition_Rate, Members, Ballot_Instance.address, Ballot_Instance.address, {from:Transition_Government_Account}), "Delegation already registered")
+			});
+		});
+
+		context("Delegation Legislatif process Parameters editing",()=>{
+			let delegation_address;
+			let New_Uint256_Legislatif_arg = Array.from({length:6});
+			let New_Censor_Proposition_Petition_Rate;
+			let New_Censor_Penalty_Rate;
+
+			beforeEach(async function () {
+				await Constitution_Instance.Create_Delegation("Delegation", constants.ZERO_ADDRESS, Uint256_Legislatif_arg,
+				 Uint256_Governance_arg,  Next_Mandate_Max_Members, Censor_Proposition_Petition_Rate, Censor_Penalty_Rate,
+				 New_Election_Petition_Rate, Members, Ballot_Instance.address, Ballot_Instance.address, {from:Transition_Government_Account});
+			
+				var Delegation_List = (await Constitution_Instance.Get_Delegation_List()).map(Bytes32ToAddress);
+				delegation_address= Delegation_List[0];
+
+				/*Legislatig Process*/
+				New_Uint256_Legislatif_arg[0] = Math.floor(Initital_Token_Ammount/Members.length); //Member_Max_Token_Usage
+				New_Uint256_Legislatif_arg[1] = Math.floor(Uint256_Legislatif_arg[0]*Law_Initialisation_Price_Ratio/100); //Law_Initialisation_Price
+				New_Uint256_Legislatif_arg[2] = Math.floor(Uint256_Legislatif_arg[0]*FunctionCall_Price_Ratio/100); //FunctionCall_Price
+				New_Uint256_Legislatif_arg[3] = chance.natural({min:Proposition_Duration_min, max:Proposition_Duration_max}); //Proposition_Duration
+				New_Uint256_Legislatif_arg[4] = chance.natural({min:vote_duration_min, max:vote_duration_max}); //Vote_Duration
+				New_Uint256_Legislatif_arg[5] = chance.natural({min:Law_Censor_Period_Duration_min, max:Law_Censor_Period_Duration_min}); //Law_Censor_Period_Duration
+				New_Censor_Proposition_Petition_Rate= chance.natural({min:1, max:Censor_Proposition_Petition_Rate_max});
+				New_Censor_Penalty_Rate = chance.natural({min:1, max:Censor_Penalty_Rate_max});
+				
+			});
+
+			it("External_Account attempts to edit Delegation Legislatif process parameters", async function(){ 
+
+				await expectRevert(Constitution_Instance.Set_Delegation_Legislatif_Process(delegation_address, New_Uint256_Legislatif_arg,
+				 New_Censor_Proposition_Petition_Rate, New_Censor_Penalty_Rate,
+				 Ballot_Instance.address, {from:External_Account}), "Authorities Only");
+			});
+
+			it("Authority Account attempts to edit Legislatif process parameters of not registered Delegation", async function(){ 
+				await expectRevert(Constitution_Instance.Set_Delegation_Legislatif_Process(web3.utils.randomHex(20), New_Uint256_Legislatif_arg,
+				 New_Censor_Proposition_Petition_Rate, New_Censor_Penalty_Rate,
+				 Ballot_Instance.address, {from:Transition_Government_Account}), "Non Existing Delegation");
+			});
+
+			it("Authority account attempts to edit Legislatif process parameters but Proposition_Duration is null", async function(){ 
+				New_Uint256_Legislatif_arg[3]=0;
+				await expectRevert(Constitution_Instance.Set_Delegation_Legislatif_Process(delegation_address, New_Uint256_Legislatif_arg,
+				 New_Censor_Proposition_Petition_Rate, New_Censor_Penalty_Rate,
+				 Ballot_Instance.address,{from:Transition_Government_Account}), "Legislatif: Bad Argument Value");
+			});
+
+			it("Authority account attempts to edit Legislatif process parameters but Vote_Duration is null", async function(){ 
+				New_Uint256_Legislatif_arg[4]=0;
+				await expectRevert(Constitution_Instance.Set_Delegation_Legislatif_Process(delegation_address, New_Uint256_Legislatif_arg,
+				 New_Censor_Proposition_Petition_Rate, New_Censor_Penalty_Rate,
+				 Ballot_Instance.address,{from:Transition_Government_Account}), "Legislatif: Bad Argument Value");
+			});
+
+			it("Authority account attempts to edit Legislatif process parameters but Censor_Proposition_Petition_Rate is bigger than 10000 (ratio is bigger than 100%)", async function(){ 
+				New_Censor_Proposition_Petition_Rate=10001;
+				await expectRevert(Constitution_Instance.Set_Delegation_Legislatif_Process(delegation_address, New_Uint256_Legislatif_arg,
+				 New_Censor_Proposition_Petition_Rate, New_Censor_Penalty_Rate,
+				 Ballot_Instance.address,{from:Transition_Government_Account}), "Legislatif: Bad Argument Value");
+			});
+
+			it("Authority account attempts to edit Legislatif process parameters but Censor_Penalty_Rate is bigger than 10000 (ratio is bigger than 100%)", async function(){ 
+				New_Censor_Penalty_Rate=10001;
+				await expectRevert(Constitution_Instance.Set_Delegation_Legislatif_Process(delegation_address, New_Uint256_Legislatif_arg,
+				 New_Censor_Proposition_Petition_Rate, New_Censor_Penalty_Rate,
+				 Ballot_Instance.address,{from:Transition_Government_Account}), "Legislatif: Bad Argument Value");
+			});
+
+			it("Authority account attempts to edit Legislatif process parameters but Legislatif Ivote_address is address(0)", async function(){ 
+				await expectRevert(Constitution_Instance.Set_Delegation_Legislatif_Process(delegation_address, New_Uint256_Legislatif_arg,
+				 New_Censor_Proposition_Petition_Rate, New_Censor_Penalty_Rate,
+				 constants.ZERO_ADDRESS ,{from:Transition_Government_Account}), "Legislatif: Bad Argument Value");
+			});
+
+			it("Authority Account edit Legislatif process parameters of an existing Delegation", async function(){ 
+				res=await Constitution_Instance.Set_Delegation_Legislatif_Process(delegation_address, New_Uint256_Legislatif_arg,
+				 New_Censor_Proposition_Petition_Rate, New_Censor_Penalty_Rate,
+				 Ballot_Instance.address, {from:Transition_Government_Account});
+
+				Delegation_Instance = await DELEGATION.at(delegation_address);
+					
+				var Law_Parameters_Versions = await Delegation_Instance.Law_Parameters_Versions(2);
+				var delegation_info = await Delegation_Instance.Get_Delegation_Infos();
+
+				
+				expect(delegation_info.legislatif_process_version).to.be.bignumber.equal(new BN(2));
+				
+				expect(Law_Parameters_Versions.Member_Max_Token_Usage).to.be.bignumber.equal(new BN(New_Uint256_Legislatif_arg[0]));
+				expect(Law_Parameters_Versions.Law_Initialisation_Price).to.be.bignumber.equal(new BN(New_Uint256_Legislatif_arg[1]));
+				expect(Law_Parameters_Versions.FunctionCall_Price).to.be.bignumber.equal(new BN(New_Uint256_Legislatif_arg[2]));
+				expect(Law_Parameters_Versions.Proposition_Duration).to.be.bignumber.equal(new BN(New_Uint256_Legislatif_arg[3]));
+				expect(Law_Parameters_Versions.Vote_Duration).to.be.bignumber.equal(new BN(New_Uint256_Legislatif_arg[4]));
+				expect(Law_Parameters_Versions.Law_Censor_Period_Duration).to.be.bignumber.equal(new BN(New_Uint256_Legislatif_arg[5]));
+				expect(Law_Parameters_Versions.Censor_Proposition_Petition_Rate).to.be.bignumber.equal(new BN(New_Censor_Proposition_Petition_Rate));
+				expect(Law_Parameters_Versions.Censor_Penalty_Rate).to.be.bignumber.equal(new BN(New_Censor_Penalty_Rate));
+				
+				expect(Law_Parameters_Versions.Ivote_address).to.equal(Ballot_Instance.address);
+			});
+
+		});
+
+		context("Delegation Internal Governance Parameters editing",()=>{
+			let delegation_address;
+			let Mint_Token;
+
+			beforeEach(async function () {
+				await Constitution_Instance.Create_Delegation("Delegation", constants.ZERO_ADDRESS, Uint256_Legislatif_arg,
+				 Uint256_Governance_arg,  Next_Mandate_Max_Members, Censor_Proposition_Petition_Rate, Censor_Penalty_Rate,
+				 New_Election_Petition_Rate, Members, Ballot_Instance.address, Ballot_Instance.address, {from:Transition_Government_Account});
+			
+				var Delegation_List = (await Constitution_Instance.Get_Delegation_List()).map(Bytes32ToAddress);
+				delegation_address= Delegation_List[0];
+
+				/*Internal Governance*/
+				Election_Duration = chance.natural({min:vote_duration_min, max:vote_duration_max});
+				Validation_Duration = chance.natural({min:validation_duration_min, max:validation_duration_max});
+				Mandate_Duration = chance.natural({min:mandate_duration_min, max:mandate_duration_max});
+				Immunity_Duration = Math.floor(Immunity_duration_rate*Uint256_Governance_arg[2]/100);
+				Mint_Token = chance.natural({min:0, max:Delegation_Mint_max});
+		
+				Next_Mandate_Max_Members = Members.length;
+				New_Election_Petition_Rate = chance.natural({min:10000/Citizens.length, max:5000}); //We assure that the ratio will correspond at least at 1 citizen 	
+				
+			});
+
+			it("External_Account attempts to edit Delegation Internal governance parameters", async function(){ 
+			
+				await expectRevert(Constitution_Instance.Set_Delegation_Internal_Governance(delegation_address, Election_Duration,
+				 Validation_Duration, Mandate_Duration, Immunity_Duration, Next_Mandate_Max_Members, New_Election_Petition_Rate, Mint_Token, 
+				 Ballot_Instance.address, {from:External_Account}), "Authorities Only");
+			});
+
+			it("Authority account attempts to edit Delegation Internal governance parameters of not registered Delegation", async function(){ 
+			
+				await expectRevert(Constitution_Instance.Set_Delegation_Internal_Governance(web3.utils.randomHex(20), Election_Duration,
+				 Validation_Duration, Mandate_Duration, Immunity_Duration, Next_Mandate_Max_Members, New_Election_Petition_Rate, Mint_Token, 
+				 Ballot_Instance.address, {from:Transition_Government_Account}), "Non Existing Delegation");
+			});
+
+
+			it("Authority account attempts to edit Delegation Internal governance parameters but election Vote_Duration is null", async function(){ 
+				Election_Duration=0;
+				await expectRevert(Constitution_Instance.Set_Delegation_Internal_Governance(delegation_address, Election_Duration,
+				 Validation_Duration, Mandate_Duration, Immunity_Duration, Next_Mandate_Max_Members, New_Election_Petition_Rate, Mint_Token, 
+				 Ballot_Instance.address, {from:Transition_Government_Account}), "Governance: Bad Argument Value");
+			});
+
+			
+			it("Authority account attempts to edit Delegation Internal governance parameters but Mandate_Duration is null", async function(){ 
+				Mandate_Duration=0;
+				await expectRevert(Constitution_Instance.Set_Delegation_Internal_Governance(delegation_address, Election_Duration,
+				 Validation_Duration, Mandate_Duration, Immunity_Duration, Next_Mandate_Max_Members, New_Election_Petition_Rate, Mint_Token, 
+				 Ballot_Instance.address, {from:Transition_Government_Account}), "Governance: Bad Argument Value");
+			});
+
+			it("Authority account attempts to edit Delegation Internal governance parameters but Next_Mandate_Max_Members is null", async function(){ 
+				Next_Mandate_Max_Members=0;
+				await expectRevert(Constitution_Instance.Set_Delegation_Internal_Governance(delegation_address, Election_Duration,
+				 Validation_Duration, Mandate_Duration, Immunity_Duration, Next_Mandate_Max_Members, New_Election_Petition_Rate, Mint_Token, 
+				 Ballot_Instance.address, {from:Transition_Government_Account}), "Governance: Bad Argument Value");
+			});
+
+			it("Authority account attempts to edit Delegation Internal governance parameters but New_Election_Petition_Rate is null", async function(){ 
+				New_Election_Petition_Rate=0;
+				await expectRevert(Constitution_Instance.Set_Delegation_Internal_Governance(delegation_address, Election_Duration,
+				 Validation_Duration, Mandate_Duration, Immunity_Duration, Next_Mandate_Max_Members, New_Election_Petition_Rate, Mint_Token, 
+				 Ballot_Instance.address, {from:Transition_Government_Account}), "Governance: Bad Argument Value");
+			});
+
+			it("Authority account attempts to edit Delegation Internal governance parameters but New_Election_Petition_Rate is bigger than 10000 (ratio is bigger than 100%)", async function(){ 
+				New_Election_Petition_Rate=10001;
+				await expectRevert(Constitution_Instance.Set_Delegation_Internal_Governance(delegation_address, Election_Duration,
+				 Validation_Duration, Mandate_Duration, Immunity_Duration, Next_Mandate_Max_Members, New_Election_Petition_Rate, Mint_Token, 
+				 Ballot_Instance.address, {from:Transition_Government_Account}), "Governance: Bad Argument Value");
+			});
+
+
+			it("Authority account attempts to edit Delegation Internal governance parameters but Governance Ivote_address is address(0)", async function(){ 
+				await expectRevert(Constitution_Instance.Set_Delegation_Internal_Governance(delegation_address, Election_Duration,
+				 Validation_Duration, Mandate_Duration, Immunity_Duration, Next_Mandate_Max_Members, New_Election_Petition_Rate, Mint_Token, 
+				 constants.ZERO_ADDRESS, {from:Transition_Government_Account}), "Governance: Bad Argument Value");
+			});
+
+
+			it("Authority Account edit Internal governance parameters of an existing Delegation", async function(){ 
+				var balance_before = await DemoCoin_Instance.balanceOf(delegation_address);
+				await Constitution_Instance.Set_Delegation_Internal_Governance(delegation_address, Election_Duration,
+				 Validation_Duration, Mandate_Duration, Immunity_Duration, Next_Mandate_Max_Members, New_Election_Petition_Rate, Mint_Token, 
+				 Ballot_Instance.address, {from:Transition_Government_Account});
+
+				Delegation_Instance = await DELEGATION.at(delegation_address);
+
+				var Mandates_Versions = await Delegation_Instance.Mandates_Versions(2);
+				var delegation_info = await Delegation_Instance.Get_Delegation_Infos();
+
+				expect(delegation_info.internal_governance_version).to.be.bignumber.equal(new BN(2));
+
+				expect(Mandates_Versions.Election_Duration).to.be.bignumber.equal(new BN(Election_Duration));
+				expect(Mandates_Versions.Validation_Duration).to.be.bignumber.equal(new BN(Validation_Duration));
+				expect(Mandates_Versions.Mandate_Duration).to.be.bignumber.equal(new BN(Mandate_Duration));
+				expect(Mandates_Versions.Immunity_Duration).to.be.bignumber.equal(new BN(Immunity_Duration));
+				expect(Mandates_Versions.Next_Mandate_Max_Members).to.be.bignumber.equal(new BN(Next_Mandate_Max_Members));
+				expect(Mandates_Versions.New_Election_Petition_Rate).to.be.bignumber.equal(new BN(New_Election_Petition_Rate));
+				expect(Mandates_Versions.Ivote_address).to.equal(Ballot_Instance.address);
+				
+				expect(await DemoCoin_Instance.balanceOf(delegation_address)).to.be.bignumber.equal(balance_before.addn(Mint_Token));
+			});
+
+		});
+	});
+
+
+
+	describe("Authorities editing", ()=>{
+		let delegation_address;
+		let loi_address;
+
+		beforeEach(async function () {
+			Ballot_Instance = await MAJORITY_JUDGMENT.new();
+
+			/*Register parameters*/
+			Petition_Duration = chance.natural({min:petition_duration_min, max:petition_duration_max});
+			Vote_Duration= chance.natural({min:vote_duration_min, max:vote_duration_max});
+			Validation_Duration = chance.natural({min:validation_duration_min, max:validation_duration_max});
+			Law_Initialisation_Price= Math.floor(Citizen_Initial_Ammounts*Law_Initialisation_Price_Ratio/100);
+			FunctionCall_Price = Math.floor(Citizen_Initial_Ammounts*FunctionCall_Price_Ratio/100);
+			Required_Petition_Rate = chance.natural({min:Math.floor(10000*2/Citizens.length), max:petition_rate_max});
+
+			/*Legislatig Process*/
+			Uint256_Legislatif_arg[0] = Math.floor(Initital_Token_Ammount/Members.length); //Member_Max_Token_Usage
+			Uint256_Legislatif_arg[1] = Math.floor(Uint256_Legislatif_arg[0]*Law_Initialisation_Price_Ratio/100); //Law_Initialisation_Price
+			Uint256_Legislatif_arg[2] = Math.floor(Uint256_Legislatif_arg[0]*FunctionCall_Price_Ratio/100); //FunctionCall_Price
+			Uint256_Legislatif_arg[3] = chance.natural({min:Proposition_Duration_min, max:Proposition_Duration_max}); //Proposition_Duration
+			Uint256_Legislatif_arg[4] = chance.natural({min:vote_duration_min, max:vote_duration_max}); //Vote_Duration
+			Uint256_Legislatif_arg[5] = chance.natural({min:Law_Censor_Period_Duration_min, max:Law_Censor_Period_Duration_min}); //Law_Censor_Period_Duration
+			Censor_Proposition_Petition_Rate= chance.natural({min:1, max:Censor_Proposition_Petition_Rate_max});
+			Censor_Penalty_Rate = chance.natural({min:1, max:Censor_Penalty_Rate_max});
+
+			/*Internal Governance*/
+			Uint256_Governance_arg[0] = chance.natural({min:vote_duration_min, max:vote_duration_max});
+			Uint256_Governance_arg[1] = chance.natural({min:validation_duration_min, max:validation_duration_max});
+			Uint256_Governance_arg[2] = chance.natural({min:mandate_duration_min, max:mandate_duration_max});
+			Uint256_Governance_arg[3] = Math.floor(Immunity_duration_rate*Uint256_Governance_arg[2]/100);
+			Uint256_Governance_arg[4] = chance.natural({min:0, max:Delegation_Mint_max});
+			
+			Next_Mandate_Max_Members = Members.length;
+			New_Election_Petition_Rate = chance.natural({min:10000/Citizens.length, max:5000}); //We assure that the ratio will correspond at least at 1 citizen 	
+			
+			await Constitution_Instance.Create_Register("LOI", 3, Petition_Duration, Vote_Duration, Validation_Duration,
+				 Law_Initialisation_Price, FunctionCall_Price, Required_Petition_Rate, Ballot_Instance.address, {from:Transition_Government_Account});
+
+			var Register_List = (await Constitution_Instance.Get_Register_List()).map(Bytes32ToAddress);
+			loi_address= Register_List[0];
+
+			await Constitution_Instance.Create_Delegation("Delegation", constants.ZERO_ADDRESS, Uint256_Legislatif_arg,
+			 Uint256_Governance_arg,  Next_Mandate_Max_Members, Censor_Proposition_Petition_Rate, Censor_Penalty_Rate,
+			 New_Election_Petition_Rate, Members, Ballot_Instance.address, Ballot_Instance.address, {from:Transition_Government_Account});
+			
+			var Delegation_List = (await Constitution_Instance.Get_Delegation_List()).map(Bytes32ToAddress);
+			delegation_address= Delegation_List[0];
+
+			await Constitution_Instance.Add_Registering_Authority(delegation_address, {from:Transition_Government_Account});
+			//await Constitution_Instance.Add_Delegation_Controled_Register(delegation_address, register_address, {from:Transition_Government_Account});
+		});
+
+
+		/*Add authority*/
+		it("External_Account attempts to add authority to register", async function(){ 
+			await expectRevert(Constitution_Instance.Add_Register_Authority(loi_address, delegation_address, {from:External_Account}), "Authorities Only");
+		});
+
+		it("Authority account attempts to add authority to unknown register", async function(){ 
+			await expectRevert(Constitution_Instance.Add_Register_Authority(web3.utils.randomHex(20), delegation_address, {from:Transition_Government_Account}), "Unknown Register");
+		});
+
+		it("Authority account add authority to register", async function(){ 
+			await Constitution_Instance.Add_Register_Authority(loi_address, delegation_address, {from:Transition_Government_Account});
+			Loi_Instance = await LOI.at(loi_address);
+
+			authorities_list = await Loi_Instance.Get_Authorities();
+
+			expect(authorities_list.map(Bytes32ToAddress).includes(delegation_address)).to.equal(true);
+		});
+
+		/*Remove authority*/
+		it("External_Account attempts to remove authority from register", async function(){ 
+			await Constitution_Instance.Add_Register_Authority(loi_address, delegation_address, {from:Transition_Government_Account});
+			await expectRevert(Constitution_Instance.Remove_Register_Authority(loi_address, delegation_address, {from:External_Account}), "Authorities Only");
+		});
+
+		it("Authority account attempts to remove authority from unknown register", async function(){ 
+			await Constitution_Instance.Add_Register_Authority(loi_address, delegation_address, {from:Transition_Government_Account});
+			await expectRevert(Constitution_Instance.Remove_Register_Authority(web3.utils.randomHex(20), delegation_address, {from:Transition_Government_Account}), "Unknown Register");
+		});
+
+		it("Authority account removes authority from register", async function(){ 
+			await Constitution_Instance.Add_Register_Authority(loi_address, delegation_address, {from:Transition_Government_Account});
+			await Constitution_Instance.Remove_Register_Authority(loi_address, delegation_address, {from:Transition_Government_Account});
+			Loi_Instance = await LOI.at(loi_address);
+
+			authorities_list = await Loi_Instance.Get_Authorities();
+
+			expect(authorities_list.map(Bytes32ToAddress).includes(delegation_address)).to.equal(false);
+		});
+
+
+		it("External_Account attempts to change Constitution address of institution", async function(){ 
+			await expectRevert(Constitution_Instance.Set_Instances_Constitution(Citizen_Register_Instance.address, External_Account, {from:External_Account}), "Authorities Only");
+		});
+
+		it("Authority account attempts to change Constitution address of unknown institution", async function(){ 
+			await expectRevert(Constitution_Instance.Set_Instances_Constitution(web3.utils.randomHex(20), External_Account, {from:Transition_Government_Account}), "instance address unknown");
+		});
+
+		it("Authority account attempts to change Constitution address of institution but new constitution address is address(0)", async function(){ 
+			await expectRevert(Constitution_Instance.Set_Instances_Constitution(Citizen_Register_Instance.address, constants.ZERO_ADDRESS, {from:Transition_Government_Account}), "address 0");
+		});
+
+		it("Authority account changes Constitution address of institution but new constitution address is address(0)", async function(){ 
+			await Constitution_Instance.Set_Instances_Constitution(Citizen_Register_Instance.address, External_Account, {from:Transition_Government_Account});
+			expect(await Citizen_Register_Instance.Constitution_Address()).to.equal(External_Account);
+		});
+
+	});
+
+
+
+	describe("Edit controled register list of Delegations", ()=>{
+		let delegation_address;
+		let register_address;
+
+		beforeEach(async function () {
+			Ballot_Instance = await MAJORITY_JUDGMENT.new();
+
+			/*Register parameters*/
+			Petition_Duration = chance.natural({min:petition_duration_min, max:petition_duration_max});
+			Vote_Duration= chance.natural({min:vote_duration_min, max:vote_duration_max});
+			Validation_Duration = chance.natural({min:validation_duration_min, max:validation_duration_max});
+			Law_Initialisation_Price= Math.floor(Citizen_Initial_Ammounts*Law_Initialisation_Price_Ratio/100);
+			FunctionCall_Price = Math.floor(Citizen_Initial_Ammounts*FunctionCall_Price_Ratio/100);
+			Required_Petition_Rate = chance.natural({min:Math.floor(10000*2/Citizens.length), max:petition_rate_max});
+
+			/*Legislatig Process*/
+			Uint256_Legislatif_arg[0] = Math.floor(Initital_Token_Ammount/Members.length); //Member_Max_Token_Usage
+			Uint256_Legislatif_arg[1] = Math.floor(Uint256_Legislatif_arg[0]*Law_Initialisation_Price_Ratio/100); //Law_Initialisation_Price
+			Uint256_Legislatif_arg[2] = Math.floor(Uint256_Legislatif_arg[0]*FunctionCall_Price_Ratio/100); //FunctionCall_Price
+			Uint256_Legislatif_arg[3] = chance.natural({min:Proposition_Duration_min, max:Proposition_Duration_max}); //Proposition_Duration
+			Uint256_Legislatif_arg[4] = chance.natural({min:vote_duration_min, max:vote_duration_max}); //Vote_Duration
+			Uint256_Legislatif_arg[5] = chance.natural({min:Law_Censor_Period_Duration_min, max:Law_Censor_Period_Duration_min}); //Law_Censor_Period_Duration
+			Censor_Proposition_Petition_Rate= chance.natural({min:1, max:Censor_Proposition_Petition_Rate_max});
+			Censor_Penalty_Rate = chance.natural({min:1, max:Censor_Penalty_Rate_max});
+
+			/*Internal Governance*/
+			Uint256_Governance_arg[0] = chance.natural({min:vote_duration_min, max:vote_duration_max});
+			Uint256_Governance_arg[1] = chance.natural({min:validation_duration_min, max:validation_duration_max});
+			Uint256_Governance_arg[2] = chance.natural({min:mandate_duration_min, max:mandate_duration_max});
+			Uint256_Governance_arg[3] = Math.floor(Immunity_duration_rate*Uint256_Governance_arg[2]/100);
+			Uint256_Governance_arg[4] = chance.natural({min:0, max:Delegation_Mint_max});
+			
+			Next_Mandate_Max_Members = Members.length;
+			New_Election_Petition_Rate = chance.natural({min:10000/Citizens.length, max:5000}); //We assure that the ratio will correspond at least at 1 citizen 	
+			
+			await Constitution_Instance.Create_Register("LOI", 3, Petition_Duration, Vote_Duration, Validation_Duration,
+				 Law_Initialisation_Price, FunctionCall_Price, Required_Petition_Rate, Ballot_Instance.address, {from:Transition_Government_Account});
+
+			var Register_List = (await Constitution_Instance.Get_Register_List()).map(Bytes32ToAddress);
+			register_address= Register_List[0];
+			
+			await Constitution_Instance.Create_Delegation("Delegation", constants.ZERO_ADDRESS, Uint256_Legislatif_arg,
+			 Uint256_Governance_arg,  Next_Mandate_Max_Members, Censor_Proposition_Petition_Rate, Censor_Penalty_Rate,
+			 New_Election_Petition_Rate, Members, Ballot_Instance.address, Ballot_Instance.address, {from:Transition_Government_Account});
+			
+			var Delegation_List = (await Constitution_Instance.Get_Delegation_List()).map(Bytes32ToAddress);
+			delegation_address= Delegation_List[0];
+		});
+
+		/*Add controled register*/
+		it("External_Account attempts to set a register under the control of the delegation", async function(){ 
+			await expectRevert(Constitution_Instance.Add_Delegation_Controled_Register(delegation_address, register_address, {from:External_Account}), "Authorities Only");
+		});
+
+		it("Authority account attempts to set a register under the control of a not existing delegation", async function(){ 
+			await expectRevert(Constitution_Instance.Add_Delegation_Controled_Register(web3.utils.randomHex(20), register_address, {from:Transition_Government_Account}), "Non Existing Delegation");
+		});
+
+		it("Authority account attempts to set a register under the control of a not existing delegation", async function(){ 
+			await expectRevert(Constitution_Instance.Add_Delegation_Controled_Register(delegation_address, web3.utils.randomHex(20), {from:Transition_Government_Account}), "Non Existing Register");
+		});
+
+		it("External_Account attempts to set a register under the control of a not existing delegation", async function(){ 
+			await Constitution_Instance.Add_Delegation_Controled_Register(delegation_address, register_address, {from:Transition_Government_Account});
+			await Constitution_Instance.Add_Register_Authority(register_address, delegation_address, {from:Transition_Government_Account});
+
+			Delegation_Instance = await DELEGATION.at(delegation_address);
+			Loi_Instance = await LOI.at(register_address);
+			var Get_List_Law_Register = (await Delegation_Instance.Get_List_Law_Register()).Controled_Register;
+			var Controled_Register = await Delegation_Instance.Controled_Registers(register_address);
+			var register_authorities = (await Loi_Instance.Get_Authorities()).map(Bytes32ToAddress);
+
+			expect(Get_List_Law_Register.map(Bytes32ToAddress).includes(register_address)).to.equal(true);
+			expect(register_authorities.includes(delegation_address)).to.equal(true);
+			expect(Controled_Register.Active).to.equal(true);
+		});
+
+
+		/*Removes controled register*/
+		it("Authority account attempts to remove delegation control over a register", async function(){ 
+			await Constitution_Instance.Add_Delegation_Controled_Register(delegation_address, register_address, {from:Transition_Government_Account});
+			await Constitution_Instance.Add_Register_Authority(register_address, delegation_address, {from:Transition_Government_Account});
+			await expectRevert(Constitution_Instance.Remove_Delegation_Controled_Register(delegation_address, register_address, {from:External_Account}), "Authorities Only");
+		});
+
+		it("Authority account attempts to set a register under the control of a not existing delegation", async function(){ 
+			await Constitution_Instance.Add_Delegation_Controled_Register(delegation_address, register_address, {from:Transition_Government_Account});
+			await Constitution_Instance.Add_Register_Authority(register_address, delegation_address, {from:Transition_Government_Account});
+			await expectRevert(Constitution_Instance.Remove_Delegation_Controled_Register(web3.utils.randomHex(20), register_address, {from:Transition_Government_Account}), "Non Existing Delegation");
+		});
+
+		it("Authority account attempts to set a not registered register under the control of a delegation", async function(){ 
+			await Constitution_Instance.Add_Delegation_Controled_Register(delegation_address, register_address, {from:Transition_Government_Account});
+			await Constitution_Instance.Add_Register_Authority(register_address, delegation_address, {from:Transition_Government_Account});
+			await expectRevert(Constitution_Instance.Remove_Delegation_Controled_Register(delegation_address, web3.utils.randomHex(20), {from:Transition_Government_Account}), "Non Existing Register");
+		});
+
+		it("Authority account set a register under the control of a delegation", async function(){ 
+			await Constitution_Instance.Add_Delegation_Controled_Register(delegation_address, register_address, {from:Transition_Government_Account});
+			await Constitution_Instance.Add_Register_Authority(register_address, delegation_address, {from:Transition_Government_Account});
+			await Constitution_Instance.Remove_Delegation_Controled_Register(delegation_address, register_address, {from:Transition_Government_Account});
+
+			Delegation_Instance = await DELEGATION.at(delegation_address);
+			
+			var Controled_Register = await Delegation_Instance.Controled_Registers(register_address);
+
+			expect(Controled_Register.Active).to.equal(false);
+		});
+
+	});
+
+	
+	
+	
+
 });

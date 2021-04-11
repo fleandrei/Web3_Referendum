@@ -6,6 +6,7 @@ import "Agora.sol";
 import "Loi.sol";
 import "API_Register.sol";
 import "Delegation.sol";
+import "IDelegation.sol";
 import "Citizens_Register.sol";
 import "IVote.sol";*/
 
@@ -168,11 +169,18 @@ contract Constitution is Register{
          emit Transitional_Government_Finised();
      }
      
-     function Urgent_Remove_Authority(address register, address authority) external Register_Authorities_Only{
-         require(Registers_Address_List.contains(register), "Register not controled");
+     function Add_Register_Authority(address register, address authority) external Register_Authorities_Only{
+         require(Registers_Address_List.contains(register), "Unknown Register");
+         Register res = Register(register);
+         res.Add_Authority(authority);
+     }
+     
+     function Remove_Register_Authority(address register, address authority) external Register_Authorities_Only{
+         require(Registers_Address_List.contains(register), "Unknown Register");
          Register res = Register(register);
          res.Remove_Authority(authority);
      }
+
      
      function Set_Instances_Constitution(address instance_address, address new_address)external Register_Authorities_Only{
          require(Registers_Address_List.contains(instance_address) || Delegation_Address_List.contains(instance_address) || instance_address== address(Citizen_Instance), "instance address unknown"); // There is no interest to modify Agora's constitution.
@@ -183,9 +191,8 @@ contract Constitution is Register{
      
     /*FUNCTIONCALL API functions*/
     
-    function Set_Citizen_Mint_Amount(uint amount) external Register_Authorities_Only{
-        Citizen_Instance.Set_Citizen_Mint_Amount(amount);
-    }
+    
+    /*DemoCoin functions*/
     
     function Set_Minnter(address[] calldata Add_Minter, address[] calldata Remove_Minter)external Register_Authorities_Only{
         uint add_len=Add_Minter.length;
@@ -211,6 +218,10 @@ contract Constitution is Register{
     
     
     /*Citizens_Register  Handling*/
+    
+    function Set_Citizen_Mint_Amount(uint amount) external Register_Authorities_Only{
+        Citizen_Instance.Set_Citizen_Mint_Amount(amount);
+    }
     
     function Citizen_Register_Remove_Authority(address removed_authority) external Register_Authorities_Only{
         Citizen_Instance.Remove_Authority(removed_authority);
@@ -327,12 +338,12 @@ contract Constitution is Register{
          uint16 New_Election_Petition_Rate, address[] memory Initial_members, address Ivote_address_legislatif, address Ivote_address_governance)
          external Register_Authorities_Only {
 
-            if(Uint256_Legislatifs_Arg[3]==0 || Uint256_Legislatifs_Arg[4]==0 || Revert_Proposition_Petition_Rate>100 || Revert_Penalty_Rate>100 || Ivote_address_legislatif==address(0)){
+            if(Uint256_Legislatifs_Arg[3]==0 || Uint256_Legislatifs_Arg[4]==0 || Revert_Proposition_Petition_Rate>10000 || Revert_Penalty_Rate>10000 || Ivote_address_legislatif==address(0)){
                  //return(false, bytes("Bad Argument Value"));
                  revert("Legislatif: Bad Argument Value");
              }
              
-             if(Uint256_Governance_Arg[0]==0 || Uint256_Governance_Arg[1]==0 || Num_Max_Members==0 || New_Election_Petition_Rate ==0 || New_Election_Petition_Rate>100 || Initial_members.length <= Num_Max_Members || Ivote_address_governance==address(0)){
+             if(Uint256_Governance_Arg[0]==0 || Uint256_Governance_Arg[2]==0 || Num_Max_Members==0 || New_Election_Petition_Rate ==0 || New_Election_Petition_Rate>10000 || Initial_members.length > Num_Max_Members || Ivote_address_governance==address(0)){
                  //return(false, bytes("Bad Argument Value"));
                  revert("Governance: Bad Argument Value");
              }
@@ -342,7 +353,7 @@ contract Constitution is Register{
                  /*Delegation Delegation_Instance = new Delegation(Initial_members, address(Democoin));
                  delegation_address = address(Delegation_Instance);*/
                  for(uint i =0; i<Initial_members.length; i++){
-                     require(Citizen_Instance.Contains(Initial_members[i]), "member is not citizen");
+                     require(Citizen_Instance.Contains(Initial_members[i]), "Member is not citizen");
                  }
                  delegation_address = Constitution_Delegation.Create_Delegation(Name, Initial_members, address(Democoin_Instance), address(Citizen_Instance), address(Agora_Instance));
             }else{
@@ -350,8 +361,8 @@ contract Constitution is Register{
                 //return(false,bytes("Delegation already registered"));
             }
             
-            Delegation(delegation_address).Update_Legislatif_Process(Uint256_Legislatifs_Arg, Revert_Proposition_Petition_Rate, Revert_Penalty_Rate, Ivote_address_legislatif);
-            Delegation(delegation_address).Update_Internal_Governance(Uint256_Governance_Arg[0], Uint256_Governance_Arg[1], Uint256_Governance_Arg[2], Uint256_Governance_Arg[3], Num_Max_Members, New_Election_Petition_Rate, Ivote_address_governance);
+            IDelegation(delegation_address).Update_Legislatif_Process(Uint256_Legislatifs_Arg, Revert_Proposition_Petition_Rate, Revert_Penalty_Rate, Ivote_address_legislatif);
+            IDelegation(delegation_address).Update_Internal_Governance(Uint256_Governance_Arg[0], Uint256_Governance_Arg[1], Uint256_Governance_Arg[2], Uint256_Governance_Arg[3], Num_Max_Members, New_Election_Petition_Rate, Ivote_address_governance);
 
             /*Delegation(delegation_address).Update_Legislatif_Process(Uint256_Legislatifs_Arg[0], Uint256_Legislatifs_Arg[1], Uint256_Legislatifs_Arg[2], Uint256_Legislatifs_Arg[3], Uint256_Legislatifs_Arg[4], Uint256_Legislatifs_Arg[5], Revert_Proposition_Petition_Rate, Revert_Penalty_Rate, Ivote_address_legislatif);
             Delegation(delegation_address).Update_Internal_Governance(Uint256_Governance_Arg[0], Uint256_Governance_Arg[1], Uint256_Governance_Arg[2], Uint256_Governance_Arg[3], Num_Max_Members, New_Election_Petition_Rate, Ivote_address_governance);
@@ -362,7 +373,7 @@ contract Constitution is Register{
             Delegation_Address_List.add(delegation_address);
             
             if(Uint256_Governance_Arg[4]>0){
-                Democoin_Instance.Mint(delegation_address, Uint256_Governance_Arg[3]);
+                Democoin_Instance.Mint(delegation_address, Uint256_Governance_Arg[4]);
             }
             
             emit Delegation_Created(delegation_address);
@@ -371,19 +382,19 @@ contract Constitution is Register{
          /* 0x0000000000000000000000000000000000000000, [15,5,1, 1000, 2000, 500], [1000, 10000,3000, 40] 20, 30, 20, 50*/
 
          
-    function Add_Delegation_Controled_Register(address delegation_address, address new_controled_register) external{
+    function Add_Delegation_Controled_Register(address delegation_address, address new_controled_register) external Register_Authorities_Only{
         require(Delegation_Address_List.contains(delegation_address), "Non Existing Delegation");
         require(Registers_Address_List.contains(new_controled_register), "Non Existing Register");
-        Register(new_controled_register).Add_Authority(delegation_address);  //Add the delegation address to the authority list of registers whose address is in "add_controled_register"
-        Delegation(delegation_address).Add_Controled_Register( new_controled_register);    
+        //Register(new_controled_register).Add_Authority(delegation_address);  //Add the delegation address to the authority list of registers whose address is in "add_controled_register"
+        IDelegation(delegation_address).Add_Controled_Register( new_controled_register);    
     
     }
     
     
-    function Remove_Delegation_Controled_Register(address delegation_address, address removed_controled_register) external{
+    function Remove_Delegation_Controled_Register(address delegation_address, address removed_controled_register) external Register_Authorities_Only{
         require(Delegation_Address_List.contains(delegation_address), "Non Existing Delegation");
         require(Registers_Address_List.contains(removed_controled_register), "Non Existing Register");
-        Delegation(delegation_address).Remove_Controled_Register( removed_controled_register);
+        IDelegation(delegation_address).Remove_Controled_Register( removed_controled_register);
         //The removal of the delegation address from the authority list of registers whose address is in "remove_controled_register" is left to the delegation.
     }
      
@@ -394,9 +405,9 @@ contract Constitution is Register{
              
              require(Delegation_Address_List.contains(delegation_address), "Non Existing Delegation");
              
-             if(Uint256_Legislatifs_Arg[3]==0 || Uint256_Legislatifs_Arg[4]==0 || Revert_Proposition_Petition_Rate>10000 || Revert_Penalty_Rate>10000 ){
+             if(Uint256_Legislatifs_Arg[3]==0 || Uint256_Legislatifs_Arg[4]==0 || Revert_Proposition_Petition_Rate>10000 || Revert_Penalty_Rate>10000 || Ivote_address==address(0) ){
                  //return(false, bytes("Bad Argument Value"));
-                 revert("Bad Argument Value");
+                 revert("Legislatif: Bad Argument Value");
              }
              
              /*if(Proposition_Duration==0 || Vote_Duration==0 || Revert_Proposition_Petition_Rate>100 || Revert_Penalty_Rate>100 ){
@@ -404,25 +415,25 @@ contract Constitution is Register{
                  revert("Bad Argument Value");
              }*/
              
-             Delegation(delegation_address).Update_Legislatif_Process(Uint256_Legislatifs_Arg, Revert_Proposition_Petition_Rate, Revert_Penalty_Rate, Ivote_address);
+             IDelegation(delegation_address).Update_Legislatif_Process(Uint256_Legislatifs_Arg, Revert_Proposition_Petition_Rate, Revert_Penalty_Rate, Ivote_address);
              //Delegations[delegation_address]._Set_Delegation_Legislatif_Process(Member_Max_Token_Usage, Law_Initialisation_Price, FunctionCall_Price, Proposition_Duration, Vote_Duration, Law_Revertable_Period_Duration, Revert_Proposition_Petition_Rate, Revert_Penalty_Rate);
          }
          
          
          
-    function Set_Delegation_Internal_Governance(address delegation_address, uint Election_Duration, uint Mandate_Duration, uint Immunity_Duration, uint Validation_Duration,
+    function Set_Delegation_Internal_Governance(address delegation_address, uint Election_Duration,  uint Validation_Duration, uint Mandate_Duration, uint Immunity_Duration,
         uint16 Num_Max_Members, uint16 New_Election_Petition_Rate, uint Mint_Token, address Ivote_address) external Register_Authorities_Only{
             require(Delegation_Address_List.contains(delegation_address), "Non Existing Delegation");
             
-            if(Election_Duration==0 || Mandate_Duration==0 || Num_Max_Members==0 || New_Election_Petition_Rate ==0 || New_Election_Petition_Rate>10000 ){
-                 revert("Bad Argument Value");
+            if(Election_Duration==0 || Mandate_Duration==0 || Num_Max_Members==0 || New_Election_Petition_Rate ==0 || New_Election_Petition_Rate>10000 || Ivote_address==address(0)){
+                 revert("Governance: Bad Argument Value");
              }
             
             if(Mint_Token>0){
                  Democoin_Instance.Mint(delegation_address, Mint_Token);
              }
             
-            Delegation(delegation_address).Update_Internal_Governance(Election_Duration, Validation_Duration, Mandate_Duration, Immunity_Duration, Num_Max_Members, New_Election_Petition_Rate, Ivote_address);
+            IDelegation(delegation_address).Update_Internal_Governance(Election_Duration, Validation_Duration, Mandate_Duration, Immunity_Duration, Num_Max_Members, New_Election_Petition_Rate, Ivote_address);
          }
          
          
