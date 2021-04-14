@@ -154,9 +154,11 @@ contract Agora is Institution{
         
         Referendums_Registers[register_address].List_Referendums.push(key);
         
-        Democoin.transferFrom(msg.sender, address(this), Law_Initialisation_Price);
+        
         Referendums[key].Token_Amount_Consummed +=Law_Initialisation_Price;
         Total_Token_To_Redistribute+=Law_Initialisation_Price;
+        
+        Democoin.transferFrom(msg.sender, address(this), Law_Initialisation_Price);
         
         emit New_Referendum(register_address, key);
     }
@@ -172,7 +174,7 @@ contract Agora is Institution{
         uint Cost = Referendums_Registers[register_address].Parameters_Versions[version].FunctionCall_Price*New_Function_Call.length;
         
         require(Democoin.allowance(msg.sender, address(this)) >= Cost, "Increase Token Allowance");
-        Democoin.transferFrom(msg.sender, address(this), Cost);
+        
         Referendums[referendum_key].Token_Amount_Consummed +=Cost;
         Total_Token_To_Redistribute+=Cost;
         
@@ -185,6 +187,8 @@ contract Agora is Institution{
         List_Law_Project[referendum_key].Proposals_Tree[proposal_index].Author = msg.sender;
         List_Law_Project[referendum_key].Add_Corpus_Proposal(Parent, Parent_Proposals_Reuse, New_Function_Call, Description);
         emit New_Proposal( register_address,referendum_key, proposal_index);
+        
+        Democoin.transferFrom(msg.sender, address(this), Cost);
     }
     
     function Add_Item(address register_address, bytes32 referendum_key, uint Proposal, bytes[] calldata New_Items, uint[] calldata Indexs) external Citizen_Only{
@@ -196,12 +200,14 @@ contract Agora is Institution{
         uint Cost = Referendums_Registers[register_address].Parameters_Versions[version].FunctionCall_Price*New_Items.length;
         
         require(Democoin.allowance(msg.sender, address(this)) >= Cost, "Increase Token Allowance");
-        Democoin.transferFrom(msg.sender, address(this), Cost);
+        
         Referendums[referendum_key].Token_Amount_Consummed +=Cost;
         Total_Token_To_Redistribute+=Cost;
         
         List_Law_Project[referendum_key].Add_Item_Proposal( Proposal, New_Items, Indexs, msg.sender);
         emit Proposal_Modified(register_address, referendum_key, Proposal);
+        
+        Democoin.transferFrom(msg.sender, address(this), Cost);
     }
     
     function Sign_Petition(address register_address, bytes32 referendum_key) external Citizen_Only{
@@ -222,15 +228,18 @@ contract Agora is Institution{
         require(Referendums[referendum_key].Referendum_Status == Status.PETITIONS, "Not at PETITIONS status");
         require(block.timestamp - Referendums[referendum_key].Creation_Timestamps > Referendums_Registers[register_address].Parameters_Versions[version].Petition_Duration, "PETITIONS stage not finished");
         
-        if(Referendums[referendum_key].Petition_Counter >= Percentage(Referendums_Registers[register_address].Parameters_Versions[version].Required_Petition_Rate, Citizens.Get_Citizen_Number()) ){
+        if(Referendums[referendum_key].Petition_Counter >= Percentage(Referendums_Registers[register_address].Parameters_Versions[version].Required_Petition_Rate, Citizens.Get_Citizen_Number()) && List_Law_Project[referendum_key].Proposal_Count>0){
             bytes32 ballot_key= keccak256(abi.encodePacked(referendum_key,block.timestamp));
             IVote Vote_Instance = IVote(Referendums_Registers[register_address].Parameters_Versions[version].Ivote_address);
-            Vote_Instance.Create_Ballot(ballot_key, address(Citizens), Citizens.Contains_Function_Selector(), Referendums_Registers[register_address].Parameters_Versions[version].Vote_Duration, Referendums_Registers[register_address].Parameters_Versions[version].Vote_Checking_Duration, List_Law_Project[referendum_key].Proposal_Count, 1);
             
             Referendums[referendum_key].Start_Vote_Timestamps = block.timestamp;
             Referendums[referendum_key].Referendum_Status = Status.VOTE;
             
             emit Voting_Stage_Started(register_address, referendum_key, ballot_key);
+            
+            Vote_Instance.Create_Ballot(ballot_key, address(Citizens), Citizens.Contains_Function_Selector(), Referendums_Registers[register_address].Parameters_Versions[version].Vote_Duration, Referendums_Registers[register_address].Parameters_Versions[version].Vote_Checking_Duration, List_Law_Project[referendum_key].Proposal_Count, 1);
+            
+            
         }else{
             Referendums[referendum_key].Referendum_Status = Status.REJECTED;
             Total_Token_To_Redistribute -= Referendums[referendum_key].Token_Amount_Consummed;
@@ -263,6 +272,7 @@ contract Agora is Institution{
         require(Referendums_Registers[register_address].Last_Version!=0,"Register unknown");
         require(Referendums[referendum_key].Referendum_Status ==  Status.ADOPTED, "Project Not ADOPTED");
         //if(Execute_Winning_Proposal(law_project, num_function_call_ToExecute, Delegation_Law_Projects[law_project].Institution_Address)){
+        emit Function_Call_Executed( register_address, referendum_key, num_function_call_ToExecute);
         if(List_Law_Project[referendum_key].Execute_Winning_Proposal(num_function_call_ToExecute, register_address)){
             bytes32 ballot_key = keccak256(abi.encodePacked(referendum_key,  Referendums[referendum_key].Start_Vote_Timestamps));
             
@@ -279,7 +289,7 @@ contract Agora is Institution{
             Total_Token_To_Redistribute-=Total_Reward%num_voter;   
             emit Project_Executed(register_address, referendum_key);
         }
-        emit Function_Call_Executed( register_address, referendum_key, num_function_call_ToExecute);
+        
     }
     
     function Get_Voter_Reward(address register_address, bytes32 referendum_key)external {

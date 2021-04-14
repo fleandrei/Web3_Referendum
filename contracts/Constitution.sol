@@ -361,8 +361,6 @@ contract Constitution is Register{
                 //return(false,bytes("Delegation already registered"));
             }
             
-            IDelegation(delegation_address).Update_Legislatif_Process(Uint256_Legislatifs_Arg, Revert_Proposition_Petition_Rate, Revert_Penalty_Rate, Ivote_address_legislatif);
-            IDelegation(delegation_address).Update_Internal_Governance(Uint256_Governance_Arg[0], Uint256_Governance_Arg[1], Uint256_Governance_Arg[2], Uint256_Governance_Arg[3], Num_Max_Members, New_Election_Petition_Rate, Ivote_address_governance);
 
             /*Delegation(delegation_address).Update_Legislatif_Process(Uint256_Legislatifs_Arg[0], Uint256_Legislatifs_Arg[1], Uint256_Legislatifs_Arg[2], Uint256_Legislatifs_Arg[3], Uint256_Legislatifs_Arg[4], Uint256_Legislatifs_Arg[5], Revert_Proposition_Petition_Rate, Revert_Penalty_Rate, Ivote_address_legislatif);
             Delegation(delegation_address).Update_Internal_Governance(Uint256_Governance_Arg[0], Uint256_Governance_Arg[1], Uint256_Governance_Arg[2], Uint256_Governance_Arg[3], Num_Max_Members, New_Election_Petition_Rate, Ivote_address_governance);
@@ -372,11 +370,14 @@ contract Constitution is Register{
             
             Delegation_Address_List.add(delegation_address);
             
+            emit Delegation_Created(delegation_address);
+            
             if(Uint256_Governance_Arg[4]>0){
                 Democoin_Instance.Mint(delegation_address, Uint256_Governance_Arg[4]);
             }
             
-            emit Delegation_Created(delegation_address);
+            IDelegation(delegation_address).Update_Legislatif_Process(Uint256_Legislatifs_Arg, Revert_Proposition_Petition_Rate, Revert_Penalty_Rate, Ivote_address_legislatif);
+            IDelegation(delegation_address).Update_Internal_Governance(Uint256_Governance_Arg[0], Uint256_Governance_Arg[1], Uint256_Governance_Arg[2], Uint256_Governance_Arg[3], Num_Max_Members, New_Election_Petition_Rate, Ivote_address_governance);
          }
          
          /* 0x0000000000000000000000000000000000000000, [15,5,1, 1000, 2000, 500], [1000, 10000,3000, 40] 20, 30, 20, 50*/

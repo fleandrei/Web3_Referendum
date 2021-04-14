@@ -19,6 +19,7 @@ import "contracts/IDelegation.sol";
 
 
 
+
 /** 
  * @dev Delegation_Uils library is used to reduce the size of Delegation contract in order to avoid to exceed contract limit size. It contains heavy functions and data structures.
 */
@@ -223,8 +224,9 @@ library Delegation_Uils{
             Mandates[num_mandate].Election_Timestamps = block.timestamp;
             IVote Vote_Instance = IVote(mandate_version.Ivote_address);
             bytes32 key = keccak256(abi.encodePacked(address(this),block.timestamp));
-            Vote_Instance.Create_Ballot(key, citizen_register_address, Citizens_Register(citizen_register_address).Contains_Function_Selector(), mandate_version.Election_Duration, mandate_version.Validation_Duration, candidats_number, mandate_version.Next_Mandate_Max_Members);
             emit New_election(key);
+            Vote_Instance.Create_Ballot(key, citizen_register_address, Citizens_Register(citizen_register_address).Contains_Function_Selector(), mandate_version.Election_Duration, mandate_version.Validation_Duration, candidats_number, mandate_version.Next_Mandate_Max_Members);
+           
             return true;
         }
         
@@ -391,6 +393,7 @@ library Delegation_Uils{
     event Law_Aborted(bytes32 key);
     event Law_Adopted(bytes32 key);
     event Law_executed(bytes32 key);
+    event Function_Call_Executed( bytes32 key, uint num_function_call_ToExecute);
     
     
     
@@ -447,6 +450,13 @@ library Delegation_Uils{
     bool In_election_stage;
     
     
+     /** 
+     * @param Name name of the Institution
+     * @param Initial_members List of initial members of the delegation 
+     * @param token_address Address of {DemoCoin} token that will be used to transfert initial token amount to new registered citizens 
+     * @param citizen_address Address of the {Citizens_Register} contract used in the Project 
+     * @param agora_address Address of the {Agora} contract used in the project.
+    */
     constructor(string memory Name, address[] memory Initial_members, address token_address, address citizen_address, address agora_address) Institution(Name) {
         Type_Institution = Institution_Type.DELEGATION;
         Democoin = DemoCoin(token_address);
@@ -554,10 +564,12 @@ library Delegation_Uils{
         require(In_election_stage, "Not in Election time");
         uint num_mandate = Actual_Mandate;
         //uint new_num_mandate = num_mandate.add(1);
-        Delegation_Uils.Transition_Mandate(Mandates, Mandates_Versions[Mandates[num_mandate].Version].Ivote_address, num_mandate, Internal_Governance_Version);
-        Actual_Mandate = num_mandate + 1;
+          
         In_election_stage=false;
+        Actual_Mandate = num_mandate + 1;
         emit New_Mandate();
+        Delegation_Uils.Transition_Mandate(Mandates, Mandates_Versions[Mandates[num_mandate].Version].Ivote_address, num_mandate, Internal_Governance_Version);
+        
     }
     
     
@@ -652,15 +664,20 @@ library Delegation_Uils{
         require(block.timestamp.sub(Delegation_Law_Projects[law_project].Creation_Timestamp) > Law_Parameters_Versions[version].Proposition_Duration, "PROPOSITION stage not finished");
         
         bytes32 key=keccak256(abi.encodePacked(law_project,block.timestamp));
-        IVote Vote_Instance = IVote(Law_Parameters_Versions[version].Ivote_address);
-        Vote_Instance.Create_Ballot(key, address(this), Contains_Function_Selector, Law_Parameters_Versions[version].Vote_Duration,0, List_Law_Project[law_project].Proposal_Count, 1);
-        
         Delegation_Law_Projects[law_project].Start_Vote_Timestamps = block.timestamp;
         Delegation_Law_Projects[law_project].Law_Project_Status = Status.VOTE;
         
         emit Voting_Stage_Started(law_project, key);
+        IVote Vote_Instance = IVote(Law_Parameters_Versions[version].Ivote_address);
+        Vote_Instance.Create_Ballot(key, address(this), Contains_Function_Selector, Law_Parameters_Versions[version].Vote_Duration,0, List_Law_Project[law_project].Proposal_Count, 1);
+        
+        
     }
     
+     /**
+     * @dev When the voting period is over, any citizen can call this function to end the voting stage. If the winning proposition is the default proposition is the default one (Proposition 0) the law proejct is aborted. Otherwise, the Law Censoring stage is started.
+     * @param law_project Id of the law project the caller wants to add a proposition to. The Id is obtained by hashing the Title with the Description of the law project.
+     */
     function Achiev_Vote(bytes32 law_project) external Delegation_Only{
         //require( version != 0, "No existing Law Project");
         //require(Delegation_Law_Projects[law_project].Law_Project_Status == Status.VOTE, "Law Not at VOTE status");
@@ -681,6 +698,10 @@ library Delegation_Uils{
         }
     }
     
+    /**
+     * @dev If we are at the Law censor stage, any citizen can call this function to sign the petition for canceling the law project. If the {Censor_Proposition_Petition_Rate} (see {Law_Project_Parameters} structure) is reached, the law project is aborted.
+     * @param law_project Id of the law project the caller wants to add a proposition to. The Id is obtained by hashing the Title with the Description of the law project.
+     */
     function Censor_Law(bytes32 law_project)external Citizen_Only{
 
         require(Delegation_Law_Projects[law_project].Law_Project_Status == Status.CENSOR_LAW_PERIOD, "Law Not at CENSOR LAW status");
@@ -702,6 +723,10 @@ library Delegation_Uils{
         Delegation_Law_Projects[law_project].Censor_Law_Petition_Counter = counter;
     }
     
+    /**
+     * @dev If the Law censor period is over and the law project hasn't been rejected by citizens, then any delegation member can call this function to set the law project as ADOPTED (see {Status} enumeration).
+     * @param law_project Id of the law project the caller wants to add a proposition to. The Id is obtained by hashing the Title with the Description of the law project.
+     */
     function Adopt_Law(bytes32 law_project)external Delegation_Only{
         require(Delegation_Law_Projects[law_project].Law_Project_Status == Status.CENSOR_LAW_PERIOD, "Law Not at CENSOR LAW status");
         require(block.timestamp.sub(Delegation_Law_Projects[law_project].Start_Censor_Law_Period_Timestamps) > Law_Parameters_Versions[Delegation_Law_Projects[law_project].Version].Law_Censor_Period_Duration, "CENSOR LAW PERIOD not over");
@@ -710,9 +735,16 @@ library Delegation_Uils{
         emit Law_Adopted(law_project);
     }
     
+    /**
+     * @dev Once the law project has been adopted (ADOPTED value of {Status} enum) then any delegation member can call this function to execute all or some of the remaining function call of the winning proposition. 
+     * For the law project to be fully executed all function call have to be executed.
+     * @param law_project Id of the law project the caller wants to add a proposition to. The Id is obtained by hashing the Title with the Description of the law project.
+     * @param num_function_call_ToExecute Number of function calls to execute.
+     */
     function Execute_Law(bytes32 law_project, uint num_function_call_ToExecute)external Delegation_Only nonReentrant{
         require(Delegation_Law_Projects[law_project].Law_Project_Status == Status.ADOPTED, "Law Not ADOPTED");
         //if(Execute_Winning_Proposal(law_project, num_function_call_ToExecute, Delegation_Law_Projects[law_project].Institution_Address)){
+        emit Function_Call_Executed( law_project, num_function_call_ToExecute);
         if(List_Law_Project[law_project].Execute_Winning_Proposal(num_function_call_ToExecute, Delegation_Law_Projects[law_project].Institution_Address)){
             Delegation_Law_Projects[law_project].Law_Project_Status = Status.EXECUTED;
             Potentialy_Lost_Amount = Potentialy_Lost_Amount.sub(Delegation_Law_Projects[law_project].Law_Total_Potentialy_Lost);
@@ -746,6 +778,9 @@ library Delegation_Uils{
              
     }*/
          
+    /**
+     * @dev See {IDelegation} interface
+     */
     function Update_Legislatif_Process(uint[6] calldata Uint256_Legislatifs_Arg, uint16 Censor_Proposition_Petition_Rate, 
          uint16 Censor_Penalty_Rate, address Ivote_address)external override Constitution_Only{
              
@@ -768,6 +803,9 @@ library Delegation_Uils{
             emit Legislatif_Parameters_Updated();
     }  
          
+    /**
+     * @dev See {IDelegation} interface
+     */
     function Update_Internal_Governance( uint Election_Duration, uint Validation_Duration, uint Mandate_Duration, uint Immunity_Duration,
         uint16 Num_Max_Members, uint16 New_Election_Petition_Rate, address Ivote_address)external override Constitution_Only{
             
@@ -791,8 +829,7 @@ library Delegation_Uils{
          
     
     /**
-     * @notice Add a register that can be ruled by the delegation
-     * @dev This function is called by the Constitution
+     * @dev See {IDelegation} interface
      * */
     function Add_Controled_Register(address register_address) external override Constitution_Only {
         require(!Controled_Registers[register_address].Active, "Register already Controled");
@@ -803,8 +840,7 @@ library Delegation_Uils{
     }
     
     /**
-     * @notice Remove a register from the list of conductor that can be ruled by the delegation
-     * @dev This function is called by the Constitution. If there are pending law that depend on this register, the delegation would not be immeditely removed from register's Authorithies list. 
+     * @dev See {IDelegation} interface
      * */
     function Remove_Controled_Register(address register_address) external override Constitution_Only {
         require(Controled_Registers[register_address].Active, "Register Not Controled");
@@ -850,6 +886,10 @@ library Delegation_Uils{
      *              - Update the value of the amount of token consumed by the sender for the law project identified by "key".
      *              - Update the "Law_Total_Potentialy_Lost" field of the corresponding "Delegation_Law_Project" struct.
      *              - Update the "Potentialy_Lost_Amount" state variable
+     * 
+     * @param sender Address of the sender of the transaction
+     * @param amount Amount of DemoCoin sent in the transaction
+     * @param key Id of the law project 
      * */
     function Token_Consumption_Handler(address sender, uint amount, bytes32 key) internal{
         
@@ -867,32 +907,52 @@ library Delegation_Uils{
     }
     
     /**
-     * @dev Decrease the counter ("Law_Project_Counter" field of Controlable_Register struct) of pending law project related to the register of address "institution_address". If the counter become null and the "Actual" field of Controlable_Registers struct is false,
+     * @dev Decrease the counter ("Law_Project_Counter" field of Controlable_Register struct) of pending law project related to the register of address "institution_address". If the counter becomes null and the "Actual" field of Controlable_Registers struct is false,
      * then the corresponding register is removed from List_Controled_Registers and the delegation removes it self from the register's Authorithies list ("Register_Authorities" state variable)
+     * @param institution_address Address of the controled register to be updated.
     */
     function Update_Controled_Registers(address institution_address) internal{
         //address institution_address = Law_Projects[law_project].Institution_Address;
         uint counter = Controled_Registers[institution_address].Law_Project_Counter.sub(1);
+        Controled_Registers[institution_address].Law_Project_Counter = counter;
         if(counter==0 && !Controled_Registers[institution_address].Active){
             Register(institution_address).Remove_Authority(address(this));
             List_Controled_Registers.remove(institution_address);
         }
-        Controled_Registers[institution_address].Law_Project_Counter = counter;
+       
     }
     
    
     
     /*Getters*/
-    
+    /**
+     * @dev See {IDelegation} interface
+     */
     function Contains(address member_address) external view override returns(bool contain){
       return Mandates[Actual_Mandate].Members.contains(member_address);
     }
     
+    /**
+     * @dev Get 2 arrays:
+     *    - The list of law project Id 
+     *    - The list of controled Register
+     * @return Law_Project_List List of law project (pending, executed and aborted)
+     * @return Controled_Register List of register address (represented in bytes32) whose contract is under Delegation control
+     */
     function Get_List_Law_Register()external view returns(bytes32[] memory Law_Project_List, bytes32[] memory Controled_Register ){
         return (List_Delegation_Law_Projects, List_Controled_Registers._inner._values);
     }
     
-        
+    /**
+     * @dev Get informations about a mandate
+     * @param Id Id of the mandate
+     * @return version Parameter Version used for this mandate
+     * @return Inauguration_Timestamps Inauguration_Timestamps: Beginning of current mandate
+     * @return Election_Timestamps Beginning of election
+     * @return New_Election_Petition_Number Number of signatures obtained for revoking the delegation members related to {Id} Mandate
+     * @return Members Array of {Id} mandate delegation member's address (represented in bytes32)
+     * @return Candidats Array candidats address (represented in bytes32)
+     */
     function Get_Mandate(uint Id)external view returns(uint version, uint Inauguration_Timestamps, uint Election_Timestamps, uint New_Election_Petition_Number, bytes32[] memory Members, bytes32[] memory Candidats){
         version = Mandates[Id].Version;
         Inauguration_Timestamps = Mandates[Id].Inauguration_Timestamps;
@@ -902,20 +962,50 @@ library Delegation_Uils{
         Candidats = Mandates[Id].Next_Mandate_Candidats._inner._values;
     }
     
+    /**
+     * @dev Get the amount of DemoCoin token owned by the Delegation and used by a Delegation member for a specific delegation law project.
+     * @param key Id of law project
+     * @param member Address of delegation member 
+     * @return amount Amount of token used by {member} address for {key} law project
+     * 
+     */
     function Get_Member_Amount_Consumed(bytes32 key, address member)external view returns(uint amount){
         return Delegation_Law_Projects[key].Members_Token_Consumption[member];
     }
  
+    /**
+     * @dev Get various Delegation state variables values.
+     * @return legislatif_process_version Current version of parameters related to delegation law project process.
+     * @return internal_governance_version Current version of parameters related to delegation internal governance.
+     * @return actual_mandate Id number of the current mandate 
+     * @return potentialy_lost_amount Total amount of token potentially lost via penalty fee. 
+     * @return in_election_stage Boolean assesing whether we are in election stage or not.
+     */
     function Get_Delegation_Infos()external view returns (uint legislatif_process_version, uint internal_governance_version, uint actual_mandate, uint potentialy_lost_amount, bool in_election_stage){
         return (Legislatif_Process_Version, Internal_Governance_Version, Actual_Mandate, Potentialy_Lost_Amount, In_election_stage);
     }
     
-    
+    /**
+     * @dev Get informations about a law project proposition
+     * @param key Id of the law project
+     * @param id Id of the proposition
+     * @return description Description of the proposition
+     * @return childrens Proposition node's children in the Proposal Tree. (See {Add_Corpus_Proposal} function of {Initiative_Legislative_Lib} library)
+     * @return function_calls List of function calls proposed by the proposition
+     * @return func_call_counter Number of function calls proposed by the proposition.
+     * @return parent Id of the proposition's parent in the Proposal Tree
+     * @return author Address of the author of the proposition.
+     */
     function Get_Proposal(bytes32 key, uint id)external view returns(bytes memory description, uint[] memory childrens, bytes[] memory function_calls, uint func_call_counter, uint parent, address author){
         function_calls = List_Law_Project[key].Get_Proposal_FunctionCall_List(id);
         (description, childrens,func_call_counter, parent, author) = List_Law_Project[key].Get_Proposal_Infos(id);
     }
     
+    /**
+     * @dev Get Results of a law project
+     * @return Winning_Proposal Id of the proposition that has been voted.
+     * @return Receipts List of receipts of {Winning_Proposal} function call's execution.
+     */
     function Get_Law_Results(bytes32 key)external view returns(uint Winning_Proposal, Initiative_Legislative_Lib.Function_Call_Result[] memory Receipts){
         return(List_Law_Project[key].Winning_Proposal, List_Law_Project[key].Function_Call_Receipts);
     }

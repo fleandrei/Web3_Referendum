@@ -655,6 +655,30 @@ contract('TEST: Agora.sol', function(accounts){
 			await expectRevert(Agora_Instance.End_Proposition_Stage(Loi_instance.address, referendum_key, {from:Citizens[0]}), "PETITIONS stage not finished");
 		});
 
+		it("citizen account end proposition stage. There is no propositions", async function (){
+			var Total_Token_To_Redistribute_before = await Agora_Instance.Total_Token_To_Redistribute();
+			
+			Title = web3.utils.randomHex(Title_Size_max);
+			Description = web3.utils.randomHex(Description_Size_max); 
+			referendum_key = web3.utils.soliditySha3(web3.eth.abi.encodeParameters(["bytes", "bytes"], [Title, Description]));
+			proposal_Description = web3.utils.randomHex(Description_Size_max); 
+
+			await DemoCoin_Instance.approve(Agora_Instance.address, Law_Initialisation_Price, {from:Citizens[0]});
+			await Agora_Instance.Add_Law_Project(Loi_instance.address, Title, Description, {from:Citizens[0]});
+
+			var required_signatures = Math.floor(Required_Petition_Rate*Citizens.length/10000);
+			for(var i=2;i<required_signatures;i++){
+					await Agora_Instance.Sign_Petition(Loi_instance.address, referendum_key, {from:Citizens[i]});
+			}
+
+			await time.increase(Petition_Duration+1);
+			res=await Agora_Instance.End_Proposition_Stage(Loi_instance.address, referendum_key, {from:Citizens[0]});
+
+			expect((await Agora_Instance.Referendums(referendum_key)).Referendum_Status).to.be.bignumber.equal(new BN(4));
+			expect((await Agora_Instance.Total_Token_To_Redistribute())).to.be.bignumber.equal(Total_Token_To_Redistribute_before);
+			await expectEvent(res, "Projet_Rejected", {register:Loi_instance.address, key:referendum_key}, "Projet_Rejected event incorrect");
+		});
+
 		it("citizen account end proposition stage. There is enough signatures to begin the vote stage", async function (){
 			var required_signatures = Math.floor(Required_Petition_Rate*Citizens.length/10000);
 			for(var i=2;i<required_signatures;i++){
