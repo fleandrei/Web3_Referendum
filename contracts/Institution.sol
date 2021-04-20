@@ -23,6 +23,7 @@ import "contracts/DemoCoin.sol";
 abstract contract Institution is ReentrancyGuard{
     event Institution_Created(address Address, Institution_Type Type);
     event Constitution_Changed(address new_constitution);
+    event Name_Changed();
     
     ///notice Type of the institution
     enum Institution_Type{
@@ -107,6 +108,11 @@ abstract contract Institution is ReentrancyGuard{
         require(new_constitution!=address(0), "Address 0");
         Constitution_Address= new_constitution;
         emit Constitution_Changed(new_constitution);
+    }
+
+    function Set_Name(string calldata name)external Constitution_Only{
+        Name=name;
+        emit Name_Changed();
     }
     
     /*UTILS*/

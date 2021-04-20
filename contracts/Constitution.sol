@@ -186,8 +186,17 @@ contract Constitution is Register{
          require(Registers_Address_List.contains(instance_address) || Delegation_Address_List.contains(instance_address) || instance_address== address(Citizen_Instance), "instance address unknown"); // There is no interest to modify Agora's constitution.
          require(new_address!=address(0),"address 0");
          Institution Insti = Institution(instance_address);
+         Institution_Type type_insti = Insti.Type_Institution();
+         require(type_insti != Institution_Type.CONSTITUTION);
          Insti.Set_Constitution(new_address);
      }
+
+     function Set_Institution_Name(address instance_address, string calldata name)external Register_Authorities_Only{
+         require(Registers_Address_List.contains(instance_address) || Delegation_Address_List.contains(instance_address) || instance_address== address(Citizen_Instance) || instance_address== address(Agora_Instance), "instance address unknown");
+         Institution Insti = Institution(instance_address);
+         Insti.Set_Name(name);
+     }
+     
      
     /*FUNCTIONCALL API functions*/
     

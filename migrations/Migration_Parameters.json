@@ -1,0 +1,34 @@
+{
+  "DemoCoin":{
+    "Name":"DemoCoin",
+    "Symbol":"DEMO",
+    "Initial_Owners":[
+        "0xfD401B3D1726b159D5E324B919b57B155227e68E",
+        "0x37d85FEC01D7205071693bF48782743D3Ba1046b",
+        "0xf37B5496B70F306e19af4799F143DC77A3cD9f52"
+      ],
+    "Initial_Amount":[
+      	"20",
+      	"10",
+      	"10"
+      ]
+  },
+  
+  "Citizens_Register":{
+    "Name":"Citizens",
+    "Initial_Citizens":[
+      	"0xfD401B3D1726b159D5E324B919b57B155227e68E",
+        "0x37d85FEC01D7205071693bF48782743D3Ba1046b",
+        "0xf37B5496B70F306e19af4799F143DC77A3cD9f52"
+      ],
+    "new_citizen_mint_amount":"7"
+  },
+  
+  "Agora_Name":"AGORA",
+  
+  "Constitution":{
+    "Name":"Constitution",
+    "transition_government":"0xfD401B3D1726b159D5E324B919b57B155227e68E"
+  }
+  
+}
