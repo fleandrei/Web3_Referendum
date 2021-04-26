@@ -49,14 +49,16 @@ class Register {
 
   Set_Register_Events = async()=> {
     console.log("Set_Register_Events: this.Instance:",this.Instance)
-    await this.Instance.events.Name_Changed(this.Handle_Name_Changed);
     await this.Instance.events.Constitution_Changed(this.Handle_Constitution_Changed);
+    await this.Instance.events.Name_Changed(this.Handle_Name_Changed);
     await this.Instance.events.Authority_Added(this.Handle_Authority_Added);
     await this.Instance.events.Authority_Removed(this.Handle_Authority_Removed);
   }
 
   Handle_Name_Changed= async(err,event)=>{
-    this.Name = await this.Instance.methods.Name();
+    var name = await this.Instance.methods.Name().call();
+    console.log("\nName:",name,"\n Typeof Name:",typeof name);
+     this.Name = name;
     this.Event.emit("State_Changed");
     this.Event.emit("Name_Changed");
   }
