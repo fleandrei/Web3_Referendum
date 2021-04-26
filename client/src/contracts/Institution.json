@@ -34,6 +34,12 @@
       "type": "event"
     },
     {
+      "anonymous": false,
+      "inputs": [],
+      "name": "Name_Changed",
+      "type": "event"
+    },
+    {
       "inputs": [],
       "name": "Constitution_Address",
       "outputs": [
@@ -84,9 +90,22 @@
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        }
+      ],
+      "name": "Set_Name",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.1+commit.df193b15\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"new_constitution\",\"type\":\"address\"}],\"name\":\"Constitution_Changed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"Address\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"enum Institution.Institution_Type\",\"name\":\"Type\",\"type\":\"uint8\"}],\"name\":\"Institution_Created\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"Constitution_Address\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"Name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"new_constitution\",\"type\":\"address\"}],\"name\":\"Set_Constitution\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"Type_Institution\",\"outputs\":[{\"internalType\":\"enum Institution.Institution_Type\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"This abstract contract is inherited by almost all contracts of \\\"Web3 Direct Democracy\\\" (except \\\"DemoCoin\\\" token and ballot contracts inheriting from \\\"IVote\\\" interface).  It gathers some common features such as constitution address handling.\",\"kind\":\"dev\",\"methods\":{\"Set_Constitution(address)\":{\"details\":\"The function Allows to change the Constitution contract the current Institution obey to. The function is only callable by the {Constitution_Address}\",\"params\":{\"new_constitution\":\"Address of the new Constitution contract.\"}},\"constructor\":{\"details\":\"Set the name of the new institution and the address of the constitution.\",\"params\":{\"name\":\"Name of the new institution\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"Constitution_Address()\":{\"notice\":\"Address of the constitution of the DAO\"},\"Name()\":{\"notice\":\"Name of the institution\"},\"Type_Institution()\":{\"notice\":\"Type of the Institution\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/home/andrei/Alyra/Web3_Referendum/contracts/Institution.sol\":\"Institution\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":20000},\"remappings\":[]},\"sources\":{\"/home/andrei/Alyra/Web3_Referendum/contracts/Institution.sol\":{\"keccak256\":\"0x4321de8410ecb8ee5eb2898601bd1e7cf16c0a63b994c926d158271f3c451092\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://789f30053a9b86004fffc31c65b18c458d6b19a742f3d5da50936f6ea81b4e83\",\"dweb:/ipfs/QmRaMvSwj2SzzUheGZgYQ8WYByKWmK42ccTR1W5cP82hyv\"]},\"@openzeppelin/contracts/math/SafeMath.sol\":{\"keccak256\":\"0x89a5235cc820ce98151d91b50b738fa415f184afc79f7c7f59dbc1734b592ab8\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://4524329737fff496aa35f3e8d7e21492783b393eb317f1982c9446acf39d36d6\",\"dweb:/ipfs/QmYQRGL2Fqhr6VN5mjnVPSms6QmBt12Di8PqYAXjecBf5t\"]},\"@openzeppelin/contracts/token/ERC20/ERC20.sol\":{\"keccak256\":\"0x7d8e1c7d3c1e0c6dd71f7f9dd250b9ebca4ec0baf658f743c7abd14f7f26ac7c\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://079facb5672ce27b313b81bae1d0b89515ba302c1959be7c84c9996096683b13\",\"dweb:/ipfs/QmUiRHnpRoUXnSrhxhgtxP9gdF6pJjLSWwvdCyLpXshqYr\"]},\"@openzeppelin/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0x7d5b96b476e8765e038132e203e5a97557c89e61c3132e29d0512ddcc2ced28f\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://b1b835fb3630b14055b878b2d3b2cb3843c4d622c3ae3aec451d457fff6aeb2a\",\"dweb:/ipfs/QmRsGNbdFFVkzLU2Nunecn8BZcofiQpHkvXcDGdJwXyV2C\"]},\"@openzeppelin/contracts/utils/Address.sol\":{\"keccak256\":\"0x985cc56c2cb79527e573060ed294926635b698c347f2b07e026377f64b39ce10\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://e32c764fd37fe6210d362a463be151eb274bb49236d6f86d5a54f8d7f1ad898e\",\"dweb:/ipfs/QmcRRWxH2GA4NFaGicqD7tr8HzzZsqMoX6YFMvPAuNMuua\"]},\"@openzeppelin/contracts/utils/Context.sol\":{\"keccak256\":\"0x177d62c70d2fc339bd2b7b6c0407ad8818fa0e6d3572458b61c2a255ccd728c5\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://c22b36f19b62a0f2ad19db42cc4fb9723034cf9adbcfd00326df7c36701d1809\",\"dweb:/ipfs/QmbcDEYkmX43s7jDyWQwPqruZJnh9AexZLtUCvRFS6EPZs\"]},\"@openzeppelin/contracts/utils/EnumerableSet.sol\":{\"keccak256\":\"0x80e3fb83024287da5bb0fb8c56dc5344115d56841b5624cbe063b0408b6acada\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://4dd11cc95514e34c59937b16a887e0d1e8163ff2a6a9f659e859f48eda4b6816\",\"dweb:/ipfs/QmPXsgC46vnYz64VhZbedoeDXzwrg76jvJnDBPwLNCNPXr\"]},\"@openzeppelin/contracts/utils/ReentrancyGuard.sol\":{\"keccak256\":\"0x59099a6cd639eec965f060b0e48bc86bdbed02a095d4c36075b29ac0c0e8aa13\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://3752e6488908b452113c0724fc1995d3124e7de2eef89c378b07f08ccdaf2d00\",\"dweb:/ipfs/QmQ8uP8CSsZjQCwZg8o2eovEVaBRKdeH33wip3GBxGhzKN\"]},\"contracts/DemoCoin.sol\":{\"keccak256\":\"0xcca73fc21376a5994f631dc0e539700ee53847a7d6914201ac0bcc6bf22d6243\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://9fe69c45e912b0f0bc30e3f1b5a22b4ee47f5d363874912db0434b2004cae22e\",\"dweb:/ipfs/QmfXJGSuPMg6ppZVAhTQemcyBYzj1JB2wsH8YYAUBmqK3Z\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.1+commit.df193b15\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"new_constitution\",\"type\":\"address\"}],\"name\":\"Constitution_Changed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"Address\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"enum Institution.Institution_Type\",\"name\":\"Type\",\"type\":\"uint8\"}],\"name\":\"Institution_Created\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"Name_Changed\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"Constitution_Address\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"Name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"new_constitution\",\"type\":\"address\"}],\"name\":\"Set_Constitution\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"}],\"name\":\"Set_Name\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"Type_Institution\",\"outputs\":[{\"internalType\":\"enum Institution.Institution_Type\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"This abstract contract is inherited by almost all contracts of \\\"Web3 Direct Democracy\\\" (except \\\"DemoCoin\\\" token and ballot contracts inheriting from \\\"IVote\\\" interface).  It gathers some common features such as constitution address handling.\",\"kind\":\"dev\",\"methods\":{\"Set_Constitution(address)\":{\"details\":\"The function Allows to change the Constitution contract the current Institution obey to. The function is only callable by the {Constitution_Address}\",\"params\":{\"new_constitution\":\"Address of the new Constitution contract.\"}},\"constructor\":{\"details\":\"Set the name of the new institution and the address of the constitution.\",\"params\":{\"name\":\"Name of the new institution\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"Constitution_Address()\":{\"notice\":\"Address of the constitution of the DAO\"},\"Name()\":{\"notice\":\"Name of the institution\"},\"Type_Institution()\":{\"notice\":\"Type of the Institution\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/home/andrei/Alyra/Web3_Referendum/contracts/Institution.sol\":\"Institution\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":20000},\"remappings\":[]},\"sources\":{\"/home/andrei/Alyra/Web3_Referendum/contracts/Institution.sol\":{\"keccak256\":\"0xf86d8e7e23ded3ff4ce56fe6a35699b13f8aaf0bdf9c2fe225bae64800b376a4\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://70753871b478afff0514630cf39ea2c13f21f2685b73ba17a663fd7ea40beac1\",\"dweb:/ipfs/QmSACAx7fitRrYzvbXVc8A6enjYZoxSxTxhbJyiw2DaXkg\"]},\"@openzeppelin/contracts/math/SafeMath.sol\":{\"keccak256\":\"0x89a5235cc820ce98151d91b50b738fa415f184afc79f7c7f59dbc1734b592ab8\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://4524329737fff496aa35f3e8d7e21492783b393eb317f1982c9446acf39d36d6\",\"dweb:/ipfs/QmYQRGL2Fqhr6VN5mjnVPSms6QmBt12Di8PqYAXjecBf5t\"]},\"@openzeppelin/contracts/token/ERC20/ERC20.sol\":{\"keccak256\":\"0x7d8e1c7d3c1e0c6dd71f7f9dd250b9ebca4ec0baf658f743c7abd14f7f26ac7c\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://079facb5672ce27b313b81bae1d0b89515ba302c1959be7c84c9996096683b13\",\"dweb:/ipfs/QmUiRHnpRoUXnSrhxhgtxP9gdF6pJjLSWwvdCyLpXshqYr\"]},\"@openzeppelin/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0x7d5b96b476e8765e038132e203e5a97557c89e61c3132e29d0512ddcc2ced28f\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://b1b835fb3630b14055b878b2d3b2cb3843c4d622c3ae3aec451d457fff6aeb2a\",\"dweb:/ipfs/QmRsGNbdFFVkzLU2Nunecn8BZcofiQpHkvXcDGdJwXyV2C\"]},\"@openzeppelin/contracts/utils/Address.sol\":{\"keccak256\":\"0x985cc56c2cb79527e573060ed294926635b698c347f2b07e026377f64b39ce10\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://e32c764fd37fe6210d362a463be151eb274bb49236d6f86d5a54f8d7f1ad898e\",\"dweb:/ipfs/QmcRRWxH2GA4NFaGicqD7tr8HzzZsqMoX6YFMvPAuNMuua\"]},\"@openzeppelin/contracts/utils/Context.sol\":{\"keccak256\":\"0x177d62c70d2fc339bd2b7b6c0407ad8818fa0e6d3572458b61c2a255ccd728c5\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://c22b36f19b62a0f2ad19db42cc4fb9723034cf9adbcfd00326df7c36701d1809\",\"dweb:/ipfs/QmbcDEYkmX43s7jDyWQwPqruZJnh9AexZLtUCvRFS6EPZs\"]},\"@openzeppelin/contracts/utils/EnumerableSet.sol\":{\"keccak256\":\"0x80e3fb83024287da5bb0fb8c56dc5344115d56841b5624cbe063b0408b6acada\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://4dd11cc95514e34c59937b16a887e0d1e8163ff2a6a9f659e859f48eda4b6816\",\"dweb:/ipfs/QmPXsgC46vnYz64VhZbedoeDXzwrg76jvJnDBPwLNCNPXr\"]},\"@openzeppelin/contracts/utils/ReentrancyGuard.sol\":{\"keccak256\":\"0x59099a6cd639eec965f060b0e48bc86bdbed02a095d4c36075b29ac0c0e8aa13\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://3752e6488908b452113c0724fc1995d3124e7de2eef89c378b07f08ccdaf2d00\",\"dweb:/ipfs/QmQ8uP8CSsZjQCwZg8o2eovEVaBRKdeH33wip3GBxGhzKN\"]},\"contracts/DemoCoin.sol\":{\"keccak256\":\"0xc14b565f40959d22824f7fd5e6b78c16eaf09d088b9479c150d82be71257bf35\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://abbe1a884a4f9463c6f5f743f5327abe5b69e317d0d1a3244089cf941389c9e7\",\"dweb:/ipfs/QmNxzcpoTQ7suGyB6tzKziTC8oyyoXZq2sRDmkUffaxa9r\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
@@ -94,45 +113,45 @@
   "deployedGeneratedSources": [],
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n//pragma experimental ABIEncoderV2;\n\n\n/*import \"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol\";\nimport \"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/structs/EnumerableSet.sol\";\nimport \"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/SafeMath.sol\";\nimport \"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/security/ReentrancyGuard.sol\";\nimport \"DemoCoin.sol\";*/\n\nimport \"@openzeppelin/contracts/utils/Address.sol\";\nimport \"@openzeppelin/contracts/utils/EnumerableSet.sol\";\nimport \"@openzeppelin/contracts/math/SafeMath.sol\";\nimport \"@openzeppelin/contracts/utils/ReentrancyGuard.sol\";\nimport \"contracts/DemoCoin.sol\";\n\n\n/** \n * @dev This abstract contract is inherited by almost all contracts of \"Web3 Direct Democracy\" (except \"DemoCoin\" token and ballot contracts inheriting from \"IVote\" interface). \n * It gathers some common features such as constitution address handling.\n*/\nabstract contract Institution is ReentrancyGuard{\n    event Institution_Created(address Address, Institution_Type Type);\n    event Constitution_Changed(address new_constitution);\n    \n    ///notice Type of the institution\n    enum Institution_Type{\n        CONSTITUTION,\n        CITIZENS_REGISTRATION,\n        AGORA,\n        LOI,\n        API,\n        DELEGATION,\n        CUSTOM\n    }\n    \n    /*enum Argument_Type{\n        UINT,\n        INT,\n        BYTES,\n        STRING,\n        ADDRESS,\n        BOOL,\n        UINT_ARRAY,\n        INT_ARRAY,\n        BYTES_ARRAY,\n        STRING_ARRAY,\n        ADDRESS_ARRAY,\n        BOOL_ARRAY\n    }\n    \n    struct Function_Argument{\n        //string name;\n        Argument_Type _type;\n        uint Type_Size;\n        uint Array_Length;\n    }\n    \n    struct Register_Function{\n        bytes4 selector;\n        Function_Argument[] arg_list;\n    }\n    \n    struct Function_Call{\n        bytes Data;\n        address contract_address;\n    }*/\n    \n    ///@dev Check that the caller address is the {Constitution_Address}\n    modifier Constitution_Only(){\n        require(msg.sender == Constitution_Address, \"Constitution Only\");\n        _;\n    }\n    \n    /*TEMP DEBUG EVENT*/\n    /*event LogUint(uint);\n    event LogString(string);\n    event LogBytes(bytes);\n    event LogBytes32(bytes32);\n    event LogAddress(address);*/\n    \n    /*STATE*/\n    \n    ///@notice Name of the institution\n    string public Name;\n    ///@notice Address of the constitution of the DAO\n    address public Constitution_Address;\n    \n    ///@notice Type of the Institution\n    Institution_Type public Type_Institution;\n    \n    /**\n     * @dev Set the name of the new institution and the address of the constitution.\n     * @param name Name of the new institution\n    */\n    constructor(string memory name){\n        Name=name;\n        Constitution_Address = msg.sender; //All Institution contract whether are called by created by the Constitution contract or are the Constitution contract\n    }\n    \n    /**\n     * @dev The function Allows to change the Constitution contract the current Institution obey to. The function is only callable by the {Constitution_Address}\n     * @param new_constitution Address of the new Constitution contract.\n    */\n    function Set_Constitution(address new_constitution)external Constitution_Only{\n        require(new_constitution!=address(0), \"Address 0\");\n        Constitution_Address= new_constitution;\n        emit Constitution_Changed(new_constitution);\n    }\n    \n    /*UTILS*/\n    /** \n     * @dev Utility function for computing Percentage.\n     * @param ratio The ratio is represented with 2 decimals\n     * @param base The base's number of decimal is arbitrary\n     * @return Return the {ratio}% of {base}. The result is represented with the number of decimals of {base} \n    */\n    function Percentage(uint16 ratio, uint base) internal pure returns(uint){\n        return (ratio*base)/10000 ;// ((ratio*base)/100) * 10^(-ratio_decimals)\n    }\n}\n\n",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n//pragma experimental ABIEncoderV2;\n\n\n/*import \"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol\";\nimport \"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/structs/EnumerableSet.sol\";\nimport \"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/SafeMath.sol\";\nimport \"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/security/ReentrancyGuard.sol\";\nimport \"DemoCoin.sol\";*/\n\nimport \"@openzeppelin/contracts/utils/Address.sol\";\nimport \"@openzeppelin/contracts/utils/EnumerableSet.sol\";\nimport \"@openzeppelin/contracts/math/SafeMath.sol\";\nimport \"@openzeppelin/contracts/utils/ReentrancyGuard.sol\";\nimport \"contracts/DemoCoin.sol\";\n\n\n/** \n * @dev This abstract contract is inherited by almost all contracts of \"Web3 Direct Democracy\" (except \"DemoCoin\" token and ballot contracts inheriting from \"IVote\" interface). \n * It gathers some common features such as constitution address handling.\n*/\nabstract contract Institution is ReentrancyGuard{\n    event Institution_Created(address Address, Institution_Type Type);\n    event Constitution_Changed(address new_constitution);\n    event Name_Changed();\n    \n    ///notice Type of the institution\n    enum Institution_Type{\n        CONSTITUTION,\n        CITIZENS_REGISTRATION,\n        AGORA,\n        LOI,\n        API,\n        DELEGATION,\n        CUSTOM\n    }\n    \n    /*enum Argument_Type{\n        UINT,\n        INT,\n        BYTES,\n        STRING,\n        ADDRESS,\n        BOOL,\n        UINT_ARRAY,\n        INT_ARRAY,\n        BYTES_ARRAY,\n        STRING_ARRAY,\n        ADDRESS_ARRAY,\n        BOOL_ARRAY\n    }\n    \n    struct Function_Argument{\n        //string name;\n        Argument_Type _type;\n        uint Type_Size;\n        uint Array_Length;\n    }\n    \n    struct Register_Function{\n        bytes4 selector;\n        Function_Argument[] arg_list;\n    }\n    \n    struct Function_Call{\n        bytes Data;\n        address contract_address;\n    }*/\n    \n    ///@dev Check that the caller address is the {Constitution_Address}\n    modifier Constitution_Only(){\n        require(msg.sender == Constitution_Address, \"Constitution Only\");\n        _;\n    }\n    \n    /*TEMP DEBUG EVENT*/\n    /*event LogUint(uint);\n    event LogString(string);\n    event LogBytes(bytes);\n    event LogBytes32(bytes32);\n    event LogAddress(address);*/\n    \n    /*STATE*/\n    \n    ///@notice Name of the institution\n    string public Name;\n    ///@notice Address of the constitution of the DAO\n    address public Constitution_Address;\n    \n    ///@notice Type of the Institution\n    Institution_Type public Type_Institution;\n    \n    /**\n     * @dev Set the name of the new institution and the address of the constitution.\n     * @param name Name of the new institution\n    */\n    constructor(string memory name){\n        Name=name;\n        Constitution_Address = msg.sender; //All Institution contract whether are called by created by the Constitution contract or are the Constitution contract\n    }\n    \n    /**\n     * @dev The function Allows to change the Constitution contract the current Institution obey to. The function is only callable by the {Constitution_Address}\n     * @param new_constitution Address of the new Constitution contract.\n    */\n    function Set_Constitution(address new_constitution)external Constitution_Only{\n        require(new_constitution!=address(0), \"Address 0\");\n        Constitution_Address= new_constitution;\n        emit Constitution_Changed(new_constitution);\n    }\n\n    function Set_Name(string calldata name)external Constitution_Only{\n        Name=name;\n        emit Name_Changed();\n    }\n    \n    /*UTILS*/\n    /** \n     * @dev Utility function for computing Percentage.\n     * @param ratio The ratio is represented with 2 decimals\n     * @param base The base's number of decimal is arbitrary\n     * @return Return the {ratio}% of {base}. The result is represented with the number of decimals of {base} \n    */\n    function Percentage(uint16 ratio, uint base) internal pure returns(uint){\n        return (ratio*base)/10000 ;// ((ratio*base)/100) * 10^(-ratio_decimals)\n    }\n}\n\n",
   "sourcePath": "/home/andrei/Alyra/Web3_Referendum/contracts/Institution.sol",
   "ast": {
     "absolutePath": "/home/andrei/Alyra/Web3_Referendum/contracts/Institution.sol",
     "exportedSymbols": {
       "Address": [
-        10780
+        11160
       ],
       "Context": [
-        10803
+        11183
       ],
       "DemoCoin": [
-        16803
+        17424
       ],
       "ERC20": [
-        10406
+        10786
       ],
       "EnumerableSet": [
-        11318
+        11698
       ],
       "IERC20": [
-        10484
+        10864
       ],
       "Institution": [
-        7574
+        7942
       ],
       "ReentrancyGuard": [
-        11358
+        11738
       ],
       "SafeMath": [
-        9903
+        10283
       ]
     },
-    "id": 7575,
+    "id": 7943,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 7462,
+        "id": 7813,
         "literals": [
           "solidity",
           "^",
@@ -140,60 +159,60 @@
           ".0"
         ],
         "nodeType": "PragmaDirective",
-        "src": "32:23:8"
+        "src": "32:23:9"
       },
       {
         "absolutePath": "@openzeppelin/contracts/utils/Address.sol",
         "file": "@openzeppelin/contracts/utils/Address.sol",
-        "id": 7463,
+        "id": 7814,
         "nodeType": "ImportDirective",
-        "scope": 7575,
-        "sourceUnit": 10781,
-        "src": "573:51:8",
+        "scope": 7943,
+        "sourceUnit": 11161,
+        "src": "573:51:9",
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
         "absolutePath": "@openzeppelin/contracts/utils/EnumerableSet.sol",
         "file": "@openzeppelin/contracts/utils/EnumerableSet.sol",
-        "id": 7464,
+        "id": 7815,
         "nodeType": "ImportDirective",
-        "scope": 7575,
-        "sourceUnit": 11319,
-        "src": "625:57:8",
+        "scope": 7943,
+        "sourceUnit": 11699,
+        "src": "625:57:9",
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
         "absolutePath": "@openzeppelin/contracts/math/SafeMath.sol",
         "file": "@openzeppelin/contracts/math/SafeMath.sol",
-        "id": 7465,
+        "id": 7816,
         "nodeType": "ImportDirective",
-        "scope": 7575,
-        "sourceUnit": 9904,
-        "src": "683:51:8",
+        "scope": 7943,
+        "sourceUnit": 10284,
+        "src": "683:51:9",
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
         "absolutePath": "@openzeppelin/contracts/utils/ReentrancyGuard.sol",
         "file": "@openzeppelin/contracts/utils/ReentrancyGuard.sol",
-        "id": 7466,
+        "id": 7817,
         "nodeType": "ImportDirective",
-        "scope": 7575,
-        "sourceUnit": 11359,
-        "src": "735:59:8",
+        "scope": 7943,
+        "sourceUnit": 11739,
+        "src": "735:59:9",
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
         "absolutePath": "contracts/DemoCoin.sol",
         "file": "contracts/DemoCoin.sol",
-        "id": 7467,
+        "id": 7818,
         "nodeType": "ImportDirective",
-        "scope": 7575,
-        "sourceUnit": 16804,
-        "src": "795:32:8",
+        "scope": 7943,
+        "sourceUnit": 17425,
+        "src": "795:32:9",
         "symbolAliases": [],
         "unitAlias": ""
       },
@@ -202,54 +221,54 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 7469,
+              "id": 7820,
               "name": "ReentrancyGuard",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 11358,
-              "src": "1123:15:8"
+              "referencedDeclaration": 11738,
+              "src": "1123:15:9"
             },
-            "id": 7470,
+            "id": 7821,
             "nodeType": "InheritanceSpecifier",
-            "src": "1123:15:8"
+            "src": "1123:15:9"
           }
         ],
         "contractDependencies": [
-          11358
+          11738
         ],
         "contractKind": "contract",
         "documentation": {
-          "id": 7468,
+          "id": 7819,
           "nodeType": "StructuredDocumentation",
-          "src": "830:259:8",
+          "src": "830:259:9",
           "text": " @dev This abstract contract is inherited by almost all contracts of \"Web3 Direct Democracy\" (except \"DemoCoin\" token and ballot contracts inheriting from \"IVote\" interface). \n It gathers some common features such as constitution address handling."
         },
         "fullyImplemented": true,
-        "id": 7574,
+        "id": 7942,
         "linearizedBaseContracts": [
-          7574,
-          11358
+          7942,
+          11738
         ],
         "name": "Institution",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "anonymous": false,
-            "id": 7477,
+            "id": 7828,
             "name": "Institution_Created",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 7476,
+              "id": 7827,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7472,
+                  "id": 7823,
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "Address",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7477,
-                  "src": "1170:15:8",
+                  "scope": 7828,
+                  "src": "1170:15:9",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -257,10 +276,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7471,
+                    "id": 7822,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1170:7:8",
+                    "src": "1170:7:9",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -271,61 +290,61 @@
                 },
                 {
                   "constant": false,
-                  "id": 7475,
+                  "id": 7826,
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "Type",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7477,
-                  "src": "1187:21:8",
+                  "scope": 7828,
+                  "src": "1187:21:9",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_enum$_Institution_Type_$7489",
+                    "typeIdentifier": "t_enum$_Institution_Type_$7842",
                     "typeString": "enum Institution.Institution_Type"
                   },
                   "typeName": {
-                    "id": 7474,
+                    "id": 7825,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 7473,
+                      "id": 7824,
                       "name": "Institution_Type",
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 7489,
-                      "src": "1187:16:8"
+                      "referencedDeclaration": 7842,
+                      "src": "1187:16:9"
                     },
-                    "referencedDeclaration": 7489,
-                    "src": "1187:16:8",
+                    "referencedDeclaration": 7842,
+                    "src": "1187:16:9",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_enum$_Institution_Type_$7489",
+                      "typeIdentifier": "t_enum$_Institution_Type_$7842",
                       "typeString": "enum Institution.Institution_Type"
                     }
                   },
                   "visibility": "internal"
                 }
               ],
-              "src": "1169:40:8"
+              "src": "1169:40:9"
             },
-            "src": "1144:66:8"
+            "src": "1144:66:9"
           },
           {
             "anonymous": false,
-            "id": 7481,
+            "id": 7832,
             "name": "Constitution_Changed",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 7480,
+              "id": 7831,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7479,
+                  "id": 7830,
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "new_constitution",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7481,
-                  "src": "1242:24:8",
+                  "scope": 7832,
+                  "src": "1242:24:9",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -333,10 +352,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7478,
+                    "id": 7829,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1242:7:8",
+                    "src": "1242:7:9",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -346,66 +365,79 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1241:26:8"
+              "src": "1241:26:9"
             },
-            "src": "1215:53:8"
+            "src": "1215:53:9"
+          },
+          {
+            "anonymous": false,
+            "id": 7834,
+            "name": "Name_Changed",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 7833,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1291:2:9"
+            },
+            "src": "1273:21:9"
           },
           {
             "canonicalName": "Institution.Institution_Type",
-            "id": 7489,
+            "id": 7842,
             "members": [
               {
-                "id": 7482,
+                "id": 7835,
                 "name": "CONSTITUTION",
                 "nodeType": "EnumValue",
-                "src": "1347:12:8"
+                "src": "1373:12:9"
               },
               {
-                "id": 7483,
+                "id": 7836,
                 "name": "CITIZENS_REGISTRATION",
                 "nodeType": "EnumValue",
-                "src": "1369:21:8"
+                "src": "1395:21:9"
               },
               {
-                "id": 7484,
+                "id": 7837,
                 "name": "AGORA",
                 "nodeType": "EnumValue",
-                "src": "1400:5:8"
+                "src": "1426:5:9"
               },
               {
-                "id": 7485,
+                "id": 7838,
                 "name": "LOI",
                 "nodeType": "EnumValue",
-                "src": "1415:3:8"
+                "src": "1441:3:9"
               },
               {
-                "id": 7486,
+                "id": 7839,
                 "name": "API",
                 "nodeType": "EnumValue",
-                "src": "1428:3:8"
+                "src": "1454:3:9"
               },
               {
-                "id": 7487,
+                "id": 7840,
                 "name": "DELEGATION",
                 "nodeType": "EnumValue",
-                "src": "1441:10:8"
+                "src": "1467:10:9"
               },
               {
-                "id": 7488,
+                "id": 7841,
                 "name": "CUSTOM",
                 "nodeType": "EnumValue",
-                "src": "1461:6:8"
+                "src": "1487:6:9"
               }
             ],
             "name": "Institution_Type",
             "nodeType": "EnumDefinition",
-            "src": "1316:157:8"
+            "src": "1342:157:9"
           },
           {
             "body": {
-              "id": 7501,
+              "id": 7854,
               "nodeType": "Block",
-              "src": "2174:92:8",
+              "src": "2200:92:9",
               "statements": [
                 {
                   "expression": {
@@ -415,32 +447,32 @@
                           "typeIdentifier": "t_address",
                           "typeString": "address"
                         },
-                        "id": 7496,
+                        "id": 7849,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
                         "lValueRequested": false,
                         "leftExpression": {
                           "expression": {
-                            "id": 7493,
+                            "id": 7846,
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
                             "referencedDeclaration": 4294967281,
-                            "src": "2192:3:8",
+                            "src": "2218:3:9",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
                               "typeString": "msg"
                             }
                           },
-                          "id": 7494,
+                          "id": 7847,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
                           "lValueRequested": false,
                           "memberName": "sender",
                           "nodeType": "MemberAccess",
-                          "src": "2192:10:8",
+                          "src": "2218:10:9",
                           "typeDescriptions": {
                             "typeIdentifier": "t_address",
                             "typeString": "address"
@@ -449,18 +481,18 @@
                         "nodeType": "BinaryOperation",
                         "operator": "==",
                         "rightExpression": {
-                          "id": 7495,
+                          "id": 7848,
                           "name": "Constitution_Address",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 7508,
-                          "src": "2206:20:8",
+                          "referencedDeclaration": 7861,
+                          "src": "2232:20:9",
                           "typeDescriptions": {
                             "typeIdentifier": "t_address",
                             "typeString": "address"
                           }
                         },
-                        "src": "2192:34:8",
+                        "src": "2218:34:9",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bool",
                           "typeString": "bool"
@@ -468,14 +500,14 @@
                       },
                       {
                         "hexValue": "436f6e737469747574696f6e204f6e6c79",
-                        "id": 7497,
+                        "id": 7850,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
                         "kind": "string",
                         "lValueRequested": false,
                         "nodeType": "Literal",
-                        "src": "2228:19:8",
+                        "src": "2254:19:9",
                         "typeDescriptions": {
                           "typeIdentifier": "t_stringliteral_1dce441cb1867d9ae5ab3b6c7f1fdad10c22d889851ab2478dbdae15f87d7967",
                           "typeString": "literal_string \"Constitution Only\""
@@ -494,7 +526,7 @@
                           "typeString": "literal_string \"Constitution Only\""
                         }
                       ],
-                      "id": 7492,
+                      "id": 7845,
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
@@ -502,13 +534,13 @@
                         4294967278
                       ],
                       "referencedDeclaration": 4294967278,
-                      "src": "2184:7:8",
+                      "src": "2210:7:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
                         "typeString": "function (bool,string memory) pure"
                       }
                     },
-                    "id": 7498,
+                    "id": 7851,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -516,58 +548,58 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "2184:64:8",
+                    "src": "2210:64:9",
                     "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 7499,
+                  "id": 7852,
                   "nodeType": "ExpressionStatement",
-                  "src": "2184:64:8"
+                  "src": "2210:64:9"
                 },
                 {
-                  "id": 7500,
+                  "id": 7853,
                   "nodeType": "PlaceholderStatement",
-                  "src": "2258:1:8"
+                  "src": "2284:1:9"
                 }
               ]
             },
             "documentation": {
-              "id": 7490,
+              "id": 7843,
               "nodeType": "StructuredDocumentation",
-              "src": "2074:67:8",
+              "src": "2100:67:9",
               "text": "@dev Check that the caller address is the {Constitution_Address}"
             },
-            "id": 7502,
+            "id": 7855,
             "name": "Constitution_Only",
             "nodeType": "ModifierDefinition",
             "parameters": {
-              "id": 7491,
+              "id": 7844,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2172:2:8"
+              "src": "2198:2:9"
             },
-            "src": "2146:120:8",
+            "src": "2172:120:9",
             "virtual": false,
             "visibility": "internal"
           },
           {
             "constant": false,
             "documentation": {
-              "id": 7503,
+              "id": 7856,
               "nodeType": "StructuredDocumentation",
-              "src": "2472:34:8",
+              "src": "2498:34:9",
               "text": "@notice Name of the institution"
             },
             "functionSelector": "8052474d",
-            "id": 7505,
+            "id": 7858,
             "mutability": "mutable",
             "name": "Name",
             "nodeType": "VariableDeclaration",
-            "scope": 7574,
-            "src": "2511:18:8",
+            "scope": 7942,
+            "src": "2537:18:9",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -575,10 +607,10 @@
               "typeString": "string"
             },
             "typeName": {
-              "id": 7504,
+              "id": 7857,
               "name": "string",
               "nodeType": "ElementaryTypeName",
-              "src": "2511:6:8",
+              "src": "2537:6:9",
               "typeDescriptions": {
                 "typeIdentifier": "t_string_storage_ptr",
                 "typeString": "string"
@@ -589,18 +621,18 @@
           {
             "constant": false,
             "documentation": {
-              "id": 7506,
+              "id": 7859,
               "nodeType": "StructuredDocumentation",
-              "src": "2535:49:8",
+              "src": "2561:49:9",
               "text": "@notice Address of the constitution of the DAO"
             },
             "functionSelector": "02d4cd28",
-            "id": 7508,
+            "id": 7861,
             "mutability": "mutable",
             "name": "Constitution_Address",
             "nodeType": "VariableDeclaration",
-            "scope": 7574,
-            "src": "2589:35:8",
+            "scope": 7942,
+            "src": "2615:35:9",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -608,10 +640,10 @@
               "typeString": "address"
             },
             "typeName": {
-              "id": 7507,
+              "id": 7860,
               "name": "address",
               "nodeType": "ElementaryTypeName",
-              "src": "2589:7:8",
+              "src": "2615:7:9",
               "stateMutability": "nonpayable",
               "typeDescriptions": {
                 "typeIdentifier": "t_address",
@@ -623,38 +655,38 @@
           {
             "constant": false,
             "documentation": {
-              "id": 7509,
+              "id": 7862,
               "nodeType": "StructuredDocumentation",
-              "src": "2635:34:8",
+              "src": "2661:34:9",
               "text": "@notice Type of the Institution"
             },
             "functionSelector": "eb101b23",
-            "id": 7512,
+            "id": 7865,
             "mutability": "mutable",
             "name": "Type_Institution",
             "nodeType": "VariableDeclaration",
-            "scope": 7574,
-            "src": "2674:40:8",
+            "scope": 7942,
+            "src": "2700:40:9",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_enum$_Institution_Type_$7489",
+              "typeIdentifier": "t_enum$_Institution_Type_$7842",
               "typeString": "enum Institution.Institution_Type"
             },
             "typeName": {
-              "id": 7511,
+              "id": 7864,
               "nodeType": "UserDefinedTypeName",
               "pathNode": {
-                "id": 7510,
+                "id": 7863,
                 "name": "Institution_Type",
                 "nodeType": "IdentifierPath",
-                "referencedDeclaration": 7489,
-                "src": "2674:16:8"
+                "referencedDeclaration": 7842,
+                "src": "2700:16:9"
               },
-              "referencedDeclaration": 7489,
-              "src": "2674:16:8",
+              "referencedDeclaration": 7842,
+              "src": "2700:16:9",
               "typeDescriptions": {
-                "typeIdentifier": "t_enum$_Institution_Type_$7489",
+                "typeIdentifier": "t_enum$_Institution_Type_$7842",
                 "typeString": "enum Institution.Institution_Type"
               }
             },
@@ -662,24 +694,24 @@
           },
           {
             "body": {
-              "id": 7527,
+              "id": 7880,
               "nodeType": "Block",
-              "src": "2903:188:8",
+              "src": "2929:188:9",
               "statements": [
                 {
                   "expression": {
-                    "id": 7520,
+                    "id": 7873,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
-                      "id": 7518,
+                      "id": 7871,
                       "name": "Name",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 7505,
-                      "src": "2913:4:8",
+                      "referencedDeclaration": 7858,
+                      "src": "2939:4:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_string_storage",
                         "typeString": "string storage ref"
@@ -688,41 +720,41 @@
                     "nodeType": "Assignment",
                     "operator": "=",
                     "rightHandSide": {
-                      "id": 7519,
+                      "id": 7872,
                       "name": "name",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 7515,
-                      "src": "2918:4:8",
+                      "referencedDeclaration": 7868,
+                      "src": "2944:4:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_string_memory_ptr",
                         "typeString": "string memory"
                       }
                     },
-                    "src": "2913:9:8",
+                    "src": "2939:9:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage",
                       "typeString": "string storage ref"
                     }
                   },
-                  "id": 7521,
+                  "id": 7874,
                   "nodeType": "ExpressionStatement",
-                  "src": "2913:9:8"
+                  "src": "2939:9:9"
                 },
                 {
                   "expression": {
-                    "id": 7525,
+                    "id": 7878,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
-                      "id": 7522,
+                      "id": 7875,
                       "name": "Constitution_Address",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 7508,
-                      "src": "2932:20:8",
+                      "referencedDeclaration": 7861,
+                      "src": "2958:20:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
@@ -732,66 +764,66 @@
                     "operator": "=",
                     "rightHandSide": {
                       "expression": {
-                        "id": 7523,
+                        "id": 7876,
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": 4294967281,
-                        "src": "2955:3:8",
+                        "src": "2981:3:9",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
                           "typeString": "msg"
                         }
                       },
-                      "id": 7524,
+                      "id": 7877,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "sender",
                       "nodeType": "MemberAccess",
-                      "src": "2955:10:8",
+                      "src": "2981:10:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "src": "2932:33:8",
+                    "src": "2958:33:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "id": 7526,
+                  "id": 7879,
                   "nodeType": "ExpressionStatement",
-                  "src": "2932:33:8"
+                  "src": "2958:33:9"
                 }
               ]
             },
             "documentation": {
-              "id": 7513,
+              "id": 7866,
               "nodeType": "StructuredDocumentation",
-              "src": "2725:142:8",
+              "src": "2751:142:9",
               "text": " @dev Set the name of the new institution and the address of the constitution.\n @param name Name of the new institution"
             },
-            "id": 7528,
+            "id": 7881,
             "implemented": true,
             "kind": "constructor",
             "modifiers": [],
             "name": "",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7516,
+              "id": 7869,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7515,
+                  "id": 7868,
                   "mutability": "mutable",
                   "name": "name",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7528,
-                  "src": "2884:18:8",
+                  "scope": 7881,
+                  "src": "2910:18:9",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -799,10 +831,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 7514,
+                    "id": 7867,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2884:6:8",
+                    "src": "2910:6:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -811,25 +843,25 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2883:20:8"
+              "src": "2909:20:9"
             },
             "returnParameters": {
-              "id": 7517,
+              "id": 7870,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2903:0:8"
+              "src": "2929:0:9"
             },
-            "scope": 7574,
-            "src": "2872:219:8",
+            "scope": 7942,
+            "src": "2898:219:9",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "internal"
           },
           {
             "body": {
-              "id": 7554,
+              "id": 7907,
               "nodeType": "Block",
-              "src": "3427:168:8",
+              "src": "3453:168:9",
               "statements": [
                 {
                   "expression": {
@@ -839,18 +871,18 @@
                           "typeIdentifier": "t_address",
                           "typeString": "address"
                         },
-                        "id": 7542,
+                        "id": 7895,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
                         "lValueRequested": false,
                         "leftExpression": {
-                          "id": 7537,
+                          "id": 7890,
                           "name": "new_constitution",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 7531,
-                          "src": "3445:16:8",
+                          "referencedDeclaration": 7884,
+                          "src": "3471:16:9",
                           "typeDescriptions": {
                             "typeIdentifier": "t_address",
                             "typeString": "address"
@@ -862,14 +894,14 @@
                           "arguments": [
                             {
                               "hexValue": "30",
-                              "id": 7540,
+                              "id": 7893,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
                               "kind": "number",
                               "lValueRequested": false,
                               "nodeType": "Literal",
-                              "src": "3471:1:8",
+                              "src": "3497:1:9",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_rational_0_by_1",
                                 "typeString": "int_const 0"
@@ -884,26 +916,26 @@
                                 "typeString": "int_const 0"
                               }
                             ],
-                            "id": 7539,
+                            "id": 7892,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": true,
                             "lValueRequested": false,
                             "nodeType": "ElementaryTypeNameExpression",
-                            "src": "3463:7:8",
+                            "src": "3489:7:9",
                             "typeDescriptions": {
                               "typeIdentifier": "t_type$_t_address_$",
                               "typeString": "type(address)"
                             },
                             "typeName": {
-                              "id": 7538,
+                              "id": 7891,
                               "name": "address",
                               "nodeType": "ElementaryTypeName",
-                              "src": "3463:7:8",
+                              "src": "3489:7:9",
                               "typeDescriptions": {}
                             }
                           },
-                          "id": 7541,
+                          "id": 7894,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -911,14 +943,14 @@
                           "lValueRequested": false,
                           "names": [],
                           "nodeType": "FunctionCall",
-                          "src": "3463:10:8",
+                          "src": "3489:10:9",
                           "tryCall": false,
                           "typeDescriptions": {
                             "typeIdentifier": "t_address",
                             "typeString": "address"
                           }
                         },
-                        "src": "3445:28:8",
+                        "src": "3471:28:9",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bool",
                           "typeString": "bool"
@@ -926,14 +958,14 @@
                       },
                       {
                         "hexValue": "416464726573732030",
-                        "id": 7543,
+                        "id": 7896,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
                         "kind": "string",
                         "lValueRequested": false,
                         "nodeType": "Literal",
-                        "src": "3475:11:8",
+                        "src": "3501:11:9",
                         "typeDescriptions": {
                           "typeIdentifier": "t_stringliteral_4080f1fe86101fb49c0da7910d0d5ad38efde20ec25e58363b3c0e88541ecf00",
                           "typeString": "literal_string \"Address 0\""
@@ -952,7 +984,7 @@
                           "typeString": "literal_string \"Address 0\""
                         }
                       ],
-                      "id": 7536,
+                      "id": 7889,
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
@@ -960,13 +992,13 @@
                         4294967278
                       ],
                       "referencedDeclaration": 4294967278,
-                      "src": "3437:7:8",
+                      "src": "3463:7:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
                         "typeString": "function (bool,string memory) pure"
                       }
                     },
-                    "id": 7544,
+                    "id": 7897,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -974,31 +1006,31 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "3437:50:8",
+                    "src": "3463:50:9",
                     "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 7545,
+                  "id": 7898,
                   "nodeType": "ExpressionStatement",
-                  "src": "3437:50:8"
+                  "src": "3463:50:9"
                 },
                 {
                   "expression": {
-                    "id": 7548,
+                    "id": 7901,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
-                      "id": 7546,
+                      "id": 7899,
                       "name": "Constitution_Address",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 7508,
-                      "src": "3497:20:8",
+                      "referencedDeclaration": 7861,
+                      "src": "3523:20:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
@@ -1007,37 +1039,37 @@
                     "nodeType": "Assignment",
                     "operator": "=",
                     "rightHandSide": {
-                      "id": 7547,
+                      "id": 7900,
                       "name": "new_constitution",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 7531,
-                      "src": "3519:16:8",
+                      "referencedDeclaration": 7884,
+                      "src": "3545:16:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "src": "3497:38:8",
+                    "src": "3523:38:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "id": 7549,
+                  "id": 7902,
                   "nodeType": "ExpressionStatement",
-                  "src": "3497:38:8"
+                  "src": "3523:38:9"
                 },
                 {
                   "eventCall": {
                     "arguments": [
                       {
-                        "id": 7551,
+                        "id": 7904,
                         "name": "new_constitution",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7531,
-                        "src": "3571:16:8",
+                        "referencedDeclaration": 7884,
+                        "src": "3597:16:9",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
                           "typeString": "address"
@@ -1051,18 +1083,18 @@
                           "typeString": "address"
                         }
                       ],
-                      "id": 7550,
+                      "id": 7903,
                       "name": "Constitution_Changed",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 7481,
-                      "src": "3550:20:8",
+                      "referencedDeclaration": 7832,
+                      "src": "3576:20:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_event_nonpayable$_t_address_$returns$__$",
                         "typeString": "function (address)"
                       }
                     },
-                    "id": 7552,
+                    "id": 7905,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1070,57 +1102,57 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "3550:38:8",
+                    "src": "3576:38:9",
                     "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 7553,
+                  "id": 7906,
                   "nodeType": "EmitStatement",
-                  "src": "3545:43:8"
+                  "src": "3571:43:9"
                 }
               ]
             },
             "documentation": {
-              "id": 7529,
+              "id": 7882,
               "nodeType": "StructuredDocumentation",
-              "src": "3101:244:8",
+              "src": "3127:244:9",
               "text": " @dev The function Allows to change the Constitution contract the current Institution obey to. The function is only callable by the {Constitution_Address}\n @param new_constitution Address of the new Constitution contract."
             },
             "functionSelector": "3c289ea8",
-            "id": 7555,
+            "id": 7908,
             "implemented": true,
             "kind": "function",
             "modifiers": [
               {
-                "id": 7534,
+                "id": 7887,
                 "modifierName": {
-                  "id": 7533,
+                  "id": 7886,
                   "name": "Constitution_Only",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 7502,
-                  "src": "3410:17:8"
+                  "referencedDeclaration": 7855,
+                  "src": "3436:17:9"
                 },
                 "nodeType": "ModifierInvocation",
-                "src": "3410:17:8"
+                "src": "3436:17:9"
               }
             ],
             "name": "Set_Constitution",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7532,
+              "id": 7885,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7531,
+                  "id": 7884,
                   "mutability": "mutable",
                   "name": "new_constitution",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7555,
-                  "src": "3376:24:8",
+                  "scope": 7908,
+                  "src": "3402:24:9",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1128,10 +1160,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7530,
+                    "id": 7883,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3376:7:8",
+                    "src": "3402:7:9",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1141,25 +1173,176 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3375:26:8"
+              "src": "3401:26:9"
             },
             "returnParameters": {
-              "id": 7535,
+              "id": 7888,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3427:0:8"
+              "src": "3453:0:9"
             },
-            "scope": 7574,
-            "src": "3350:245:8",
+            "scope": 7942,
+            "src": "3376:245:9",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "body": {
-              "id": 7572,
+              "id": 7922,
               "nodeType": "Block",
-              "src": "3995:87:8",
+              "src": "3692:55:9",
+              "statements": [
+                {
+                  "expression": {
+                    "id": 7917,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "id": 7915,
+                      "name": "Name",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 7858,
+                      "src": "3702:4:9",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_string_storage",
+                        "typeString": "string storage ref"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "id": 7916,
+                      "name": "name",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 7910,
+                      "src": "3707:4:9",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_string_calldata_ptr",
+                        "typeString": "string calldata"
+                      }
+                    },
+                    "src": "3702:9:9",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage",
+                      "typeString": "string storage ref"
+                    }
+                  },
+                  "id": 7918,
+                  "nodeType": "ExpressionStatement",
+                  "src": "3702:9:9"
+                },
+                {
+                  "eventCall": {
+                    "arguments": [],
+                    "expression": {
+                      "argumentTypes": [],
+                      "id": 7919,
+                      "name": "Name_Changed",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 7834,
+                      "src": "3726:12:9",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_event_nonpayable$__$returns$__$",
+                        "typeString": "function ()"
+                      }
+                    },
+                    "id": 7920,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "3726:14:9",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 7921,
+                  "nodeType": "EmitStatement",
+                  "src": "3721:19:9"
+                }
+              ]
+            },
+            "functionSelector": "9155e45b",
+            "id": 7923,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "id": 7913,
+                "modifierName": {
+                  "id": 7912,
+                  "name": "Constitution_Only",
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 7855,
+                  "src": "3675:17:9"
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "3675:17:9"
+              }
+            ],
+            "name": "Set_Name",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7911,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7910,
+                  "mutability": "mutable",
+                  "name": "name",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7923,
+                  "src": "3645:20:9",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_calldata_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 7909,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3645:6:9",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3644:22:9"
+            },
+            "returnParameters": {
+              "id": 7914,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "3692:0:9"
+            },
+            "scope": 7942,
+            "src": "3627:120:9",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": {
+              "id": 7940,
+              "nodeType": "Block",
+              "src": "4147:87:9",
               "statements": [
                 {
                   "expression": {
@@ -1167,7 +1350,7 @@
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     },
-                    "id": 7570,
+                    "id": 7938,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1179,18 +1362,18 @@
                             "typeIdentifier": "t_uint256",
                             "typeString": "uint256"
                           },
-                          "id": 7567,
+                          "id": 7935,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
                           "lValueRequested": false,
                           "leftExpression": {
-                            "id": 7565,
+                            "id": 7933,
                             "name": "ratio",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 7558,
-                            "src": "4013:5:8",
+                            "referencedDeclaration": 7926,
+                            "src": "4165:5:9",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint16",
                               "typeString": "uint16"
@@ -1199,32 +1382,32 @@
                           "nodeType": "BinaryOperation",
                           "operator": "*",
                           "rightExpression": {
-                            "id": 7566,
+                            "id": 7934,
                             "name": "base",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 7560,
-                            "src": "4019:4:8",
+                            "referencedDeclaration": 7928,
+                            "src": "4171:4:9",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint256",
                               "typeString": "uint256"
                             }
                           },
-                          "src": "4013:10:8",
+                          "src": "4165:10:9",
                           "typeDescriptions": {
                             "typeIdentifier": "t_uint256",
                             "typeString": "uint256"
                           }
                         }
                       ],
-                      "id": 7568,
+                      "id": 7936,
                       "isConstant": false,
                       "isInlineArray": false,
                       "isLValue": false,
                       "isPure": false,
                       "lValueRequested": false,
                       "nodeType": "TupleExpression",
-                      "src": "4012:12:8",
+                      "src": "4164:12:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
@@ -1234,57 +1417,57 @@
                     "operator": "/",
                     "rightExpression": {
                       "hexValue": "3130303030",
-                      "id": 7569,
+                      "id": 7937,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
                       "kind": "number",
                       "lValueRequested": false,
                       "nodeType": "Literal",
-                      "src": "4025:5:8",
+                      "src": "4177:5:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_rational_10000_by_1",
                         "typeString": "int_const 10000"
                       },
                       "value": "10000"
                     },
-                    "src": "4012:18:8",
+                    "src": "4164:18:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 7564,
-                  "id": 7571,
+                  "functionReturnParameters": 7932,
+                  "id": 7939,
                   "nodeType": "Return",
-                  "src": "4005:25:8"
+                  "src": "4157:25:9"
                 }
               ]
             },
             "documentation": {
-              "id": 7556,
+              "id": 7924,
               "nodeType": "StructuredDocumentation",
-              "src": "3619:299:8",
+              "src": "3771:299:9",
               "text": " @dev Utility function for computing Percentage.\n @param ratio The ratio is represented with 2 decimals\n @param base The base's number of decimal is arbitrary\n @return Return the {ratio}% of {base}. The result is represented with the number of decimals of {base} "
             },
-            "id": 7573,
+            "id": 7941,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "Percentage",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7561,
+              "id": 7929,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7558,
+                  "id": 7926,
                   "mutability": "mutable",
                   "name": "ratio",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7573,
-                  "src": "3943:12:8",
+                  "scope": 7941,
+                  "src": "4095:12:9",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1292,10 +1475,10 @@
                     "typeString": "uint16"
                   },
                   "typeName": {
-                    "id": 7557,
+                    "id": 7925,
                     "name": "uint16",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3943:6:8",
+                    "src": "4095:6:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint16",
                       "typeString": "uint16"
@@ -1305,12 +1488,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7560,
+                  "id": 7928,
                   "mutability": "mutable",
                   "name": "base",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7573,
-                  "src": "3957:9:8",
+                  "scope": 7941,
+                  "src": "4109:9:9",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1318,10 +1501,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7559,
+                    "id": 7927,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3957:4:8",
+                    "src": "4109:4:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1330,20 +1513,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3942:25:8"
+              "src": "4094:25:9"
             },
             "returnParameters": {
-              "id": 7564,
+              "id": 7932,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7563,
+                  "id": 7931,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7573,
-                  "src": "3990:4:8",
+                  "scope": 7941,
+                  "src": "4142:4:9",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1351,10 +1534,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7562,
+                    "id": 7930,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3990:4:8",
+                    "src": "4142:4:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1363,58 +1546,58 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3989:6:8"
+              "src": "4141:6:9"
             },
-            "scope": 7574,
-            "src": "3923:159:8",
+            "scope": 7942,
+            "src": "4075:159:9",
             "stateMutability": "pure",
             "virtual": false,
             "visibility": "internal"
           }
         ],
-        "scope": 7575,
-        "src": "1090:2994:8"
+        "scope": 7943,
+        "src": "1090:3146:9"
       }
     ],
-    "src": "32:4054:8"
+    "src": "32:4206:9"
   },
   "legacyAST": {
     "absolutePath": "/home/andrei/Alyra/Web3_Referendum/contracts/Institution.sol",
     "exportedSymbols": {
       "Address": [
-        10780
+        11160
       ],
       "Context": [
-        10803
+        11183
       ],
       "DemoCoin": [
-        16803
+        17424
       ],
       "ERC20": [
-        10406
+        10786
       ],
       "EnumerableSet": [
-        11318
+        11698
       ],
       "IERC20": [
-        10484
+        10864
       ],
       "Institution": [
-        7574
+        7942
       ],
       "ReentrancyGuard": [
-        11358
+        11738
       ],
       "SafeMath": [
-        9903
+        10283
       ]
     },
-    "id": 7575,
+    "id": 7943,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 7462,
+        "id": 7813,
         "literals": [
           "solidity",
           "^",
@@ -1422,60 +1605,60 @@
           ".0"
         ],
         "nodeType": "PragmaDirective",
-        "src": "32:23:8"
+        "src": "32:23:9"
       },
       {
         "absolutePath": "@openzeppelin/contracts/utils/Address.sol",
         "file": "@openzeppelin/contracts/utils/Address.sol",
-        "id": 7463,
+        "id": 7814,
         "nodeType": "ImportDirective",
-        "scope": 7575,
-        "sourceUnit": 10781,
-        "src": "573:51:8",
+        "scope": 7943,
+        "sourceUnit": 11161,
+        "src": "573:51:9",
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
         "absolutePath": "@openzeppelin/contracts/utils/EnumerableSet.sol",
         "file": "@openzeppelin/contracts/utils/EnumerableSet.sol",
-        "id": 7464,
+        "id": 7815,
         "nodeType": "ImportDirective",
-        "scope": 7575,
-        "sourceUnit": 11319,
-        "src": "625:57:8",
+        "scope": 7943,
+        "sourceUnit": 11699,
+        "src": "625:57:9",
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
         "absolutePath": "@openzeppelin/contracts/math/SafeMath.sol",
         "file": "@openzeppelin/contracts/math/SafeMath.sol",
-        "id": 7465,
+        "id": 7816,
         "nodeType": "ImportDirective",
-        "scope": 7575,
-        "sourceUnit": 9904,
-        "src": "683:51:8",
+        "scope": 7943,
+        "sourceUnit": 10284,
+        "src": "683:51:9",
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
         "absolutePath": "@openzeppelin/contracts/utils/ReentrancyGuard.sol",
         "file": "@openzeppelin/contracts/utils/ReentrancyGuard.sol",
-        "id": 7466,
+        "id": 7817,
         "nodeType": "ImportDirective",
-        "scope": 7575,
-        "sourceUnit": 11359,
-        "src": "735:59:8",
+        "scope": 7943,
+        "sourceUnit": 11739,
+        "src": "735:59:9",
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
         "absolutePath": "contracts/DemoCoin.sol",
         "file": "contracts/DemoCoin.sol",
-        "id": 7467,
+        "id": 7818,
         "nodeType": "ImportDirective",
-        "scope": 7575,
-        "sourceUnit": 16804,
-        "src": "795:32:8",
+        "scope": 7943,
+        "sourceUnit": 17425,
+        "src": "795:32:9",
         "symbolAliases": [],
         "unitAlias": ""
       },
@@ -1484,54 +1667,54 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 7469,
+              "id": 7820,
               "name": "ReentrancyGuard",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 11358,
-              "src": "1123:15:8"
+              "referencedDeclaration": 11738,
+              "src": "1123:15:9"
             },
-            "id": 7470,
+            "id": 7821,
             "nodeType": "InheritanceSpecifier",
-            "src": "1123:15:8"
+            "src": "1123:15:9"
           }
         ],
         "contractDependencies": [
-          11358
+          11738
         ],
         "contractKind": "contract",
         "documentation": {
-          "id": 7468,
+          "id": 7819,
           "nodeType": "StructuredDocumentation",
-          "src": "830:259:8",
+          "src": "830:259:9",
           "text": " @dev This abstract contract is inherited by almost all contracts of \"Web3 Direct Democracy\" (except \"DemoCoin\" token and ballot contracts inheriting from \"IVote\" interface). \n It gathers some common features such as constitution address handling."
         },
         "fullyImplemented": true,
-        "id": 7574,
+        "id": 7942,
         "linearizedBaseContracts": [
-          7574,
-          11358
+          7942,
+          11738
         ],
         "name": "Institution",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "anonymous": false,
-            "id": 7477,
+            "id": 7828,
             "name": "Institution_Created",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 7476,
+              "id": 7827,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7472,
+                  "id": 7823,
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "Address",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7477,
-                  "src": "1170:15:8",
+                  "scope": 7828,
+                  "src": "1170:15:9",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1539,10 +1722,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7471,
+                    "id": 7822,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1170:7:8",
+                    "src": "1170:7:9",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1553,61 +1736,61 @@
                 },
                 {
                   "constant": false,
-                  "id": 7475,
+                  "id": 7826,
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "Type",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7477,
-                  "src": "1187:21:8",
+                  "scope": 7828,
+                  "src": "1187:21:9",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_enum$_Institution_Type_$7489",
+                    "typeIdentifier": "t_enum$_Institution_Type_$7842",
                     "typeString": "enum Institution.Institution_Type"
                   },
                   "typeName": {
-                    "id": 7474,
+                    "id": 7825,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 7473,
+                      "id": 7824,
                       "name": "Institution_Type",
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 7489,
-                      "src": "1187:16:8"
+                      "referencedDeclaration": 7842,
+                      "src": "1187:16:9"
                     },
-                    "referencedDeclaration": 7489,
-                    "src": "1187:16:8",
+                    "referencedDeclaration": 7842,
+                    "src": "1187:16:9",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_enum$_Institution_Type_$7489",
+                      "typeIdentifier": "t_enum$_Institution_Type_$7842",
                       "typeString": "enum Institution.Institution_Type"
                     }
                   },
                   "visibility": "internal"
                 }
               ],
-              "src": "1169:40:8"
+              "src": "1169:40:9"
             },
-            "src": "1144:66:8"
+            "src": "1144:66:9"
           },
           {
             "anonymous": false,
-            "id": 7481,
+            "id": 7832,
             "name": "Constitution_Changed",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 7480,
+              "id": 7831,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7479,
+                  "id": 7830,
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "new_constitution",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7481,
-                  "src": "1242:24:8",
+                  "scope": 7832,
+                  "src": "1242:24:9",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1615,10 +1798,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7478,
+                    "id": 7829,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1242:7:8",
+                    "src": "1242:7:9",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1628,66 +1811,79 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1241:26:8"
+              "src": "1241:26:9"
             },
-            "src": "1215:53:8"
+            "src": "1215:53:9"
+          },
+          {
+            "anonymous": false,
+            "id": 7834,
+            "name": "Name_Changed",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 7833,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1291:2:9"
+            },
+            "src": "1273:21:9"
           },
           {
             "canonicalName": "Institution.Institution_Type",
-            "id": 7489,
+            "id": 7842,
             "members": [
               {
-                "id": 7482,
+                "id": 7835,
                 "name": "CONSTITUTION",
                 "nodeType": "EnumValue",
-                "src": "1347:12:8"
+                "src": "1373:12:9"
               },
               {
-                "id": 7483,
+                "id": 7836,
                 "name": "CITIZENS_REGISTRATION",
                 "nodeType": "EnumValue",
-                "src": "1369:21:8"
+                "src": "1395:21:9"
               },
               {
-                "id": 7484,
+                "id": 7837,
                 "name": "AGORA",
                 "nodeType": "EnumValue",
-                "src": "1400:5:8"
+                "src": "1426:5:9"
               },
               {
-                "id": 7485,
+                "id": 7838,
                 "name": "LOI",
                 "nodeType": "EnumValue",
-                "src": "1415:3:8"
+                "src": "1441:3:9"
               },
               {
-                "id": 7486,
+                "id": 7839,
                 "name": "API",
                 "nodeType": "EnumValue",
-                "src": "1428:3:8"
+                "src": "1454:3:9"
               },
               {
-                "id": 7487,
+                "id": 7840,
                 "name": "DELEGATION",
                 "nodeType": "EnumValue",
-                "src": "1441:10:8"
+                "src": "1467:10:9"
               },
               {
-                "id": 7488,
+                "id": 7841,
                 "name": "CUSTOM",
                 "nodeType": "EnumValue",
-                "src": "1461:6:8"
+                "src": "1487:6:9"
               }
             ],
             "name": "Institution_Type",
             "nodeType": "EnumDefinition",
-            "src": "1316:157:8"
+            "src": "1342:157:9"
           },
           {
             "body": {
-              "id": 7501,
+              "id": 7854,
               "nodeType": "Block",
-              "src": "2174:92:8",
+              "src": "2200:92:9",
               "statements": [
                 {
                   "expression": {
@@ -1697,32 +1893,32 @@
                           "typeIdentifier": "t_address",
                           "typeString": "address"
                         },
-                        "id": 7496,
+                        "id": 7849,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
                         "lValueRequested": false,
                         "leftExpression": {
                           "expression": {
-                            "id": 7493,
+                            "id": 7846,
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
                             "referencedDeclaration": 4294967281,
-                            "src": "2192:3:8",
+                            "src": "2218:3:9",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
                               "typeString": "msg"
                             }
                           },
-                          "id": 7494,
+                          "id": 7847,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
                           "lValueRequested": false,
                           "memberName": "sender",
                           "nodeType": "MemberAccess",
-                          "src": "2192:10:8",
+                          "src": "2218:10:9",
                           "typeDescriptions": {
                             "typeIdentifier": "t_address",
                             "typeString": "address"
@@ -1731,18 +1927,18 @@
                         "nodeType": "BinaryOperation",
                         "operator": "==",
                         "rightExpression": {
-                          "id": 7495,
+                          "id": 7848,
                           "name": "Constitution_Address",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 7508,
-                          "src": "2206:20:8",
+                          "referencedDeclaration": 7861,
+                          "src": "2232:20:9",
                           "typeDescriptions": {
                             "typeIdentifier": "t_address",
                             "typeString": "address"
                           }
                         },
-                        "src": "2192:34:8",
+                        "src": "2218:34:9",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bool",
                           "typeString": "bool"
@@ -1750,14 +1946,14 @@
                       },
                       {
                         "hexValue": "436f6e737469747574696f6e204f6e6c79",
-                        "id": 7497,
+                        "id": 7850,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
                         "kind": "string",
                         "lValueRequested": false,
                         "nodeType": "Literal",
-                        "src": "2228:19:8",
+                        "src": "2254:19:9",
                         "typeDescriptions": {
                           "typeIdentifier": "t_stringliteral_1dce441cb1867d9ae5ab3b6c7f1fdad10c22d889851ab2478dbdae15f87d7967",
                           "typeString": "literal_string \"Constitution Only\""
@@ -1776,7 +1972,7 @@
                           "typeString": "literal_string \"Constitution Only\""
                         }
                       ],
-                      "id": 7492,
+                      "id": 7845,
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
@@ -1784,13 +1980,13 @@
                         4294967278
                       ],
                       "referencedDeclaration": 4294967278,
-                      "src": "2184:7:8",
+                      "src": "2210:7:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
                         "typeString": "function (bool,string memory) pure"
                       }
                     },
-                    "id": 7498,
+                    "id": 7851,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1798,58 +1994,58 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "2184:64:8",
+                    "src": "2210:64:9",
                     "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 7499,
+                  "id": 7852,
                   "nodeType": "ExpressionStatement",
-                  "src": "2184:64:8"
+                  "src": "2210:64:9"
                 },
                 {
-                  "id": 7500,
+                  "id": 7853,
                   "nodeType": "PlaceholderStatement",
-                  "src": "2258:1:8"
+                  "src": "2284:1:9"
                 }
               ]
             },
             "documentation": {
-              "id": 7490,
+              "id": 7843,
               "nodeType": "StructuredDocumentation",
-              "src": "2074:67:8",
+              "src": "2100:67:9",
               "text": "@dev Check that the caller address is the {Constitution_Address}"
             },
-            "id": 7502,
+            "id": 7855,
             "name": "Constitution_Only",
             "nodeType": "ModifierDefinition",
             "parameters": {
-              "id": 7491,
+              "id": 7844,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2172:2:8"
+              "src": "2198:2:9"
             },
-            "src": "2146:120:8",
+            "src": "2172:120:9",
             "virtual": false,
             "visibility": "internal"
           },
           {
             "constant": false,
             "documentation": {
-              "id": 7503,
+              "id": 7856,
               "nodeType": "StructuredDocumentation",
-              "src": "2472:34:8",
+              "src": "2498:34:9",
               "text": "@notice Name of the institution"
             },
             "functionSelector": "8052474d",
-            "id": 7505,
+            "id": 7858,
             "mutability": "mutable",
             "name": "Name",
             "nodeType": "VariableDeclaration",
-            "scope": 7574,
-            "src": "2511:18:8",
+            "scope": 7942,
+            "src": "2537:18:9",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -1857,10 +2053,10 @@
               "typeString": "string"
             },
             "typeName": {
-              "id": 7504,
+              "id": 7857,
               "name": "string",
               "nodeType": "ElementaryTypeName",
-              "src": "2511:6:8",
+              "src": "2537:6:9",
               "typeDescriptions": {
                 "typeIdentifier": "t_string_storage_ptr",
                 "typeString": "string"
@@ -1871,18 +2067,18 @@
           {
             "constant": false,
             "documentation": {
-              "id": 7506,
+              "id": 7859,
               "nodeType": "StructuredDocumentation",
-              "src": "2535:49:8",
+              "src": "2561:49:9",
               "text": "@notice Address of the constitution of the DAO"
             },
             "functionSelector": "02d4cd28",
-            "id": 7508,
+            "id": 7861,
             "mutability": "mutable",
             "name": "Constitution_Address",
             "nodeType": "VariableDeclaration",
-            "scope": 7574,
-            "src": "2589:35:8",
+            "scope": 7942,
+            "src": "2615:35:9",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -1890,10 +2086,10 @@
               "typeString": "address"
             },
             "typeName": {
-              "id": 7507,
+              "id": 7860,
               "name": "address",
               "nodeType": "ElementaryTypeName",
-              "src": "2589:7:8",
+              "src": "2615:7:9",
               "stateMutability": "nonpayable",
               "typeDescriptions": {
                 "typeIdentifier": "t_address",
@@ -1905,38 +2101,38 @@
           {
             "constant": false,
             "documentation": {
-              "id": 7509,
+              "id": 7862,
               "nodeType": "StructuredDocumentation",
-              "src": "2635:34:8",
+              "src": "2661:34:9",
               "text": "@notice Type of the Institution"
             },
             "functionSelector": "eb101b23",
-            "id": 7512,
+            "id": 7865,
             "mutability": "mutable",
             "name": "Type_Institution",
             "nodeType": "VariableDeclaration",
-            "scope": 7574,
-            "src": "2674:40:8",
+            "scope": 7942,
+            "src": "2700:40:9",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_enum$_Institution_Type_$7489",
+              "typeIdentifier": "t_enum$_Institution_Type_$7842",
               "typeString": "enum Institution.Institution_Type"
             },
             "typeName": {
-              "id": 7511,
+              "id": 7864,
               "nodeType": "UserDefinedTypeName",
               "pathNode": {
-                "id": 7510,
+                "id": 7863,
                 "name": "Institution_Type",
                 "nodeType": "IdentifierPath",
-                "referencedDeclaration": 7489,
-                "src": "2674:16:8"
+                "referencedDeclaration": 7842,
+                "src": "2700:16:9"
               },
-              "referencedDeclaration": 7489,
-              "src": "2674:16:8",
+              "referencedDeclaration": 7842,
+              "src": "2700:16:9",
               "typeDescriptions": {
-                "typeIdentifier": "t_enum$_Institution_Type_$7489",
+                "typeIdentifier": "t_enum$_Institution_Type_$7842",
                 "typeString": "enum Institution.Institution_Type"
               }
             },
@@ -1944,24 +2140,24 @@
           },
           {
             "body": {
-              "id": 7527,
+              "id": 7880,
               "nodeType": "Block",
-              "src": "2903:188:8",
+              "src": "2929:188:9",
               "statements": [
                 {
                   "expression": {
-                    "id": 7520,
+                    "id": 7873,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
-                      "id": 7518,
+                      "id": 7871,
                       "name": "Name",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 7505,
-                      "src": "2913:4:8",
+                      "referencedDeclaration": 7858,
+                      "src": "2939:4:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_string_storage",
                         "typeString": "string storage ref"
@@ -1970,41 +2166,41 @@
                     "nodeType": "Assignment",
                     "operator": "=",
                     "rightHandSide": {
-                      "id": 7519,
+                      "id": 7872,
                       "name": "name",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 7515,
-                      "src": "2918:4:8",
+                      "referencedDeclaration": 7868,
+                      "src": "2944:4:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_string_memory_ptr",
                         "typeString": "string memory"
                       }
                     },
-                    "src": "2913:9:8",
+                    "src": "2939:9:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage",
                       "typeString": "string storage ref"
                     }
                   },
-                  "id": 7521,
+                  "id": 7874,
                   "nodeType": "ExpressionStatement",
-                  "src": "2913:9:8"
+                  "src": "2939:9:9"
                 },
                 {
                   "expression": {
-                    "id": 7525,
+                    "id": 7878,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
-                      "id": 7522,
+                      "id": 7875,
                       "name": "Constitution_Address",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 7508,
-                      "src": "2932:20:8",
+                      "referencedDeclaration": 7861,
+                      "src": "2958:20:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
@@ -2014,66 +2210,66 @@
                     "operator": "=",
                     "rightHandSide": {
                       "expression": {
-                        "id": 7523,
+                        "id": 7876,
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": 4294967281,
-                        "src": "2955:3:8",
+                        "src": "2981:3:9",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
                           "typeString": "msg"
                         }
                       },
-                      "id": 7524,
+                      "id": 7877,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "sender",
                       "nodeType": "MemberAccess",
-                      "src": "2955:10:8",
+                      "src": "2981:10:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "src": "2932:33:8",
+                    "src": "2958:33:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "id": 7526,
+                  "id": 7879,
                   "nodeType": "ExpressionStatement",
-                  "src": "2932:33:8"
+                  "src": "2958:33:9"
                 }
               ]
             },
             "documentation": {
-              "id": 7513,
+              "id": 7866,
               "nodeType": "StructuredDocumentation",
-              "src": "2725:142:8",
+              "src": "2751:142:9",
               "text": " @dev Set the name of the new institution and the address of the constitution.\n @param name Name of the new institution"
             },
-            "id": 7528,
+            "id": 7881,
             "implemented": true,
             "kind": "constructor",
             "modifiers": [],
             "name": "",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7516,
+              "id": 7869,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7515,
+                  "id": 7868,
                   "mutability": "mutable",
                   "name": "name",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7528,
-                  "src": "2884:18:8",
+                  "scope": 7881,
+                  "src": "2910:18:9",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -2081,10 +2277,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 7514,
+                    "id": 7867,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2884:6:8",
+                    "src": "2910:6:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -2093,25 +2289,25 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2883:20:8"
+              "src": "2909:20:9"
             },
             "returnParameters": {
-              "id": 7517,
+              "id": 7870,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2903:0:8"
+              "src": "2929:0:9"
             },
-            "scope": 7574,
-            "src": "2872:219:8",
+            "scope": 7942,
+            "src": "2898:219:9",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "internal"
           },
           {
             "body": {
-              "id": 7554,
+              "id": 7907,
               "nodeType": "Block",
-              "src": "3427:168:8",
+              "src": "3453:168:9",
               "statements": [
                 {
                   "expression": {
@@ -2121,18 +2317,18 @@
                           "typeIdentifier": "t_address",
                           "typeString": "address"
                         },
-                        "id": 7542,
+                        "id": 7895,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
                         "lValueRequested": false,
                         "leftExpression": {
-                          "id": 7537,
+                          "id": 7890,
                           "name": "new_constitution",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 7531,
-                          "src": "3445:16:8",
+                          "referencedDeclaration": 7884,
+                          "src": "3471:16:9",
                           "typeDescriptions": {
                             "typeIdentifier": "t_address",
                             "typeString": "address"
@@ -2144,14 +2340,14 @@
                           "arguments": [
                             {
                               "hexValue": "30",
-                              "id": 7540,
+                              "id": 7893,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
                               "kind": "number",
                               "lValueRequested": false,
                               "nodeType": "Literal",
-                              "src": "3471:1:8",
+                              "src": "3497:1:9",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_rational_0_by_1",
                                 "typeString": "int_const 0"
@@ -2166,26 +2362,26 @@
                                 "typeString": "int_const 0"
                               }
                             ],
-                            "id": 7539,
+                            "id": 7892,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": true,
                             "lValueRequested": false,
                             "nodeType": "ElementaryTypeNameExpression",
-                            "src": "3463:7:8",
+                            "src": "3489:7:9",
                             "typeDescriptions": {
                               "typeIdentifier": "t_type$_t_address_$",
                               "typeString": "type(address)"
                             },
                             "typeName": {
-                              "id": 7538,
+                              "id": 7891,
                               "name": "address",
                               "nodeType": "ElementaryTypeName",
-                              "src": "3463:7:8",
+                              "src": "3489:7:9",
                               "typeDescriptions": {}
                             }
                           },
-                          "id": 7541,
+                          "id": 7894,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -2193,14 +2389,14 @@
                           "lValueRequested": false,
                           "names": [],
                           "nodeType": "FunctionCall",
-                          "src": "3463:10:8",
+                          "src": "3489:10:9",
                           "tryCall": false,
                           "typeDescriptions": {
                             "typeIdentifier": "t_address",
                             "typeString": "address"
                           }
                         },
-                        "src": "3445:28:8",
+                        "src": "3471:28:9",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bool",
                           "typeString": "bool"
@@ -2208,14 +2404,14 @@
                       },
                       {
                         "hexValue": "416464726573732030",
-                        "id": 7543,
+                        "id": 7896,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
                         "kind": "string",
                         "lValueRequested": false,
                         "nodeType": "Literal",
-                        "src": "3475:11:8",
+                        "src": "3501:11:9",
                         "typeDescriptions": {
                           "typeIdentifier": "t_stringliteral_4080f1fe86101fb49c0da7910d0d5ad38efde20ec25e58363b3c0e88541ecf00",
                           "typeString": "literal_string \"Address 0\""
@@ -2234,7 +2430,7 @@
                           "typeString": "literal_string \"Address 0\""
                         }
                       ],
-                      "id": 7536,
+                      "id": 7889,
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
@@ -2242,13 +2438,13 @@
                         4294967278
                       ],
                       "referencedDeclaration": 4294967278,
-                      "src": "3437:7:8",
+                      "src": "3463:7:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
                         "typeString": "function (bool,string memory) pure"
                       }
                     },
-                    "id": 7544,
+                    "id": 7897,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -2256,31 +2452,31 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "3437:50:8",
+                    "src": "3463:50:9",
                     "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 7545,
+                  "id": 7898,
                   "nodeType": "ExpressionStatement",
-                  "src": "3437:50:8"
+                  "src": "3463:50:9"
                 },
                 {
                   "expression": {
-                    "id": 7548,
+                    "id": 7901,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
-                      "id": 7546,
+                      "id": 7899,
                       "name": "Constitution_Address",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 7508,
-                      "src": "3497:20:8",
+                      "referencedDeclaration": 7861,
+                      "src": "3523:20:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
@@ -2289,37 +2485,37 @@
                     "nodeType": "Assignment",
                     "operator": "=",
                     "rightHandSide": {
-                      "id": 7547,
+                      "id": 7900,
                       "name": "new_constitution",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 7531,
-                      "src": "3519:16:8",
+                      "referencedDeclaration": 7884,
+                      "src": "3545:16:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "src": "3497:38:8",
+                    "src": "3523:38:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "id": 7549,
+                  "id": 7902,
                   "nodeType": "ExpressionStatement",
-                  "src": "3497:38:8"
+                  "src": "3523:38:9"
                 },
                 {
                   "eventCall": {
                     "arguments": [
                       {
-                        "id": 7551,
+                        "id": 7904,
                         "name": "new_constitution",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7531,
-                        "src": "3571:16:8",
+                        "referencedDeclaration": 7884,
+                        "src": "3597:16:9",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
                           "typeString": "address"
@@ -2333,18 +2529,18 @@
                           "typeString": "address"
                         }
                       ],
-                      "id": 7550,
+                      "id": 7903,
                       "name": "Constitution_Changed",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 7481,
-                      "src": "3550:20:8",
+                      "referencedDeclaration": 7832,
+                      "src": "3576:20:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_event_nonpayable$_t_address_$returns$__$",
                         "typeString": "function (address)"
                       }
                     },
-                    "id": 7552,
+                    "id": 7905,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -2352,57 +2548,57 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "3550:38:8",
+                    "src": "3576:38:9",
                     "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 7553,
+                  "id": 7906,
                   "nodeType": "EmitStatement",
-                  "src": "3545:43:8"
+                  "src": "3571:43:9"
                 }
               ]
             },
             "documentation": {
-              "id": 7529,
+              "id": 7882,
               "nodeType": "StructuredDocumentation",
-              "src": "3101:244:8",
+              "src": "3127:244:9",
               "text": " @dev The function Allows to change the Constitution contract the current Institution obey to. The function is only callable by the {Constitution_Address}\n @param new_constitution Address of the new Constitution contract."
             },
             "functionSelector": "3c289ea8",
-            "id": 7555,
+            "id": 7908,
             "implemented": true,
             "kind": "function",
             "modifiers": [
               {
-                "id": 7534,
+                "id": 7887,
                 "modifierName": {
-                  "id": 7533,
+                  "id": 7886,
                   "name": "Constitution_Only",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 7502,
-                  "src": "3410:17:8"
+                  "referencedDeclaration": 7855,
+                  "src": "3436:17:9"
                 },
                 "nodeType": "ModifierInvocation",
-                "src": "3410:17:8"
+                "src": "3436:17:9"
               }
             ],
             "name": "Set_Constitution",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7532,
+              "id": 7885,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7531,
+                  "id": 7884,
                   "mutability": "mutable",
                   "name": "new_constitution",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7555,
-                  "src": "3376:24:8",
+                  "scope": 7908,
+                  "src": "3402:24:9",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2410,10 +2606,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7530,
+                    "id": 7883,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3376:7:8",
+                    "src": "3402:7:9",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2423,25 +2619,176 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3375:26:8"
+              "src": "3401:26:9"
             },
             "returnParameters": {
-              "id": 7535,
+              "id": 7888,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3427:0:8"
+              "src": "3453:0:9"
             },
-            "scope": 7574,
-            "src": "3350:245:8",
+            "scope": 7942,
+            "src": "3376:245:9",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "body": {
-              "id": 7572,
+              "id": 7922,
               "nodeType": "Block",
-              "src": "3995:87:8",
+              "src": "3692:55:9",
+              "statements": [
+                {
+                  "expression": {
+                    "id": 7917,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "id": 7915,
+                      "name": "Name",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 7858,
+                      "src": "3702:4:9",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_string_storage",
+                        "typeString": "string storage ref"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "id": 7916,
+                      "name": "name",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 7910,
+                      "src": "3707:4:9",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_string_calldata_ptr",
+                        "typeString": "string calldata"
+                      }
+                    },
+                    "src": "3702:9:9",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage",
+                      "typeString": "string storage ref"
+                    }
+                  },
+                  "id": 7918,
+                  "nodeType": "ExpressionStatement",
+                  "src": "3702:9:9"
+                },
+                {
+                  "eventCall": {
+                    "arguments": [],
+                    "expression": {
+                      "argumentTypes": [],
+                      "id": 7919,
+                      "name": "Name_Changed",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 7834,
+                      "src": "3726:12:9",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_event_nonpayable$__$returns$__$",
+                        "typeString": "function ()"
+                      }
+                    },
+                    "id": 7920,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "3726:14:9",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 7921,
+                  "nodeType": "EmitStatement",
+                  "src": "3721:19:9"
+                }
+              ]
+            },
+            "functionSelector": "9155e45b",
+            "id": 7923,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "id": 7913,
+                "modifierName": {
+                  "id": 7912,
+                  "name": "Constitution_Only",
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 7855,
+                  "src": "3675:17:9"
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "3675:17:9"
+              }
+            ],
+            "name": "Set_Name",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7911,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7910,
+                  "mutability": "mutable",
+                  "name": "name",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7923,
+                  "src": "3645:20:9",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_calldata_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 7909,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3645:6:9",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3644:22:9"
+            },
+            "returnParameters": {
+              "id": 7914,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "3692:0:9"
+            },
+            "scope": 7942,
+            "src": "3627:120:9",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": {
+              "id": 7940,
+              "nodeType": "Block",
+              "src": "4147:87:9",
               "statements": [
                 {
                   "expression": {
@@ -2449,7 +2796,7 @@
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     },
-                    "id": 7570,
+                    "id": 7938,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -2461,18 +2808,18 @@
                             "typeIdentifier": "t_uint256",
                             "typeString": "uint256"
                           },
-                          "id": 7567,
+                          "id": 7935,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
                           "lValueRequested": false,
                           "leftExpression": {
-                            "id": 7565,
+                            "id": 7933,
                             "name": "ratio",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 7558,
-                            "src": "4013:5:8",
+                            "referencedDeclaration": 7926,
+                            "src": "4165:5:9",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint16",
                               "typeString": "uint16"
@@ -2481,32 +2828,32 @@
                           "nodeType": "BinaryOperation",
                           "operator": "*",
                           "rightExpression": {
-                            "id": 7566,
+                            "id": 7934,
                             "name": "base",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 7560,
-                            "src": "4019:4:8",
+                            "referencedDeclaration": 7928,
+                            "src": "4171:4:9",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint256",
                               "typeString": "uint256"
                             }
                           },
-                          "src": "4013:10:8",
+                          "src": "4165:10:9",
                           "typeDescriptions": {
                             "typeIdentifier": "t_uint256",
                             "typeString": "uint256"
                           }
                         }
                       ],
-                      "id": 7568,
+                      "id": 7936,
                       "isConstant": false,
                       "isInlineArray": false,
                       "isLValue": false,
                       "isPure": false,
                       "lValueRequested": false,
                       "nodeType": "TupleExpression",
-                      "src": "4012:12:8",
+                      "src": "4164:12:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
@@ -2516,57 +2863,57 @@
                     "operator": "/",
                     "rightExpression": {
                       "hexValue": "3130303030",
-                      "id": 7569,
+                      "id": 7937,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
                       "kind": "number",
                       "lValueRequested": false,
                       "nodeType": "Literal",
-                      "src": "4025:5:8",
+                      "src": "4177:5:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_rational_10000_by_1",
                         "typeString": "int_const 10000"
                       },
                       "value": "10000"
                     },
-                    "src": "4012:18:8",
+                    "src": "4164:18:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 7564,
-                  "id": 7571,
+                  "functionReturnParameters": 7932,
+                  "id": 7939,
                   "nodeType": "Return",
-                  "src": "4005:25:8"
+                  "src": "4157:25:9"
                 }
               ]
             },
             "documentation": {
-              "id": 7556,
+              "id": 7924,
               "nodeType": "StructuredDocumentation",
-              "src": "3619:299:8",
+              "src": "3771:299:9",
               "text": " @dev Utility function for computing Percentage.\n @param ratio The ratio is represented with 2 decimals\n @param base The base's number of decimal is arbitrary\n @return Return the {ratio}% of {base}. The result is represented with the number of decimals of {base} "
             },
-            "id": 7573,
+            "id": 7941,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "Percentage",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7561,
+              "id": 7929,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7558,
+                  "id": 7926,
                   "mutability": "mutable",
                   "name": "ratio",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7573,
-                  "src": "3943:12:8",
+                  "scope": 7941,
+                  "src": "4095:12:9",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2574,10 +2921,10 @@
                     "typeString": "uint16"
                   },
                   "typeName": {
-                    "id": 7557,
+                    "id": 7925,
                     "name": "uint16",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3943:6:8",
+                    "src": "4095:6:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint16",
                       "typeString": "uint16"
@@ -2587,12 +2934,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7560,
+                  "id": 7928,
                   "mutability": "mutable",
                   "name": "base",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7573,
-                  "src": "3957:9:8",
+                  "scope": 7941,
+                  "src": "4109:9:9",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2600,10 +2947,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7559,
+                    "id": 7927,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3957:4:8",
+                    "src": "4109:4:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2612,20 +2959,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3942:25:8"
+              "src": "4094:25:9"
             },
             "returnParameters": {
-              "id": 7564,
+              "id": 7932,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7563,
+                  "id": 7931,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7573,
-                  "src": "3990:4:8",
+                  "scope": 7941,
+                  "src": "4142:4:9",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2633,10 +2980,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7562,
+                    "id": 7930,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3990:4:8",
+                    "src": "4142:4:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2645,20 +2992,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3989:6:8"
+              "src": "4141:6:9"
             },
-            "scope": 7574,
-            "src": "3923:159:8",
+            "scope": 7942,
+            "src": "4075:159:9",
             "stateMutability": "pure",
             "virtual": false,
             "visibility": "internal"
           }
         ],
-        "scope": 7575,
-        "src": "1090:2994:8"
+        "scope": 7943,
+        "src": "1090:3146:9"
       }
     ],
-    "src": "32:4054:8"
+    "src": "32:4206:9"
   },
   "compiler": {
     "name": "solc",
@@ -2666,7 +3013,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.1",
-  "updatedAt": "2021-04-07T11:21:26.411Z",
+  "updatedAt": "2021-04-16T09:01:42.778Z",
   "devdoc": {
     "details": "This abstract contract is inherited by almost all contracts of \"Web3 Direct Democracy\" (except \"DemoCoin\" token and ballot contracts inheriting from \"IVote\" interface).  It gathers some common features such as constitution address handling.",
     "kind": "dev",
