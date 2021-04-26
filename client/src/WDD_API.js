@@ -48,6 +48,7 @@ class Register {
   }
 
   Set_Register_Events = async()=> {
+    console.log("Set_Register_Events: this.Instance:",this.Instance)
     await this.Instance.events.Name_Changed(this.Handle_Name_Changed);
     await this.Instance.events.Constitution_Changed(this.Handle_Constitution_Changed);
     await this.Instance.events.Authority_Added(this.Handle_Authority_Added);
@@ -256,7 +257,7 @@ class Constitution extends Register{
       contract_address //deployedNetwork && deployedNetwork.address,
     ); 
     
-    this.Set_Register_Events();
+    await this.Set_Register_Events();
     this.Instance.events.Transitional_Government_Finised(this.Handle_Transitional_Government_Finised);
     this.Instance.events.Register_Created(this.Handle_Register_Created);
     this.Instance.events.Delegation_Created(this.Handle_Delegation_Created);
