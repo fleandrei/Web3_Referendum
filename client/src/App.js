@@ -1,9 +1,7 @@
 import React, { Component, useState, useEffect, useRef } from "react";
-import Constitution_Artifact from "./contracts/Constitution.json";
-import API_Register_Artifact from "./contracts/API_Register.json";
-import Agora_Artifact from "./contracts/Agora.json";
-import Delegation_Artifact from "./contracts/Delegation.json";
+import {Constitution, Register, Delegation, Governance_Instance} from "./WDD_API";
 
+import Constitution_Artifact from "./contracts/Constitution.json";
 
 import Button from 'react-bootstrap/Button';
 import Navbar from 'react-bootstrap/Navbar';
@@ -38,302 +36,14 @@ function Bytes32ToAddress(str){
   return str.slice(0,2) + str.slice(26);
 }  
 
-class Register {
-  constructor(web3){
-    this.web3=web3;
-    this.Event = new EventEmitter();
-    this.Name=null;
-    this.Instance=null;
-    this.Register_Authorities=[];
-    this.Mapping_Functions_Selector=new Map();
-    this.Register_Functions=new Map();
+function Remove_Numerical_keys(obj){
+  var obj_len= obj.length;
+  for(var i=0; i<obj_len; i++){
+    delete obj[i];
   }
-
-  Encode_Register_Functions_ByName=async(Function_Name, Param_Values)=>{
-    var function_selector = this.Register_Functions_Selector.get(Function_Name);
-    return function_selector+this.web3.eth.abi.encodeParameters(this.Register_Functions.get(function_selector).Param_Types, Param_Values).slice(2);
-  }
-
-  Encode_Register_Functions_BySelector=async(Function_Selector, Param_Values)=>{
-    return Function_Selector+this.web3.eth.abi.encodeParameters(this.Register_Functions.get(Function_Selector).Param_Types, Param_Values).slice(2);
-  }
-
-  Decode_Register_Function = async(Function_Call)=>{
-    var function_selector = Function_Call.slice(0,10);
-    console.log("Decode: function_selector:",function_selector);
-    var Values_Obj = this.web3.eth.abi.decodeParameters(this.Register_Functions.get(function_selector).Param_Types, function_selector.slice(10));
-    console.log("Decode: param Values", Object.values(Values_Obj));
-    return({Name:this.Register_Functions.get(function_selector).Name, Param_Types:this.Register_Functions.get(function_selector).Param_Types, Param_Values:Object.values(Values_Obj)})
-  }
-
-  Set_Register_Events = async()=> {
-    await this.Instance.events.Name_Changed(this.Handle_Name_Changed);
-    await this.Instance.events.Constitution_Changed(this.Handle_Constitution_Changed);
-    await this.Instance.events.Authority_Added(this.Handle_Authority_Added);
-    await this.Instance.events.Authority_Removed(this.Handle_Authority_Removed);
-  }
-
-  Handle_Name_Changed= async(err,event)=>{
-    this.Name = await this.Instance.methods.Name();
-    this.Event.emit("State_Changed");
-    this.Event.emit("Name_Changed");
-  }
-
-  Handle_Constitution_Changed = async(err,event)=>{
-    this.Event.emit("State_Changed");
-    this.Event.emit("Constitution_Changed");
-  }
-
-  Handle_Authority_Added = async(err,event)=>{
-    this.Register_Authorities.push(event.returnValues.authority);
-    this.Event.emit("Authority_Added");
-    this.Event.emit("Constitution_Changed");
-  }
-
-  Handle_Authority_Removed = async(err,event)=>{
-    this.Register_Authorities= this.Register_Authorities.filter(item=>{ return item !== event.returnValues.authority});
-    this.Event.emit("Authority_Removed");
-    this.Event.emit("Constitution_Changed");
-  }
-
+  return obj;
 }
 
-class Governance_Instance{
-  constructor(web3){
-    this.web3=web3;
-    this.Event = new EventEmitter();
-    this.Name=null;
-    this.Instance=null;
-    this.Law_Project_List=new Map();
-  }
-
-  //Add_Law_Project = async ()=>{
-  
-}
-
-class Delegation extends Governance_Instance{
-  constructor(web3){
-    super(web3);
-  }
-
-
-  SetInstance = async (contract_address)=>{
-    this.Instance = new this.web3.eth.Contract(
-      Delegation_Artifact.abi,
-      contract_address //deployedNetwork && deployedNetwork.address,
-    ); 
-    
-    await this.LoadState();
-  }
-
-  LoadState= async () => {
-
-    this.Name = await this.Instance.methods.Name().call();
-    
-    console.log("Name:",this.Name);
-    console.log("this",this);
-
-    this.Event.emit("State_Loaded");
-  }
-
-}
-
-
-
-class Agora_Specific_Register extends Governance_Instance {
-  constructor(web3){
-    super(web3);
-    this.Register_Address=null;
-    this.Pending_Referendums=new Map();
-    this.Aborted_Referendums=new Map();
-    this.Executed_Referendums=new Map();
-    this.Referendum_Parameters=null;
-
-  }
-
-
-  SetInstance = async (contract_address, register_address)=>{
-    this.Register_Address = register_address;
-    this.Instance = new this.web3.eth.Contract(
-      Agora_Artifact.abi,
-      contract_address //deployedNetwork && deployedNetwork.address,
-    ); 
-    
-    await this.LoadState();
-  }
-
-  LoadState= async () => {
-    var register_param = await this.Instance.methods.Get_Referendum_Register(this.Register_Address).call();
-    var Last_Param_Version = register_param.last_version;
-    var List_Referendum_key= register_param.list_referendums;
-
-    this.Referendum_Parameters = Array.from({length:Last_Param_Version});
-
-    for (var i = 1; i <=Last_Param_Version; i++) {
-      this.Referendum_Parameters[i-1] = await this.Instance.methods.Get_Referendum_Register_Parameters(this.Register_Address, i).call();
-      console.log("Parameters: ",this.Referendum_Parameters[i-1]);  
-    }
-
-    this.Pending_Referendums.clear();
-    this.Aborted_Referendums.clear();
-    this.Executed_Referendums.clear();
-    this.Law_Project_List.clear();
-
-    List_Referendum_key.forEach((key, idx)=>{
-      var referendum = this.Instance.methods.Referendums(key).call();
-      var law_project = this.Instance.methods.Law_Project_List(key).call();
-      console.log("Agora Loadstate: referendum",referendum,"\n law_project:",law_project);
-      if(referendum.Referendum_Status==3){
-        this.Executed_Referendums.set(key,referendum);
-      }else if(referendum.Referendum_Status==4){
-        this.Aborted_Referendums.set(key,referendum);
-      }else{
-        this.Pending_Referendums.set(key,referendum);
-      }
-
-      this.Law_Project_List.set(key,law_project);
-    });
-
-    this.Name = await this.Instance.methods.Name().call();
-    console.log("Name:",this.Name);
-    console.log("this",this);
-
-    this.Event.emit("State_Loaded");
-  }
-
-}
-
-class Constitution extends Register{
-  constructor(web3){
-    super(web3);
-
-    //this.Instance=null;
-    this.Transitional_Government = null;
-    this.Is_Transitional_Government = true;
-    this.Agora_Address = null;
-    this.Agora= new Agora_Specific_Register(web3);
-    this.Citizens_Register_Address =null;
-    this.DemoCoin_Address = null;
-    this.Delegation_List= new Map();
-    this.Loi_Register_List=new Map();
-    this.API_Register_List= new Map();
-
-    /*Add Register functions*///0x4b5c2734
-    this.Mapping_Functions_Selector.set("Add_Register_Authority","0x4b5c2734");
-    this.Register_Functions.set("0x4b5c2734", {Name:"Add_Register_Authority",Param_Types:["address","address"], Param_Names:["register","authority"]});
-
-    this.Mapping_Functions_Selector.set("Remove_Register_Authority","0xcaf1f81f");
-    this.Register_Functions.set("0xcaf1f81f", {Name:"Remove_Register_Authority",Param_Types:["address","address"], Param_Names:["register","authority"]});
-
-    this.Mapping_Functions_Selector.set("Set_Instances_Constitution","0x5a014a14");
-    this.Register_Functions.set("0x5a014a14", {Name:"Set_Instances_Constitution",Param_Types:["address","address"], Param_Names:["instance_address","new_address"]});
-
-    this.Mapping_Functions_Selector.set("Set_Institution_Name","0xaeb53b64");
-    this.Register_Functions.set("0xaeb53b64", {Name:"Set_Institution_Name",Param_Types:["address","string"], Param_Names:["instance_address","name"]});
-
-    this.Mapping_Functions_Selector.set("Set_Minnter","0xca1eb16a");
-    this.Register_Functions.set("0xca1eb16a", {Name:"Set_Minnter",Param_Types:["address[]","address[]"], Param_Names:["Add_Minter","Remove_Minter"]});
-
-    this.Mapping_Functions_Selector.set("Set_Burner","0xd963545d");
-    this.Register_Functions.set("0xd963545d", {Name:"Set_Burner",Param_Types:["address[]","address[]"], Param_Names:["Add_Burner","Remove_Burner"]});
-
-    this.Mapping_Functions_Selector.set("Set_Citizen_Mint_Amount","0x811a5c1f");
-    this.Register_Functions.set("0x811a5c1f", {Name:"Set_Citizen_Mint_Amount",Param_Types:["uint256"], Param_Names:["amount"]});
-
-    this.Mapping_Functions_Selector.set("Citizen_Register_Remove_Authority","0x1b5cb360");
-    this.Register_Functions.set("0x1b5cb360", {Name:"Citizen_Register_Remove_Authority",Param_Types:["address"], Param_Names:["removed_authority"]});
-
-    this.Mapping_Functions_Selector.set("Add_Registering_Authority","0x05ff1b36");
-    this.Register_Functions.set("0x05ff1b36", {Name:"Add_Registering_Authority",Param_Types:["address"], Param_Names:["new_authority"]});
-
-    this.Mapping_Functions_Selector.set("Add_Banning_Authority","0xfb252e2d");
-    this.Register_Functions.set("0xfb252e2d", {Name:"Add_Banning_Authority",Param_Types:["address"], Param_Names:["new_authority"]});
-
-    this.Mapping_Functions_Selector.set("Create_Register","0x1529356f");
-    this.Register_Functions.set("0x1529356f", {Name:"Create_Register",Param_Types:["string","uint8","uint256","uint256","uint256","uint256","uint256","uint16","address"], Param_Names:["Name",
-     "register_type", "Petition_Duration", "Vote_Duration", "Vote_Checking_Duration", "Law_Initialisation_Price", "FunctionCall_Price", "Required_Petition_Rate", "Ivote_address"]});
-
-    this.Mapping_Functions_Selector.set("Set_Register_Param","0x662913cd");
-    this.Register_Functions.set("0x662913cd", {Name:"Set_Register_Param",Param_Types:["address", "uint", "uint", "uint", "uint", "uint", "uint16", "address"], Param_Names:[
-     "register_address", "Petition_Duration", "Vote_Duration", "Vote_Checking_Duration", "Law_Initialisation_Price", "FunctionCall_Price", "Required_Petition_Rate", "Ivote_address"]});
-  }
-
-
-  SetInstance = async (contract_address)=>{
-    this.Instance = new this.web3.eth.Contract(
-      Constitution_Artifact.abi,
-      contract_address //deployedNetwork && deployedNetwork.address,
-    ); 
-    
-    this.Set_Register_Events();
-    this.Instance.events.Transitional_Government_Finised(this.Handle_Transitional_Government_Finised);
-    await this.LoadState();
-  }
-
-  LoadState= async () => {
-    this.Loi_Register_List.clear();
-    this.API_Register_List.clear();
-
-    this.Name = await this.Instance.methods.Name().call();
-    this.Register_Authorities = [...(await this.Instance.methods.Get_Authorities().call()).map(Bytes32ToAddress)];
-    this.Transitional_Government = await this.Instance.methods.Transitional_Government().call();
-    var Agora_Address = await this.Instance.methods.Agora_Instance().call();
-    this.Citizens_Register_Address = await this.Instance.methods.Citizen_Instance().call();;
-    this.DemoCoin_Address = await this.Instance.methods.Democoin_Instance().call();
-    
-    
-    await this.Agora.SetInstance(Agora_Address, this.Instance._address);
-    console.log("this.Register_Authorities", this.Register_Authorities,",\n Transitional_Government",this.Transitional_Government);
-    if(!this.Register_Authorities.includes(this.Transitional_Government.toLowerCase())){
-      this.Is_Transitional_Government=false;
-    }
-
-    /*Register initialisation*/
-    var register_address_list = await this.Instance.methods.Get_Register_List().call();
-    register_address_list=register_address_list.map(Bytes32ToAddress);
-
-    register_address_list.forEach(async (address,i,arr)=>{
-      var API_Register_Instance = new this.web3.eth.Contract(
-        API_Register_Artifact.abi,
-        address,
-      );
-
-      var last_version= (await this.Agora.Instance.methods.Get_Referendum_Register(address).call())
-      var Parameters = Array.from({length:last_version})
-      Parameters=Parameters.map(async (elem,idx)=> {return await this.Agora.Instance.methods.Get_Referendum_Register_Parameters(address, idx+1).call()});
-
-      var register_type = await API_Register_Instance.methods.Type_Institution().call();
-      if(register_type===3){
-        this.Loi_Register_Address_List.set(address, Parameters);
-      }else if(register_type===4){
-        this.API_Register_Addres_List.push(address, Parameters);
-      }
-    });
-
-    /*Delegation Initialisation*/
-    var delegation_address_list = await this.Instance.methods.Get_Delegation_List().call();
-
-
-    console.log("Name:",this.Name);
-    console.log("this",this);
-    console.log("Delegation_Address_List",this.Delegation_Address_List);
-    console.log("Agora_Instance:", this.Agora_Address, ", Citizen_Instance", 
-      this.Citizens_Register_Address, ", Democoin_Instance", this.DemoCoin_Address);
-
-    this.Event.emit("State_Loaded");
-  }
-
-  Handle_Transitional_Government_Finised = async(err,ev) =>{
-    this.Is_Transitional_Government = false;
-    this.Event.emit("State_Changed");
-    this.Event.emit("Transitional_Government_Finised");
-  };
-
-  Set_Citizen_Mint_Amount = async( amount, account)=>{
-    this.Instance.methods.Set_Citizen_Mint_Amount( amount).send({from:account}).catch(err=>{console.error(err)});
-  }
-
-}
 
 const Institution_Type = {
     CONSTITUTION:"CONSTITUTION",
@@ -343,6 +53,58 @@ const Institution_Type = {
     CITIZEN:"CITIZEN"
 }
 
+function Referendum_Parameter_Table(props){
+  const [Version, SetVersion] = useState(props.last_version); // Can't be 0
+
+  const Handle_New_Version= async(event)=>{
+    SetVersion(event.target.value);
+    
+  }
+  console.log("props.Parameters", props.Parameters);
+
+  return(
+      <div>
+                  <Form noValidate inline >
+                    <Form.Label className="my-1 mr-2" htmlFor="Param_Version">
+                      Parameter Version
+                    </Form.Label>
+                    <Form.Control
+                      as="select"
+                      className="my-1 mr-sm-2"
+                      id="Param_Version"
+                      value={Version}
+                      custom
+                      onChange={Handle_New_Version}
+                    >
+                      {
+                        props.Parameters.map((elem,idx)=>{
+                          return <option key={idx+1} value={idx+1}>Version {idx+1}</option>
+                        })
+                      }
+                  </Form.Control>
+                  </Form>
+        <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    Object.keys(props.Parameters[Version-1]).map((elem,idx)=>{
+                      return <tr key={elem}>
+                    <td>{elem}</td>
+                    <td >{Object.values(props.Parameters[Version-1])[idx]}</td>
+                  </tr>
+                    })
+                  }
+                  
+                </tbody>
+              </Table>
+      </div>
+  )
+}
 
 function Create_Function_Call(props){
   const [Register, SetRegister] = useState(null);
@@ -433,31 +195,30 @@ function Create_Function_Call(props){
 }
 
 
+
+
 function Constitution_Data_Show(props){
-  const [Constitution, SetConstitution] = useState(null);
 
   const Transitional_Governement_FunctionCall = async (register_address, function_call)=>{
     try{
     console.log("Transitional_Governement_FunctionCall: function_call", function_call);
     await props.web3.eth.sendTransaction({
       from:props.account,
-      to:Constitution.Instance._address,
+      to:props.Constitution.Instance._address,
       data:function_call.slice(2)
     })
-    var Register_Address = Constitution.Register_Address;
-    console.log("Constitution Register_Address after function call:",Register_Address);
+    var Register_Address = props.Constitution.Register_Address;
+    console.log("props.Constitution Register_Address after function call:",Register_Address);
   }catch(error){
     alert("Transitional_Government function call error:" + error.toString());
     console.error(error);
   }
   }
 
-  if(Constitution!==props.Constitution){
-    SetConstitution(props.Constitution);
-  }
 
-  console.log("Constitution_Data_Show: Constitution",Constitution);
-  if(Constitution==null){return <div> </div>}
+
+  console.log("Constitution_Data_Show: Constitution",props.Constitution);
+  if(props.Constitution==null){return <div> </div>}
 
   return(
     <div className="App">
@@ -471,7 +232,7 @@ function Constitution_Data_Show(props){
             
             <div className="row">
             <div className="col d-flex align-items-center ">
-              <h5 className="p-3">{Constitution.Name}: </h5>
+              <h5 className="p-3">{props.Constitution.Name}: </h5>
               <OverlayTrigger
                 key={"Citizens_Address"}
                 placement={"top"}
@@ -481,11 +242,11 @@ function Constitution_Data_Show(props){
                 </Tooltip>
                  }
               > 
-                <Button variant="secondary" onClick={()=>{navigator.clipboard.writeText(Constitution.Citizens_Register_Address)}}>{Constitution.Citizens_Register_Address.slice(0,8)+"..."+Constitution.Citizens_Register_Address.slice(36)+" "}</Button>     
+                <Button variant="secondary" onClick={()=>{navigator.clipboard.writeText(props.Constitution.Citizens_Register_Address)}}>{props.Constitution.Citizens_Register_Address.slice(0,8)+"..."+props.Constitution.Citizens_Register_Address.slice(36)+" "}</Button>     
               </OverlayTrigger>
               </div>
             <div className="col d-flex align-items-center  ">
-              <h5 className="p-3">{Constitution.Name}: </h5>
+              <h5 className="p-3">{props.Constitution.Name}: </h5>
               <OverlayTrigger
                 key={"Agora_Address"}
                 placement={"top"}
@@ -495,11 +256,11 @@ function Constitution_Data_Show(props){
                 </Tooltip>
                  }
               > 
-                <Button variant="secondary" onClick={()=>{navigator.clipboard.writeText(Constitution.Agora.Instance._address)}}>{Constitution.Agora.Instance._address.slice(0,8)+"..."+Constitution.Agora.Instance._address.slice(36)+" "}</Button>     
+                <Button variant="secondary" onClick={()=>{navigator.clipboard.writeText(props.Constitution.Agora.Instance._address)}}>{props.Constitution.Agora.Instance._address.slice(0,8)+"..."+props.Constitution.Agora.Instance._address.slice(36)+" "}</Button>     
               </OverlayTrigger>
             </div>
             <div className="col d-flex align-items-center  ">
-              <h5 className="p-3">{Constitution.Name}: </h5>
+              <h5 className="p-3">{props.Constitution.Name}: </h5>
               <OverlayTrigger
                 key={"DemoCoin_Address"}
                 placement={"top"}
@@ -509,7 +270,7 @@ function Constitution_Data_Show(props){
                 </Tooltip>
                  }
               > 
-                <Button variant="secondary" onClick={()=>{navigator.clipboard.writeText(Constitution.DemoCoin_Address)}}>{Constitution.DemoCoin_Address.slice(0,8)+"..."+Constitution.DemoCoin_Address.slice(36)+" "}</Button>     
+                <Button variant="secondary" onClick={()=>{navigator.clipboard.writeText(props.Constitution.DemoCoin_Address)}}>{props.Constitution.DemoCoin_Address.slice(0,8)+"..."+props.Constitution.DemoCoin_Address.slice(36)+" "}</Button>     
               </OverlayTrigger>
             </div>
             </div>
@@ -520,20 +281,108 @@ function Constitution_Data_Show(props){
       <br></br>
 
       
+        <Card className="d-flex" >
+        <Card.Header><strong>Instances Address</strong></Card.Header>
+        <Card.Body>
       <Tab.Container id="left-tabs-example" defaultActiveKey="first">
         <Row>
-          <Col sm={3}>
+          <Col sm={3} className="border-right">
+            <h4> Institutions:</h4>
+           
             <Nav variant="pills" className="flex-column">
+              {
+                (props.Constitution.Agora.Referendum_Parameters.length != 0)&&
+                <Nav.Item>
+                  <Nav.Link eventKey={props.Constitution.Instance._address}>{props.Constitution.Name} (Constitution) </Nav.Link>
+                </Nav.Item>
+              } 
+              { props.Loi.map((loi)=>{
+                  return <Nav.Item>
+                  <Nav.Link eventKey={loi.Instance._address}>{loi.Name}+" (Loi)" </Nav.Link>
+                </Nav.Item>
+                })
+              }
+              {props.API.map((api)=>{
+                  return <Nav.Item>
+                  <Nav.Link eventKey={api.Instance._address}>{api.Name}+" (API_Register)" </Nav.Link>
+                </Nav.Item>
+                })
+              }
+              
+              {props.Delegations.map((delegation)=>{
+                  return <Nav.Item>
+                  <Nav.Link eventKey={delegation.Instance._address}>{delegation.Name}+" (Delegation)" </Nav.Link>
+                </Nav.Item>
+                })
+              }
               <Nav.Item>
+
                 <Nav.Link eventKey="first">Tab 1</Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="second">Tab 2</Nav.Link>
               </Nav.Item>
             </Nav>
+
           </Col>
           <Col sm={9}>
+            
             <Tab.Content>
+            {
+              (props.Constitution.Agora.Referendum_Parameters.length != 0)&&
+              <Tab.Pane eventKey={props.Constitution.Instance._address}>
+                <div className=" d-flex align-items-center justify-content-center ">
+                <h4 className="p-3"> {props.Constitution.Name}:  </h4>
+                <OverlayTrigger
+                  key="Constitution_Address"
+                  placement={"top"}
+                  overlay={
+                  <Tooltip id={'Constitution_Address'}>
+                  <strong>Click to copy</strong>.
+                  </Tooltip>
+                   }
+                > 
+                  <Button variant="secondary" onClick={()=>{navigator.clipboard.writeText(props.Constitution.Instance._address)}}>{props.Constitution.Instance._address.slice(0,8)+"..."+props.Constitution.Instance._address.slice(36)+" "}</Button>     
+                </OverlayTrigger>
+                </div>
+                <br/>
+                <h5>  Referendum Parameters </h5>
+
+                <Referendum_Parameter_Table Parameters={props.Constitution.Agora.Referendum_Parameters} last_version={props.Constitution.Agora.Referendum_Parameters.length}/>
+                <br/>
+                <br/>
+                <h5>  Register Authorities </h5>
+                <ListGroup>             
+                {
+                  props.Constitution.Register_Authorities.map((elem)=>{
+                  return <ListGroup.Item key={elem}>{elem}</ListGroup.Item>
+                  })
+                }
+                </ListGroup>
+              </Tab.Pane>
+            } 
+            {
+              props.Loi.map((loi)=>{
+                return <Tab.Pane eventKey={loi.Instance._address}>
+                loi
+              </Tab.Pane>
+              })
+            } 
+            {
+              props.API.map((api)=>{
+                return <Tab.Pane eventKey={api.Instance._address}>
+                api
+              </Tab.Pane>
+              })
+            } 
+            {
+              props.Delegations.map((delegation)=>{
+                return <Tab.Pane eventKey={delegation.Instance._address}>
+                delegation
+              </Tab.Pane>
+              })
+            } 
+
               <Tab.Pane eventKey="first">
                 
               </Tab.Pane>
@@ -544,18 +393,21 @@ function Constitution_Data_Show(props){
           </Col>
         </Row>
       </Tab.Container>
-
-
+      </Card.Body>
+      </Card>
 
       <br/>
       <br/>
       <div style={{display: 'flex', justifyContent: 'center'}}>
       <Card className="d-flex" style={{ width: '50rem' }}>
-        <Card.Header><strong>Transitional_Government</strong></Card.Header>
+        <Card.Header style={{color:"red"}}><strong>Transitional_Government</strong></Card.Header>
           <Card.Body>
-            <Create_Function_Call Register={Constitution} Handle_Function_Call={Transitional_Governement_FunctionCall} />
+            <Create_Function_Call Register={props.Constitution} Handle_Function_Call={Transitional_Governement_FunctionCall} />
             
           </Card.Body>
+          <Card.Footer className="text-muted">
+            <Button variant="danger"  onClick={()=>{props.Constitution.Instance.End_Transition_Government().send({from:props.account})}}>End Transitional Government </Button>
+          </Card.Footer>
       </Card>
       </div>
     </div>
@@ -578,24 +430,29 @@ function Constitution_Show(props){
     VOTE:"VOTE",
     RESULTS:"RESULTS"
   }
-  var Constitution_Tab;
 
-  const Handle_Tab_Select= async (tab)=>{
+  const Content_From_Tab=(tab)=>{
     switch(tab){
       case Sub_Tab.DATA:
-        SetTab(<Constitution_Data_Show Constitution={Constitution} 
+        return <Constitution_Data_Show Constitution={Constitution} 
+                      Loi={props.Loi}
+                      API={props.API}
+                      Delegations={props.Delegations}
                       account={props.account}
-                      web3={props.web3}/>);
+                      web3={props.web3}/>;
         break;
       case Sub_Tab.PROPOSITIONS:
 
-        break;
+      break;
     }
-    
   }
 
   
-  if(Constitution!==props.Constitution){
+  useEffect(() => {
+    Constitution.Event.on("State_Changed", ()=>{console.log("Constitution_Show: State_Changed: Constitution",Constitution); SetConstitution(Constitution)});
+  }, [Constitution]);
+
+  if(Constitution==null){
     SetConstitution(props.Constitution);
   }
 
@@ -607,7 +464,7 @@ function Constitution_Show(props){
     <div className="App">
       <div className="row  align-items-center">
         <div className="col d-flex mr-auto">
-        <Nav variant="pills" activeKey="1" onSelect={Handle_Tab_Select}>
+        <Nav variant="pills" activeKey="1" onSelect={SetTab}>
           <Nav.Item>
             <Nav.Link eventKey="DATA" >
              Data
@@ -649,7 +506,7 @@ function Constitution_Show(props){
         </div>
       </div>
 
-      {Tab}
+      {Content_From_Tab(Tab)}
 
      
     </div>
@@ -699,7 +556,10 @@ class Main extends Component {
       const deployedNetwork = Constitution_Artifact.networks[networkId];
 
       const constitution= new Constitution(web3);
-      await constitution.Event.on("State_Changed", ()=>{console.log("State changed"); this.setState({Constitution})});
+      await constitution.Event.on("State_Changed", this.SetState_Constitution);
+      await constitution.Event.on("New_Loi_Register", this.Handle_New_Loi_Register);
+      await constitution.Event.on("New_API_Register", this.Handle_New_API_Register);
+
       //await constitution.Event.on("Constitution_Changed", ()=>{console.log("Constitution changed"); this.setState({Constitution})});
       
 
@@ -741,6 +601,21 @@ class Main extends Component {
     this.setState({ Constitution: Constitution});
   }
 
+  SetState_Constitution = async ()=>{
+    var constitution = this.state.Constitution;
+    console.log("SetState_Constitution: constitution",constitution);
+    this.setState({Constitution:constitution});
+    console.log("SetState_Constitution: this.state.Constitution", this.state.Constitution);
+  }
+
+  Handle_New_Loi_Register = async (Loi_address)=>{
+
+  }
+
+  Handle_New_API_Register = async (Loi_address)=>{
+
+  }
+
   render() {
 
     if (!this.state.web3) {
@@ -759,6 +634,9 @@ class Main extends Component {
     switch (this.state.Current_Institution_Tab){
       case Institution_Type.CONSTITUTION:
         Institution_Tab= <div> <Constitution_Show Constitution={this.state.Constitution}
+                                 Loi={this.state.Loi}
+                                 API={this.state.API}
+                                 Delegations={this.state.Delegations}
                                  account={this.state.accounts[0]}
                                  web3={this.state.web3}
                                  /></div>
