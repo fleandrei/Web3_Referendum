@@ -1,30 +1,36 @@
 # Web3 Direct Democracy
 
-##Context
+## Context
+
 Our society knows a crisis of confidence that increases year after year. All institutions are concerned : mass media, banks, trade unions, associations, politicians …
+
 This phenomenon has been expressed via various movements such as occupy Wall street or Yellow Vest and can be seen by the rise of abstentions. 
 In this context new forms of democracy and governance could emerge. Direct democracy could increase citizens involvment in political life by allowing them to take part directly in law editing and by removing or reducing the need of intermediary (Representative democracy).
 
-##Concept:
+## Concept:  
+
 Web3 Direct Democracy is an Ethereum blockchain school project whose goal is to provide a governance system implementing a direct democracy protocol coupled with a representative one. This DAO is developed in order to be used for both onchain and/or offchain use cases. In oder words, democratic process implemented by the solution can lead to 2 differents kind of results:
 
 * The edition of written laws : charters, internals rules, assembly decisions…
 * The execution of an onchain function.
 
-A Web3 Direct Democracy project can be deployed and used by various entities such as municipalities, ONG, companies, DAO…
+A Web3 Direct Democracy project can be deployed and used by various entities such as municipalities, ONG, companies, DAO…  
+
 Governance rules are customizable and updatable via a democratic process.
 
 Notice : The solidity code has been unit tested but not audited for securities issues.
 
-##Global design:
+## Global design:
 
 Almost all contracts of the project can be divided into two categories: __Register contract__ and __Governance contract__.
 
-###Register contracts
+### Register contracts
+
 These contracts inherit from Register abstract contract and contains the logic and the data that are ruled via Web3 Direct Democracy democratic process. Functions that allow to edit Register contract state and to execute it’s logic are named _Register_Functions_. These functions can only be called by a list of allowed address registered in the _Register_Authorities_ array (Register_Authorities_Only). These authorities can be any accounts you want but it’s preferred to use _Governance contract_ (see next sub section) instead. 
 
 
-###Governance contracts
+### Governance contracts
+
 « Governance contract » appellation isn’t related to any Web3 Direct Democracy contract name. We just use this appellation to talk about contracts that have the right to govern one or more Register Contract (if their address belongs to register contract _Register_Authorities_). Citizens are not allowed to directly call Register_Functions. They have to use Governance contracts if they want to interact with register contracts. 
  There are two kind of Governance contracts : Agora (Direct democracy) and Delegation (Representative democracy).
 These contract implement two different still very similar democratic process that lead to the elaboration and the vote of a law project. A law project contains :
@@ -33,16 +39,19 @@ These contract implement two different still very similar democratic process tha
 * Description : It’s a text that explain the spirit and generals goals of the law project. It can be a hash.
 * Function call Corpus : It’s an ordered list of encoded function calls (function selector + encoded parameters) corresponding to a register contract’s Register_Functions. When the law project is adopted, all function calls of the corpus are executed by Governance contract in the order of which they are registered in the list.
 
-##Registers :
+## Registers 
+
 In this section, we will talk about the four kind of Register contracts that can be used.
 
-###Constitution
+### Constitution
+
 Constitution register contract is used to edit parameters of a Web3 Direct Democracy project. It contains address of all deployed contracts used in a project. Particularly, it contains a list of address of all register contracts that are used in the project, and another list for all Delegations. Hence, Constitution is the central contract in a project. To launch a Web3 Direct Democracy project, we have to launch the Constitution contract. From Constitution deployed contract, we can have access to all the project. There is a single Constitution contract in a project.
 With Constitution register contract, we can add new register and delegations to the project, we can modify their democratic process parameters, change other register’s _Register_Authorities_ array…
 
 Constitution contract goal is to customize the project to specific use cases and to keep it updatable. 
 
-###Loi
+### Loi
+
 The _Loi_ contract is used to edit written laws. The structure of a law is similar to Governance contract law project one :
 
 * Title
@@ -52,8 +61,10 @@ The _Loi_ contract is used to edit written laws. The structure of a law is simil
 Register function allow to add new laws, to add articles to existing laws, to remove laws, to remove articles from existing laws and to change the description of an existing law.
 You can have multiple Loi contracts in your project, each being ruled by different Governance contract and/or via different democratic process parameters. For example you could use two Loi contracts with one handling more critical law than the other. Hence the first one should be ruled via a more secure parametrized democratic process (that least more time, with more citizen control...) than the other one. 
 
-###API_Register : 
+### API_Register : 
+
 The API_Register contract is used to call functions of third-party contracts via a democratic process. These third-party contracts functions can for example be used to execute critic task such as sending an important transaction, transferring a large amount of ether... 
+
 They should only be callable by API_Register contract. 
 
 API_Register contract contains an editable list of controllable third contract address with their callable functions. Each controllable smart contract is represented by a structure containing :
@@ -67,7 +78,8 @@ You can have multiple API_Register contracts in your project, each being ruled b
 
 Note : API_Register can neither deploy a contract nor transfer ether.
 
-###Citizens_Register : 
+### Citizens_Register : 
+
 The Citizens_Register contract is used to edit the list of citizens accounts i.e. accounts that are allowed to take part in politicals activities of the DAO. 
 
 Inherited _Register_Authorities_ list is not used in this contract. Instead, there are two different authorities lists : _Citizens_Registering_Authorities_ and _Citizens_Banning_Authorities_. 
@@ -79,20 +91,22 @@ Citizens who committed very prejudicial actions can also be banned forever (blac
 Citizens_Register contract is unique in a project. As it has to be deployed before the Constitution contract (Constitution constructor takes it’s address as parameter), the migration script should set it’s _Constitution_Address_ field via the _Set_Constitution_ function after the Constitution is deployed.
 
 
-##Governance contract:
+## Governance contract:
 
-###DemoCoin
+### DemoCoin
+
 Each Web3 Direct Democracy project uses an ERC20 utility token named _DemoCoin_. It’s address is contained in the Constitution contract. DemoCoin contains two authorities lists editable by the Constitution : _Mint_Authorities_ and _Burn_Authorities_.
-Address of the first one are allowed to mint tokens and transfer it to accounts whereas address of the second one are allowed to burn tokens from accounts. These authorities should be Governance contracts. When a new account is registered as citizen of the project, he a certain amount of token is minted for him. Hence, the Citizen_Register contract address should be added in the _Mint_Authorities_ array.
+Address of the first one are allowed to mint tokens and transfer it to accounts whereas address of the second one are allowed to burn tokens from accounts. These authorities should be Governance contracts. When a new account is registered as citizen of the project, a certain amount of token is minted for him. Hence, the Citizen_Register contract address should be added in the _Mint_Authorities_ array.
 As DemoCoin contract has to be deployed before the Constitution contract (Constitution constructor takes its address as parameter), the migration script should set it’s _Constitution_Address_ field via the _Set_Constitution_ function after the Constitution is deployed.
 
-DemoCoin token has several goals:
+DemoCoin token has several goals:	
 
 * __Avoiding the proliferation of proposals__: In each Governance Contract, citizens have to spend DemoCoin tokens to take part in the law project elaboration process. They have to spend a certain amount of tokens (not necessarily their own) to submit new law project or new propositions for the proposal_corpus of already existing law project. This allows to avoid proliferation of proposals, it increases the readability of law projects and force citizens to structure and optimize their propositions.
 * __Incentive citizens to vote (in Agora)__ : All tokens that have been spent during law project elaboration stage are redistributed to all citizens that have voted during the voting stage.
 * __Incentive Delegation members to vote popular law project__ : If a Delegation created law project is rejected by citizens, the delegation have to pay penalty fee (See the _Delegation_ sub-section).
 
-###Agora :
+### Agora :
+
 In the ancient Greece the Agora was the public place where the population used to gather and which  was the center of social, economic and political life of the city. Etymologically, Agora means « gathering place », « Assembly ». 
 In a Web3 Direct Democracy project, the Agora is the contract used to implement direct democracy via a legislative referendum of people initiative. This process is divided in three stages :
 
