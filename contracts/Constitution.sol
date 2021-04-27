@@ -18,28 +18,46 @@ import "contracts/Delegation.sol";
 import "contracts/Citizens_Register.sol";
 import "contracts/IVote.sol";
 
+/**
+ * @dev {Constitution_Register} library is used to reduce the size of Constitution contract in order to avoid to exceed contract limit size. It contains heavy functions and data structures.
+ */
 library Constitution_Register{
 
-     
+     /**
+        * @dev Deploy a {Loi} contract and returns it's address.
+        * @param Loi_Name Name of the Loi contract
+        * @param agora Addres of the Project's {Agora} contract
+    */
     function Create_Loi(string memory Loi_Name, address agora)external returns(address){
          Loi loi = new Loi(Loi_Name, agora);
          //loi.Add_Authority(authority);
          return address(loi);
      }
      
-     /*function Create_Citizens(string memory Citizen_Name, address[] calldata Initial_members, address token_address, uint new_citizen_mint_amount)external returns(address){
-         return address(new Citizens_Register(Citizen_Name,Initial_members, token_address, new_citizen_mint_amount));
-     }*/
-     
+     /**
+        * @dev Deploy a {API_Register} contract and returns it's address.
+        * @param Name Name of the API_Register contract
+        * @param agora Addres of the Project's {Agora} contract
+    */
      function Create_API(string memory Name, address agora) external returns(address){
          return address(new API_Register(Name, agora));
      }
     
 }
 
-
+/**
+ * @dev {Constitution_Delegation} library is used to reduce the size of Constitution contract in order to avoid to exceed contract limit size. It contains heavy functions and data structures.
+ */
 library Constitution_Delegation{
-
+    
+     /**
+        * @dev Deploy a {Delegation} contract and returns it's address.
+        * @param Delegation_Name Name of the Delegation contract
+        * @param Initial_members List of initial memebers of the delegation
+        * @param Token_Address Address of the Project's {DemoCoin} contract
+        * @param citizen_address Addres of the Project's {Citizens_Register} contract
+        * @param agora_address Addres of the Project's {Agora} contract
+    */
     function Create_Delegation(string memory Delegation_Name, address[] calldata Initial_members, address Token_Address, address citizen_address, address agora_address)external returns(address){
          Delegation delegation = new Delegation(Delegation_Name, Initial_members, Token_Address, citizen_address, agora_address);
          return address(delegation);
@@ -54,8 +72,18 @@ library Constitution_Delegation{
 
 
 
-
- //contract Constitution is Register, IConstitution_Agora, IConstitution_Delegation{
+/**
+ * @dev Constitution register contract is used to edit parameters of a Web3 Direct Democracy project. 
+ * It contains address of all deployed contracts used in a project. Particularly, it contains a list of address of all register contracts that are used in the project, and another list for all Delegations. 
+ * Hence, Constitution is the central contract in a project. To launch a Web3 Direct Democracy project, we have to launch the Constitution contract. 
+ * From Constitution deployed contract, we can have access to all the project. There is a single Constitution contract in a project.
+ * With Constitution register contract, we can add new register and delegations to the project, we can modify their democratic process parameters, change other register’s _Register_Authorities_ array…
+ * Constitution contract goal is to customize the project to specific use cases and to keep it updatable. 
+ * 
+ * Once a Web3 Direct Democracy project has just been deployed, it hasn’t any register or delegation. Citizens_Register and DemoCoin contracts haven’t any authority in their _Register_Authorities_ list. 
+ * Thus, at the beginning of a Web3 Direct Democracy project, we need an initialisation stage. 
+ * In this initialisation stage, there is a _Transitional_Government_ account that has authority on the constitution and can quickly perform necessary operations without passing by any democratic process :
+ */
 contract Constitution is Register{
      using EnumerableSet for EnumerableSet.AddressSet;
      //using Constitution_Register for Constitution_Register.Register_Parameters;
@@ -162,38 +190,59 @@ contract Constitution is Register{
          
      }
      
-     
+     /**
+      * @dev Function called by the {Transitional_Government} account to end the Transitional Government stage. This step is mandatory to start using a Web3 Direct Democracy in a safe way.
+     */ 
      function End_Transition_Government()external{
          require(msg.sender == Transitional_Government, "Transitional_Government only");
          Register_Authorities.remove(Transitional_Government);
          emit Transitional_Government_Finised();
      }
      
+      /**
+      * @dev Add a new address to a Register contract's (contract that inherit from a {Register} abstract contract) {Register_Authorities} list.
+      * @param register Address of the register contract
+      * @param authority Address to add to the {Register_Authorities} list.
+     */ 
      function Add_Register_Authority(address register, address authority) external Register_Authorities_Only{
          require(Registers_Address_List.contains(register), "Unknown Register");
          Register res = Register(register);
          res.Add_Authority(authority);
      }
      
+      /**
+      * @dev Removes a, address from a Register contract's {Register_Authorities} list.
+      * @param register Address of the register contract
+      * @param authority Address to remove from the {Register_Authorities} list.
+     */ 
      function Remove_Register_Authority(address register, address authority) external Register_Authorities_Only{
          require(Registers_Address_List.contains(register), "Unknown Register");
          Register res = Register(register);
          res.Remove_Authority(authority);
      }
 
-     
-     function Set_Instances_Constitution(address instance_address, address new_address)external Register_Authorities_Only{
-         require(Registers_Address_List.contains(instance_address) || Delegation_Address_List.contains(instance_address) || instance_address== address(Citizen_Instance), "instance address unknown"); // There is no interest to modify Agora's constitution.
+      /**
+      * @dev Change the Constitution address of an Institution contract belonging to current project. After this call, this Institution will not recognize this Constitution anymore.
+      * @param institution_address Address of the Institution contract
+      * @param new_address New Constitution address of the {institution_address} Institution 
+     */ 
+     function Set_Instances_Constitution(address institution_address, address new_address)external Register_Authorities_Only{
+         require(Registers_Address_List.contains(institution_address) || Delegation_Address_List.contains(institution_address) || institution_address== address(Citizen_Instance), "instance address unknown"); // There is no interest to modify Agora's constitution.
          require(new_address!=address(0),"address 0");
-         Institution Insti = Institution(instance_address);
+         Institution Insti = Institution(institution_address);
          Institution_Type type_insti = Insti.Type_Institution();
          require(type_insti != Institution_Type.CONSTITUTION);
          Insti.Set_Constitution(new_address);
      }
 
-     function Set_Institution_Name(address instance_address, string calldata name)external Register_Authorities_Only{
-         require(Registers_Address_List.contains(instance_address) || Delegation_Address_List.contains(instance_address) || instance_address== address(Citizen_Instance) || instance_address== address(Agora_Instance), "instance address unknown");
-         Institution Insti = Institution(instance_address);
+     /**
+      * @dev Change the Name of an Institution contract.
+      * @param institution_address Address of the Institution contract
+      * @param name New name of the {institution_address} Institution.
+     */ 
+     function Set_Institution_Name(address institution_address, string calldata name)external Register_Authorities_Only{
+         require(Registers_Address_List.contains(institution_address) || Delegation_Address_List.contains(institution_address) || institution_address== address(Citizen_Instance) || institution_address== address(Agora_Instance), "instance address unknown");
+         Institution Insti = Institution(institution_address);
          Insti.Set_Name(name);
      }
      
@@ -203,6 +252,11 @@ contract Constitution is Register{
     
     /*DemoCoin functions*/
     
+    /**
+      * @dev Change address that are allowed to mint DemoCoin Token (Minter authorities). They are contained in the {Mint_Authorities} list of {DemoCoin} contract.
+      * @param Add_Minter List of new Minter address
+      * @param Remove_Minter List of Minter address to remove from {Mint_Authorities}
+     */ 
     function Set_Minnter(address[] calldata Add_Minter, address[] calldata Remove_Minter)external Register_Authorities_Only{
         uint add_len=Add_Minter.length;
         uint remove_len = Remove_Minter.length;
@@ -214,6 +268,11 @@ contract Constitution is Register{
         }
     }
     
+    /**
+      * @dev Change address that are allowed to burn DemoCoin Token (Burner authorities). They are contained in the {Burn_Authorities} list of {DemoCoin} contract.
+      * @param Add_Burner List of new Burner address
+      * @param Remove_Burner List of Burner address to remove from {Burn_Authorities}
+     */ 
     function Set_Burner(address[] calldata Add_Burner, address[] calldata Remove_Burner)external Register_Authorities_Only{
         uint add_len=Add_Burner.length;
         uint remove_len = Remove_Burner.length;
@@ -228,31 +287,39 @@ contract Constitution is Register{
     
     /*Citizens_Register  Handling*/
     
+      /**
+      * @dev Change the amount of DemoCoin token to mint for new registered citizens.
+      * @param amount Amount of token to mint.
+     */
     function Set_Citizen_Mint_Amount(uint amount) external Register_Authorities_Only{
         Citizen_Instance.Set_Citizen_Mint_Amount(amount);
     }
     
+     /**
+      * @dev Removes address from {Citizens_Registering_Authorities} (address allowed to register new citizens) and/or from {Citizens_Banning_Authorities} (address allowed to ban citizens)
+      * @param removed_authority Address to removes {Citizens_Register} contract authorities lists.
+     */
     function Citizen_Register_Remove_Authority(address removed_authority) external Register_Authorities_Only{
         Citizen_Instance.Remove_Authority(removed_authority);
     }
     
+    /**
+      * @dev Allows an address to register new citizens. The address is added to {Citizens_Registering_Authorities} list
+      * @param new_authority Address to add to {Citizens_Registering_Authorities} list
+     */
     function Add_Registering_Authority(address new_authority)external Register_Authorities_Only{
         Citizen_Instance.Add_Registering_Authority(new_authority);
      }
      
-     /*function Remove_Registering_Authority(address removed_authority)external Register_Authorities_Only{
-         Citizen_Instance.Remove_Registering_Authority(removed_authority);
-     }*/
-     
+     /**
+      * @dev Allows an address to register ban citizens. The address is added to {Citizens_Banning_Authorities} list
+      * @param new_authority Address to add to {Citizens_Banning_Authorities} list
+     */
      function Add_Banning_Authority(address new_authority)external Register_Authorities_Only{
          Citizen_Instance.Add_Banning_Authority(new_authority);
      }
      
-     /*function Remove_Banning_Authority(address removed_authority)external Register_Authorities_Only{
-         Citizen_Instance.Remove_Banning_Authority(removed_authority);
-     }*/
-    
-    
+     
     
     /*Register/Agora Handling*/
     function Create_Register(string memory Name, uint8 register_type, uint Petition_Duration, uint Vote_Duration, uint Vote_Checking_Duration, uint Law_Initialisation_Price, uint FunctionCall_Price, uint16 Required_Petition_Rate, address Ivote_address)

@@ -4,12 +4,22 @@ pragma solidity ^0.8.0;
 
 /*pragma solidity >=0.6.0 <0.8.0;*/
 import "contracts/IVote.sol";
-//import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
 
 /*import "IVote.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/SafeMath.sol";
 */
+
+/** 
+ * @dev Implementation of IVote interface. Majority_Judgment_Ballot contract implement the Majority Judgment which is a ballot process proven to be able to avoid biases of classical Uninominal ballot such as strategic vote. In Majority Judgment ballot, 
+ * citizens assess each candidat and give it a grade. In our implementation, each candidat proposition can be assessed as «Reject», «Bad», «Neutral», «Good» and «Excelent». 
+ * For each candidat proposition, citizens assessment are sorted from best grades to worst ones (from «Excelent» to «Reject»). The majority grade of a proposition corresponds to it’s median grade. If the majority grade of a candidat proposition is «Good», 
+ * it means that 50% of citizens think that this proposition is «Good» or Better.
+ * Winning propositions are the M candidats propositions that have the best Majority grade.
+ * If the most popular proposition is the blank vote, then we ignore the other M-1 winning propositions.
+ * */
 contract Majority_Judgment_Ballot is IVote{
+    //using SafeMath for uint; 
     
     enum Assessement{
         EXCELENT,
@@ -67,9 +77,10 @@ contract Majority_Judgment_Ballot is IVote{
     event Validated_Vote(bytes32 key, address voter);
     event Vote_Finished(bytes32 key);
     
+    /// @dev Mapping of all voting sessions of the contract. 
     mapping(bytes32=>Ballot) public Ballots;
     
-    
+    /// @dev See {IVote} interface.
     function Create_Ballot(bytes32 key, address Voters_Register_Address, bytes4 Check_Voter_Selector, uint Vote_Duration, uint Vote_Validation_Duration, uint Propositions_Number, uint Max_Winning_Propositions_Number) external override {
         require(Ballots[key].Creation_Timestamp == 0, "Already Existing Ballot");
         //if(Voters_Register_Address==address(0) || Check_Voter_Selector==bytes4(0) || Vote_Duration==0 || Propositions_Number.sub(Max_Winning_Propositions_Number) == 0 || Max_Winning_Propositions_Number==0 ){
@@ -97,7 +108,7 @@ contract Majority_Judgment_Ballot is IVote{
         emit Ballot_Created(key);
     }
         
-    
+    /// @dev See {IVote} interface.
     function Vote_Clear(bytes32 key, uint[] calldata Choices) external override{
         //require(Ballots[key].Vote_Duration > block.timestamp.sub(Ballots[key].Creation_Timestamp), "Voting is over");
         require(Ballots[key].Status == Ballot_Status.VOTE, "Not at voting stage");
@@ -109,8 +120,6 @@ contract Majority_Judgment_Ballot is IVote{
         
         Ballots[key].Voter_Number = Ballots[key].Voter_Number +1;
         
-        
-        
         Ballots[key].Voters[msg.sender].Voted = true;
         for(uint i=0; i< choice_len; i++){
             for(uint j=Choices[i]; j<5; j++){
@@ -121,6 +130,7 @@ contract Majority_Judgment_Ballot is IVote{
         emit Voted_Clear(key, msg.sender);
     }
     
+    /// @dev See {IVote} interface.
     function Vote_Hashed(bytes32 key, bytes32 Hash) external override{
         //require(Ballots[key].Vote_Duration > block.timestamp.sub(Ballots[key].Creation_Timestamp), "Voting is over");
         require(Ballots[key].Status == Ballot_Status.VOTE, "Not at voting stage");
@@ -135,6 +145,7 @@ contract Majority_Judgment_Ballot is IVote{
         emit Voted_Hashed( key, msg.sender);
     }
     
+    /// @dev See {IVote} interface.
     function End_Vote(bytes32 key)external override{
         require(Ballots[key].Status==Ballot_Status.VOTE, "Not at voting stage");
         require(Ballots[key].Vote_Duration < block.timestamp - Ballots[key].Creation_Timestamp, "Voting stage not finished");
@@ -150,6 +161,7 @@ contract Majority_Judgment_Ballot is IVote{
         
     }
     
+    /// @dev See {IVote} interface.
     function Valdiate_Vote(bytes32 key, uint[] calldata Choices, bytes32 salt )external override {
         require(Ballots[key].Status==Ballot_Status.VOTE_VALIDATION, "Not at vote validation stage");
         //require(Check_Voter_Address(key, msg.sender), "Address Not Allowed");
@@ -173,7 +185,7 @@ contract Majority_Judgment_Ballot is IVote{
         emit Validated_Vote(key, msg.sender);
     }
     
-    
+    /// @dev See {IVote} interface.
     function End_Validation_Vote(bytes32 key) external override{
         require( (Ballots[key].Status == Ballot_Status.VOTE_VALIDATION && Ballots[key].Vote_Validation_Duration < block.timestamp - Ballots[key].End_Vote_Timestamp), "Not at vote counting stage");
         _Talling_Votes(key);
@@ -182,6 +194,10 @@ contract Majority_Judgment_Ballot is IVote{
         
     }
     
+    /** 
+     * @dev Count votes. 
+     * @param key Id of the voting session
+    */
     function _Talling_Votes(bytes32 key) internal{
         uint number_propositions = Ballots[key].Propositions_Number;
         uint half_voters = Ballots[key].Voter_Number/2 +  Ballots[key].Voter_Number%2;
@@ -254,6 +270,14 @@ contract Majority_Judgment_Ballot is IVote{
         
     }
     
+     /**
+     * @dev Sort by their score two propositions that have the same {median_grade}. The function returns the id of the most popular function.
+     * @param key Id of the voting session
+     * @param prop1 First proposition Id. 
+     * @param prop2 Second proposition Id.
+     * @param median_grade Median grade score.
+     * 
+    */
     function Order_Proposition_Result(bytes32 key, uint prop1, uint prop2, uint median_grade)internal view returns(uint){
         if(median_grade==0){
             return (Ballots[key].Propositions_Results[prop1].Cumulated_Score[0]<Ballots[key].Propositions_Results[prop2].Cumulated_Score[0])? prop2:prop1;
@@ -263,6 +287,12 @@ contract Majority_Judgment_Ballot is IVote{
         
     }
     
+    /**
+     * @dev Check whether an account is registered in the {Voters_Register_Address} contract. In other words, it checks whether the account has the right to vote in the voting session or not.
+     * @param key Id of the voting session
+     * @param voter_address Address of the account.
+     * 
+    */
     function Check_Voter_Address(bytes32 key, address voter_address) internal returns(bool){
         (bool success, bytes memory Data) = Ballots[key].Voters_Register_Address.call(abi.encodeWithSelector(Ballots[key].Check_Voter_Selector, voter_address));
         require(success, "Voter check function reverted");
@@ -273,29 +303,41 @@ contract Majority_Judgment_Ballot is IVote{
     
     /*GETTER*/
     
-    function Get_Winning_Propositions(bytes32 key)external view override returns(uint[] memory){
+    /// @dev See {IVote} interface
+    function Get_Winning_Propositions(bytes32 key)external view override returns(uint[] memory Winning_Propositions_List){
         require(Ballots[key].Status == Ballot_Status.FINISHED, "Ballot still Pending");
         return Ballots[key].Winning_Propositions;
     }
     
-    function Get_Winning_Proposition_byId(bytes32 key, uint Id)external view override returns(uint){
+    /// @dev See {IVote} interface
+    function Get_Winning_Proposition_byId(bytes32 key, uint Id)external view override returns(uint Winning_Proposition){
         //require(Ballots[key].Status == Ballot_Status.FINISHED, "Ballot still Pending");
         require(Id<Ballots[key].Winning_Propositions.length, "Id exceed Winning length");
         return Ballots[key].Winning_Propositions[Id];
     }
 
+    /// @dev See {IVote} interface
     function HasVoted(bytes32 key, address voter_address) external view override returns(bool hasvoted){
         return Ballots[key].Voters[voter_address].Voted;
     }
     
+    /// @dev See {IVote} interface
     function HasValidated(bytes32 key, address voter_address) external view override returns(bool Validated, bytes32 Choice){
          return (Ballots[key].Voters[voter_address].Validated, Ballots[key].Voters[voter_address].Choice);
     }
     
+    /// @dev See {IVote} interface
     function Get_Voter_Number(bytes32 key)external view override returns(uint voter_num){
         return Ballots[key].Voter_Number;
     }
     
+    /**
+     * @dev Get the score obtained by a proposition
+     * @param key Id of the voting session
+     * @param proposition_Id Index of the proposition
+     * @return proposition_result
+     *  
+     * */
     function Get_Propositions_Result(bytes32 key, uint proposition_Id) external view returns(Propositions_Result memory proposition_result){
         return Ballots[key].Propositions_Results[proposition_Id];
     }

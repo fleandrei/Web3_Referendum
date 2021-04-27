@@ -20803,6 +20803,115 @@
     "version": "0.8.1+commit.df193b15.Emscripten.clang"
   },
   "networks": {
+    "3": {
+      "events": {
+        "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Approval",
+          "type": "event"
+        },
+        "0x6731585473ebca612015dea9ce8981863a516574ae390b11edeb173e9c431ff8": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "burner",
+              "type": "address"
+            }
+          ],
+          "name": "Burner_Added",
+          "type": "event"
+        },
+        "0x703e172ae1942cb0c22d2562ddb7bbe2db8ea40b8578cba8be1991715022914b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "burner",
+              "type": "address"
+            }
+          ],
+          "name": "Burner_Removed",
+          "type": "event"
+        },
+        "0x1db31250a892864f24733002e9143c12d301258add2c9e60c3b1998befc1dcc5": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "minter",
+              "type": "address"
+            }
+          ],
+          "name": "Minter_Added",
+          "type": "event"
+        },
+        "0xd14f3aba22505d96f653c9003dc1f3413413c7451122c8b29101944335606953": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "minter",
+              "type": "address"
+            }
+          ],
+          "name": "Minter_Removed",
+          "type": "event"
+        },
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Transfer",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xa75F6Efb76Cc86e610d2eE7566f7D293106A4955",
+      "transactionHash": "0x01b96fb9a5f8a5e9e1def541472e7df86f0622a17fbdf361dc76fdb03686a5e1"
+    },
     "5777": {
       "events": {
         "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925": {
@@ -20914,7 +21023,7 @@
     }
   },
   "schemaVersion": "3.3.1",
-  "updatedAt": "2021-04-26T09:39:51.226Z",
+  "updatedAt": "2021-04-27T21:47:47.889Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

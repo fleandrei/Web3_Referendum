@@ -25858,6 +25858,201 @@
     "version": "0.8.1+commit.df193b15.Emscripten.clang"
   },
   "networks": {
+    "3": {
+      "events": {
+        "0x5211a48dd5dc810c959d67db85be9de1f52e475be92efb0f7c314b9bd361863d": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "authority",
+              "type": "address"
+            }
+          ],
+          "name": "Authority_Added",
+          "type": "event"
+        },
+        "0xb08d132e7857df60570932b8e15c9544f136a8f716c15b00f65a64814457875b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "authority",
+              "type": "address"
+            }
+          ],
+          "name": "Authority_Removed",
+          "type": "event"
+        },
+        "0xc50b4cd7fcee2d8c1334111c3265796780311e5e77b29dd52f38ae5f8f120a61": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "authority",
+              "type": "address"
+            }
+          ],
+          "name": "Banning_Authority_Added",
+          "type": "event"
+        },
+        "0x49051cb44fa45f6fc1fa9f98da77ff75674d673a0c4de0e9859e3f754cf7615b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "authority",
+              "type": "address"
+            }
+          ],
+          "name": "Banning_Authority_Removed",
+          "type": "event"
+        },
+        "0x8590ee73b6cfa7443787cf93c61d6f74998e828acb25c3e0c6c2b7961d464889": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "citizen_address",
+              "type": "address"
+            }
+          ],
+          "name": "Citizen_Ban_Over",
+          "type": "event"
+        },
+        "0xf178fd2db5e7d9542a330073dab1ddf09afbae272bc48f60d9cf9b5ce4310281": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "citizen_address",
+              "type": "address"
+            }
+          ],
+          "name": "Citizen_Banned",
+          "type": "event"
+        },
+        "0xe7563b3daca8439b21ecef2841e2d4669a1dfbfff83d64b8cc8d9770f544dd3d": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "citizen_address",
+              "type": "address"
+            }
+          ],
+          "name": "Citizen_Data_Set",
+          "type": "event"
+        },
+        "0x72515366405ed805b9053c4a3d658ac9b13770991df5d567f34d8404b227c90e": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "citizen_address",
+              "type": "address"
+            }
+          ],
+          "name": "Citizen_Permanently_Banned",
+          "type": "event"
+        },
+        "0xeaf9201ae5a091c46918bca9c5ced3b9aa103362b0a68a1f36b9f2858b0a4c14": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "new_constitution",
+              "type": "address"
+            }
+          ],
+          "name": "Constitution_Changed",
+          "type": "event"
+        },
+        "0xd3dbd3f29625283eb3fc50446e991cd5dd77ab4463c83ce795c4ea2882569481": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "Address",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "enum Institution.Institution_Type",
+              "name": "Type",
+              "type": "uint8"
+            }
+          ],
+          "name": "Institution_Created",
+          "type": "event"
+        },
+        "0x6dfe81d8062c9f735968fde00c9fff698e00bea5c1144c2099ddb3553c5a6fa3": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "citizen_address",
+              "type": "address"
+            }
+          ],
+          "name": "New_Citizen",
+          "type": "event"
+        },
+        "0x3b3a3ffd0eaef20640de63ebb415ec7655d62a221ba213bd61c46083024d0469": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "authority",
+              "type": "address"
+            }
+          ],
+          "name": "Registering_Authority_Added",
+          "type": "event"
+        },
+        "0xf4ee9ba8dd68b19cc51b379977fd66307ecb2f08e9773e87fbbac747dd259bab": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "authority",
+              "type": "address"
+            }
+          ],
+          "name": "Registering_Authority_Removed",
+          "type": "event"
+        },
+        "0x85c1721b92305f7fac531bd689924a9657d7cc1be6971fa440c9d936885a42ee": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "new_citizen_mint_amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "new_citizen_mint_amount_Set",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xEc4ACfB14814F021BaC5fd0DA5e56f498060Bcae",
+      "transactionHash": "0x4b72f1353871dad6dfe9b23bfc40a9b167c8fde87f19f08dd8294497a8c96bf3"
+    },
     "5777": {
       "events": {
         "0x5211a48dd5dc810c959d67db85be9de1f52e475be92efb0f7c314b9bd361863d": {
@@ -26051,11 +26246,11 @@
       },
       "links": {},
       "address": "0xEc4ACfB14814F021BaC5fd0DA5e56f498060Bcae",
-      "transactionHash": "0x32ec1e1d3bbd78d19da256cc4e39593d4e0819e86ede7659ec08767259ccf5b0"
+      "transactionHash": "0x09ec227eef2c6c889f10c419dae72ba9332fd9744e5865e8c4d7d7cebb8f05d2"
     }
   },
   "schemaVersion": "3.3.1",
-  "updatedAt": "2021-04-26T09:39:51.256Z",
+  "updatedAt": "2021-04-27T21:47:47.916Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

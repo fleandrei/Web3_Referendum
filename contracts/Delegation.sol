@@ -30,7 +30,7 @@ library Delegation_Uils{
     
     /**
      * @dev Parameters related to the democratic process of registers governance.
-     *          - Member_Max_Token_Usage: The maximum amount of token a member is allowed to use for a law project elaboration
+     *          - Member_Max_Token_Usage: The maximum amount of token a member is allowed to use for a specific law project elaboration
      *          - Law_Initialisation_Price: The price in token for creating a law project
      *          - FunctionCall_Price: The price in token for one FunctionCall.
      *          - Proposition_Duration: The duration of the stage in which members are allowed to submit propositions
@@ -62,7 +62,7 @@ library Delegation_Uils{
      *          - Validation_Duration Duration of the stage in which citizens can validate their hased vote by revealing their choice and the salt that has been used for hasing 
      *          - Mandate_Duration Duration of a delegation mandate
      *          - Immunity_Duration Amount of time after the beginning of a new mandate during which delegation's members can't be revoked
-     *          - Num_Max_Members Maximum number of members in the delegation.
+     *          - Next_Mandate_Max_Members Maximum number of members in the delegation.
      *          - New_Election_Petition_Rate The minimum ratio of citizens required to revoke the current delegation's members and start a new election
      *          - Ivote_address Address of the IVote contract that will be used during election stage
     */
@@ -416,7 +416,9 @@ library Delegation_Uils{
     
     /*Legislatif Process*/
     
-    ///@dev Mapping of {Law_Project} structure ({Initiative_Legislative_Lib} library)
+    /** @dev Mapping of {Law_Project} structure ({Initiative_Legislative_Lib} library)
+     * 
+     * */
     mapping(bytes32 => Initiative_Legislative_Lib.Law_Project) public List_Law_Project;
     
     ///@dev Mapping of Registers ({Controlable_Register} structure) that can receive orders from the actual Delegation
@@ -424,7 +426,7 @@ library Delegation_Uils{
     /// @dev List of Controled Registers
     EnumerableSet.AddressSet List_Controled_Registers;
     
-    ///@dev Mapping of {Delegation_Law_Project} structure corresponding to law project of delegation (pending and passed)
+    ///@dev Mapping of {Delegation_Law_Project} structure corresponding to law project of delegation (pending, aborted and passed)
     mapping(bytes32=>Delegation_Law_Project) public Delegation_Law_Projects;
     ///@dev List of law projects
     bytes32[] List_Delegation_Law_Projects;
@@ -478,7 +480,7 @@ library Delegation_Uils{
     /** 
      * @dev Function called by a citizen who wish to candidate to next mandate's elections.
     */
-    function Candidate_Election() external Citizen_Only{
+    function Candidate_Election() external override Citizen_Only{
         require(!In_election_stage, "Election Time");
         Mandates[Actual_Mandate].Add_Candidats(msg.sender);
         emit New_Candidat(msg.sender);
@@ -490,7 +492,7 @@ library Delegation_Uils{
      /** 
      * @dev Function called by a citizen who wish to remove his candidature from next mandate's elections.
     */
-    function Remove_Candidature()external{
+    function Remove_Candidature()external override{
         require(!In_election_stage, "Election Time");
         Mandates[Actual_Mandate].Remove_Candidats(msg.sender);
         emit Remove_Candidat(msg.sender);
@@ -503,7 +505,7 @@ library Delegation_Uils{
     /** 
      * @dev When the current mandate duration is over or if the {New_Election_Petition_Rate} (see {Mandate} struct of {Delegation_Uils} library) is reached, any citizen can call this function to start a new election
     */
-    function New_Election() external Citizen_Only {
+    function New_Election() external override Citizen_Only {
         require(!In_election_stage, "An Election is Pending");
         uint num_mandate = Actual_Mandate;
         if(Delegation_Uils.New_Election(Mandates,Mandates_Versions[Mandates[num_mandate].Version], num_mandate, address(Citizens))){
@@ -532,7 +534,7 @@ library Delegation_Uils{
     /** 
      * @dev Function can be called by a citizen to sign petition for a new election
     */
-    function Sign_New_Election_Petition() external Citizen_Only{
+    function Sign_New_Election_Petition() external override Citizen_Only{
         uint num_mandate = Actual_Mandate;
         Mandates[num_mandate].Sign_Petition(Mandates_Versions[Mandates[num_mandate].Version].Immunity_Duration, msg.sender);
         emit Sign();
@@ -559,7 +561,7 @@ library Delegation_Uils{
     /** 
      * @dev When voting stage is over, any citizen can call this function to end the election and start a new mandate.
     */
-    function End_Election()external{
+    function End_Election()external override {
     
         require(In_election_stage, "Not in Election time");
         uint num_mandate = Actual_Mandate;
@@ -578,12 +580,12 @@ library Delegation_Uils{
     /*Legislatif Process related functions*/
     
     /** 
-     * @dev Function can be called by a delegation member to submit a new law project. Caller must approve {Law_Initialisation_Price} (see {Law_Project_Parameters} struct of {Delegation_Uils library}) token for Delegation contract.
-     * @param register_address Address of the register contract the laww project is about. Must be contained in Controled_Registers mapping.
+     * @dev Function can be called by a delegation member to submit a new law project. This function put {Law_Initialisation_Price} (see {Law_Project_Parameters} struct of {Delegation_Uils library}) DemoCoin token of Delegation contract in Escrow.
+     * @param register_address Address of the register contract the law project is about. Must be contained in Controled_Registers mapping.
      * @param Title Title of the law project. Can be an hash.
      * @param Description Text explaining the spirit and generals goals of the law project. Can be an hash.
     */
-    function Add_Law_Project(address register_address, bytes calldata Title, bytes calldata Description)external Delegation_Only{
+    function Add_Law_Project(address register_address, bytes calldata Title, bytes calldata Description)external override Delegation_Only{
         //_Update_Law_Project();
         require(Controled_Registers[register_address].Active, "Register Not Controled");
         
@@ -611,15 +613,15 @@ library Delegation_Uils{
     }
     
      /** 
-     * @dev Function can be called by a delegation member to submit a corpus of function calls propositions to an existing pending law project. Caller must approve {FunctionCall_Price} (see {Law_Project_Parameters} struct of {Delegation_Uils library}) 
-     * multiplied by the number of function call contained in the proposition, token for Delegation contract.
+     * @dev Function can be called by a delegation member to submit a corpus of function calls propositions to an existing pending law project. This function put in Escrow {FunctionCall_Price} (see {Law_Project_Parameters} struct of {Delegation_Uils library}) DemoCoin token
+     * multiplied by the number of function call contained in the proposition.
      * @param law_project Id of the law project hte caller wants to add a proposition to. The Id is obtained by hashing the Title with the Description of the law project.
      * @param Parent Proposition Id the caller wants to attach his proposition to. It's the parent proposition in the proposal tree. If there isn't any proposition in the tree we want to attach the new proposition to, we set Parent to 0
      * @param Parent_Proposals_Reuse List of Parent's function calls index we want to reuse in the new proposition. Function calls are ordered in the order we want them to be executed. 0 elements correspond to new function calls that have to be added by the caller in {New_Function_Call} argument.
      * @param New_Function_Call List of new function calls added by the caller. For each element of the New_Function_Call array, caller must set a 0 element in {Parent_Proposals_Reuse} array at the index he want the custom function call to be positioned 
      * @param Description Text to justify the new proposal. Can be an hash.
     */
-    function Add_Proposal(bytes32 law_project, uint Parent, uint[] calldata Parent_Proposals_Reuse, bytes[] calldata New_Function_Call, bytes calldata Description) external Delegation_Only{
+    function Add_Proposal(bytes32 law_project, uint Parent, uint[] calldata Parent_Proposals_Reuse, bytes[] calldata New_Function_Call, bytes calldata Description) external override Delegation_Only{
         require(Delegation_Law_Projects[law_project].Law_Project_Status == Status.PROPOSITION, "Not at PROPOSITION status");
         uint version = Delegation_Law_Projects[law_project].Version;
         require( version != 0, "No existing Law Project");
@@ -641,7 +643,7 @@ library Delegation_Uils{
      * @param New_Items Array of new function calls to add to the Proposition.
      * @param Indexs array of Proposition's function call list indexs to inser new function call (contained in {New_Items}) to. {New_Items} and {Indexs} have the same length.
     */
-    function Add_Item(bytes32 law_project, uint Proposal, bytes[] calldata New_Items, uint[] calldata Indexs) external Delegation_Only{
+    function Add_Item(bytes32 law_project, uint Proposal, bytes[] calldata New_Items, uint[] calldata Indexs) external override Delegation_Only{
         require(Delegation_Law_Projects[law_project].Law_Project_Status == Status.PROPOSITION, "Law Not at PROPOSITION status");
         uint version = Delegation_Law_Projects[law_project].Version;
         require( version != 0, "No existing Law Project");
@@ -657,7 +659,7 @@ library Delegation_Uils{
      * @dev When the period of proposition submiting is over, any citizen can call this function to start the voting stage. The Id of the ballot corresponding to current law project the IVote contract is computed by hashing {law_project} Id with current block timestamps.
      * @param law_project Id of the law project the caller wants to add a proposition to. The Id is obtained by hashing the Title with the Description of the law project.
      */
-    function Start_Vote(bytes32 law_project)external Delegation_Only{
+    function Start_Vote(bytes32 law_project)external override Delegation_Only{
         uint version = Delegation_Law_Projects[law_project].Version;
         require( version != 0, "No existing Law Project");
         require(Delegation_Law_Projects[law_project].Law_Project_Status == Status.PROPOSITION, "Law Not at PROPOSITION status");
@@ -678,7 +680,7 @@ library Delegation_Uils{
      * @dev When the voting period is over, any citizen can call this function to end the voting stage. If the winning proposition is the default proposition is the default one (Proposition 0) the law proejct is aborted. Otherwise, the Law Censoring stage is started.
      * @param law_project Id of the law project the caller wants to add a proposition to. The Id is obtained by hashing the Title with the Description of the law project.
      */
-    function Achiev_Vote(bytes32 law_project) external Delegation_Only{
+    function Achiev_Vote(bytes32 law_project) external override Delegation_Only{
         //require( version != 0, "No existing Law Project");
         //require(Delegation_Law_Projects[law_project].Law_Project_Status == Status.VOTE, "Law Not at VOTE status");
         //require(block.timestamp.sub(Delegation_Law_Projects[law_project].Start_Vote_Timestamps) > Law_Parameters_Versions[version].Vote_Duration, "VOTE stage not finished");
@@ -702,7 +704,7 @@ library Delegation_Uils{
      * @dev If we are at the Law censor stage, any citizen can call this function to sign the petition for canceling the law project. If the {Censor_Proposition_Petition_Rate} (see {Law_Project_Parameters} structure) is reached, the law project is aborted.
      * @param law_project Id of the law project the caller wants to add a proposition to. The Id is obtained by hashing the Title with the Description of the law project.
      */
-    function Censor_Law(bytes32 law_project)external Citizen_Only{
+    function Censor_Law(bytes32 law_project)external override Citizen_Only{
 
         require(Delegation_Law_Projects[law_project].Law_Project_Status == Status.CENSOR_LAW_PERIOD, "Law Not at CENSOR LAW status");
         require(!Delegation_Law_Projects[law_project].Censor_Law_Petitions[msg.sender], "Already Signed");
@@ -727,7 +729,7 @@ library Delegation_Uils{
      * @dev If the Law censor period is over and the law project hasn't been rejected by citizens, then any delegation member can call this function to set the law project as ADOPTED (see {Status} enumeration).
      * @param law_project Id of the law project the caller wants to add a proposition to. The Id is obtained by hashing the Title with the Description of the law project.
      */
-    function Adopt_Law(bytes32 law_project)external Delegation_Only{
+    function Adopt_Law(bytes32 law_project)external override Delegation_Only{
         require(Delegation_Law_Projects[law_project].Law_Project_Status == Status.CENSOR_LAW_PERIOD, "Law Not at CENSOR LAW status");
         require(block.timestamp.sub(Delegation_Law_Projects[law_project].Start_Censor_Law_Period_Timestamps) > Law_Parameters_Versions[Delegation_Law_Projects[law_project].Version].Law_Censor_Period_Duration, "CENSOR LAW PERIOD not over");
         
@@ -741,7 +743,7 @@ library Delegation_Uils{
      * @param law_project Id of the law project the caller wants to add a proposition to. The Id is obtained by hashing the Title with the Description of the law project.
      * @param num_function_call_ToExecute Number of function calls to execute.
      */
-    function Execute_Law(bytes32 law_project, uint num_function_call_ToExecute)external Delegation_Only nonReentrant{
+    function Execute_Law(bytes32 law_project, uint num_function_call_ToExecute)external override Delegation_Only nonReentrant{
         require(Delegation_Law_Projects[law_project].Law_Project_Status == Status.ADOPTED, "Law Not ADOPTED");
         //if(Execute_Winning_Proposal(law_project, num_function_call_ToExecute, Delegation_Law_Projects[law_project].Institution_Address)){
         emit Function_Call_Executed( law_project, num_function_call_ToExecute);
@@ -927,6 +929,7 @@ library Delegation_Uils{
     /*Getters*/
     /**
      * @dev See {IDelegation} interface
+     *  
      */
     function Contains(address member_address) external view override returns(bool contain){
       return Mandates[Actual_Mandate].Members.contains(member_address);

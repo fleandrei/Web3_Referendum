@@ -27689,6 +27689,45 @@
     "version": "0.8.1+commit.df193b15.Emscripten.clang"
   },
   "networks": {
+    "3": {
+      "events": {
+        "0xb8f5c5f29badcfa68a198a69f81107a5ed8c68c8691b9a67b0a5242a57bede8d": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "bytes32",
+              "name": "Key",
+              "type": "bytes32"
+            }
+          ],
+          "name": "Law_Project_Created",
+          "type": "event"
+        },
+        "0x8ab63059298b5fa878faa964524f7d8cde2fae972ce6ae3d8bffe31b63803ede": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "bytes32",
+              "name": "Law_Project",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "Index",
+              "type": "uint256"
+            }
+          ],
+          "name": "New_Proposal",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x7BD68090b79deeD1E60bA5da637b8e25186859bf",
+      "transactionHash": "0x07ee15d904596cfdc62dd112e61cba274a8a9feb2449be867c42eb03f67f37d0"
+    },
     "5777": {
       "events": {
         "0xb8f5c5f29badcfa68a198a69f81107a5ed8c68c8691b9a67b0a5242a57bede8d": {
@@ -27730,7 +27769,7 @@
     }
   },
   "schemaVersion": "3.3.1",
-  "updatedAt": "2021-04-26T09:39:50.967Z",
+  "updatedAt": "2021-04-27T21:47:47.543Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

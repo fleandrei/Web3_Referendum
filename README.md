@@ -130,12 +130,12 @@ Agora contract is unique in a project and it has authority on all register contr
 
 As Agora contract has to be deployed before the Constitution contract (Constitution constructor takes its address as parameter), the migration script should set it’s _Constitution_Address_ field via the _Set_Constitution_ function after the Constitution is deployed.
 
-###Delegation :
+### Delegation :
 
 Delegations contracts implement representative democracy. A project can have multiple Delegations contracts. The Constitution contract can create new Delegation contracts or add already deployed ones to its Delegation list. All Delegations have to inherit from IDelegation interface but they can be customized to fulfill specific use case.
 A Delegation contains a list of members voted by citizens. 
 
-####Law creation :
+#### Law creation :
 Delegation members are allowed to elaborate and vote law project. This process can be divided in four stages :
 
 * __Proposition stage__ : Delegation members elaborate the law project in the same way as in Agora. Like in Agora, this operation cost token. The difference here is that Delegation members don’t spend their own token. Instead, they use Delegation’s token that are placed in escrow (on the Delegation Contract). 
@@ -157,7 +157,7 @@ Delegation law creation process’s parameters are edited by Constitution contra
 * __Ivote_address__ : Address of the IVote contract used in the voting stage (see later in the Vote sub-section)
 
 
-####Delegation members :
+#### Delegation members :
 
 
 Delegation members mandate is limited in time. Then there is a new election. Every citizen can candidate to be a delegation member. If there are less candidats than the maximum number of members in the Delegation, then all candidats become members without any election.
@@ -173,14 +173,14 @@ Parameters that rule the mandate of a Delegation are edited by the Constitution 
 * __New_Election_Petition_Rate__ : The minimum ratio of citizens required to revoke the current delegation's members and start a new election.
 * __Ivote_address__ : Address of the IVote contract used in the Election and Validation stage (see later in the Vote sub-section)
 
-###Proposal Tree:
+### Proposal Tree:
 In both Agora and Delegation Governance contract, law project are elaborated the same way : Every citizen can submit one or more proposal for the function call corpus of the law project. Proposals are stored in a _Proposal Tree_ where each proposal can reuse function calls of its parent proposal.
 When a citizen wants to submit a proposal via the _Add_Proposal_ function, he has to pay tokens for each new function call but function calls that come from the parent proposal are free. Hence, citizens can spare tokens by reusing already proposed function call. This is an incentive for citizens to avoid duplicate or unnecessary function call. 
 The tree structure increases the readability of the proposal corpus as similar proposal would have the same parents.
 Once a citizen has submitted a proposal, he still has the possibility to insert new function call to it via the _Add_Item_ function.
 
-###Vote :
-####IVote Contracts :
+### Vote :
+#### IVote Contracts :
 The voting in Agora and Delegation democratic process is realised in an IVote contract. IVote is an interface from which users can implement customized voting process. An IVote can handle multiple voting session for several contracts. For each voting session, we have to specify the number of candidats propositions N and the number of propositions that can be adopted M (M<N). For example, in the voting stage of Agora M is 1 (we want to keep only one proposal) and N is the number of proposals in the proposal corpus. In the election stage of Delegation, M is the maximum number of members and N is the number of candidats. Propositions are numerated from 1 to N. Proposition 0 correspond to blank vote. 
 If there is a need to keep votes secrets until the voting stage is over, voter can submit the hash of their vote. Then during a validation stage, voter would have to validate their hashed vote by submitting their clear vote with the bytes32 salt they used to hash it. 
 
@@ -189,9 +189,9 @@ An example of IVote implementation is the Majority_Judgment_Ballot contract that
 Winning propositions are the M candidats propositions that have the best Majority grade.
 If the most popular proposition is the blank vote, then we ignore the other M-1 winning propositions.
 
-##Installation and execution
+## Installation and execution
 
-###Installation :
+### Installation :
 
 Install Openzeppelin libraries :
 
@@ -208,7 +208,7 @@ Install javascript packages :
 
 `$ npm install @truffle/hdwallet-provider`
 
-###Migration Parameters:
+### Migration Parameters:
 The migration folder contains a _Migration_Parameters.json_ file that set parameters for the deployment of initials contracts : DemoCoin, Citizens_Register, Agora and Constitution.
 It’s a JSON file containing following fields :
 
@@ -229,7 +229,7 @@ It’s a JSON file containing following fields :
 
 You can edit this file according to your needs.
 
-###Web3 direct democracy project initialisation: 
+### Web3 direct democracy project initialisation: 
 Once a Web3 Direct Democracy project has just been deployed, it hasn’t any register or delegation. Citizens_Register and DemoCoin contracts haven’t any authority in their _Register_Authorities_ list. 
 Thus, at the beginning of a Web3 Direct Democracy project, we need an initialisation stage. In this initialisation stage, there is a _Transitional_Government_ account that has authority on the constitution and can quickly perform necessary operations without passing by any democratic process :
 

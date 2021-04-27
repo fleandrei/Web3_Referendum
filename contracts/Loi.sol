@@ -219,13 +219,4 @@ import "contracts/Register.sol";
     }
     
     
-    /*Utils Temporaire*/
-    
-    function Encode_Articles(bytes memory title, bytes memory content) external pure returns(bytes32){
-        return keccak256(abi.encode(title, content));
-    }
-        
-    //0x0000000000000000000000000000000000000000
-    
-    
 }
