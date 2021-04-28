@@ -25,6 +25,7 @@ class Register {
     this.Event = new EventEmitter();
     this.Name=null;
     this.Instance=null;
+    this.Agora=new Agora_Specific_Register(web3);
     this.Register_Authorities=[];
     this.Mapping_Functions_Selector=new Map();
     this.Register_Functions=new Map();
@@ -89,6 +90,10 @@ class Governance_Instance{
     this.Name=null;
     this.Instance=null;
     this.Law_Project_List=new Map();
+    this.Pending_Law=new Map();
+    this.Aborted_Law=new Map();
+    this.Executed_Law=new Map();
+    this.Parameters=null;
   }
 
   //Add_Law_Project = async ()=>{
@@ -98,10 +103,7 @@ class Governance_Instance{
 class Delegation extends Governance_Instance{
   constructor(web3){
     super(web3);
-    this.Pending_Law=new Map();
-    this.Aborted_Law=new Map();
-    this.Executed_Law=new Map();
-    this.Law_process_Parameters=null;
+    
     this.Internal_Governance=null;
   }
 
@@ -133,10 +135,7 @@ class Agora_Specific_Register extends Governance_Instance {
   constructor(web3){
     super(web3);
     this.Register_Address=null;
-    this.Pending_Referendums=new Map();
-    this.Aborted_Referendums=new Map();
-    this.Executed_Referendums=new Map();
-    this.Referendum_Parameters=null;
+    
 
   }
 
@@ -156,17 +155,17 @@ class Agora_Specific_Register extends Governance_Instance {
     var Last_Param_Version = register_param.last_version;
     var List_Referendum_key= register_param.list_referendums;
 
-    this.Referendum_Parameters = Array.from({length:Last_Param_Version});
+    this.Parameters = Array.from({length:Last_Param_Version});
 
     for (var i = 1; i <=Last_Param_Version; i++) {
       var Parameters = await this.Instance.methods.Get_Referendum_Register_Parameters(this.Register_Address, i).call();
-      this.Referendum_Parameters[i-1] = Remove_Numerical_keys(Parameters);//.slice(Parameters.length/2);
-      console.log("Parameters: ",this.Referendum_Parameters[i-1], "\nTypeof Parameters", typeof Parameters);  
+      this.Parameters[i-1] = Remove_Numerical_keys(Parameters);//.slice(Parameters.length/2);
+      console.log("Parameters: ",this.Parameters[i-1], "\nTypeof Parameters", typeof Parameters);  
     }
 
-    this.Pending_Referendums.clear();
-    this.Aborted_Referendums.clear();
-    this.Executed_Referendums.clear();
+    this.Pending_Law.clear();
+    this.Aborted_Law.clear();
+    this.Executed_Law.clear();
     this.Law_Project_List.clear();
 
     List_Referendum_key.forEach((key, idx)=>{
@@ -174,11 +173,11 @@ class Agora_Specific_Register extends Governance_Instance {
       var law_project = this.Instance.methods.Law_Project_List(key).call();
       console.log("Agora Loadstate: referendum",referendum,"\n law_project:",law_project);
       if(referendum.Referendum_Status==3){
-        this.Executed_Referendums.set(key,referendum);
+        this.Executed_Law.set(key,referendum);
       }else if(referendum.Referendum_Status==4){
-        this.Aborted_Referendums.set(key,referendum);
+        this.Aborted_Law.set(key,referendum);
       }else{
-        this.Pending_Referendums.set(key,referendum);
+        this.Pending_Law.set(key,referendum);
       }
 
       this.Law_Project_List.set(key,law_project);
@@ -191,6 +190,9 @@ class Agora_Specific_Register extends Governance_Instance {
     this.Event.emit("State_Loaded");
   }
 
+  Add_Law_Project = async (Title, Description)=>{
+    await this.Instance.methods.Add_Law_Project(this.Register_Address, Title, Description);
+  }
 }
 
 class Constitution extends Register{
@@ -201,7 +203,6 @@ class Constitution extends Register{
     this.Transitional_Government = null;
     this.Is_Transitional_Government = true;
     this.Agora_Address = null;
-    this.Agora= new Agora_Specific_Register(web3);
     this.Citizens_Register_Address =null;
     this.DemoCoin_Address = null;
     /*this.Delegation_List= new Map();
@@ -359,6 +360,7 @@ class Constitution extends Register{
     if(err){
       console.error(err);
     }else{
+      console.log("Handle_Register_Created: this.Agora.Instance",this.Agora.Instance);
       var register_type = (await this.Agora.Instance.Get_Referendum_Register(ev.returnValues.register).call()).institution_type
       if(register_type==3){
         this.Loi_Register_List.push(ev.returnValues.register);

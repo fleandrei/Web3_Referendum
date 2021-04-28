@@ -1,15 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-//import "Initiative_Legislative.sol";
-//import "IDelegation.sol";
-//import "Agora.sol";
-/*import "Initiative_Legislative_lib.sol";
+/*
+import "Initiative_Legislative_lib.sol";
 import "Register.sol";
 import "Citizens_Register.sol";
 import "IVote.sol";
-import "IDelegation.sol";*/
-
+import "IDelegation.sol";
+*/
 
 import "contracts/Initiative_Legislative_lib.sol";
 import "contracts/Register.sol";
@@ -21,7 +19,7 @@ import "contracts/IDelegation.sol";
 
 
 /** 
- * @dev Delegation_Uils library is used to reduce the size of Delegation contract in order to avoid to exceed contract limit size. It contains heavy functions and data structures.
+ * @notice Delegation_Uils library is used to reduce the size of Delegation contract in order to avoid to exceed contract limit size. It contains heavy functions and data structures.
 */
 
 library Delegation_Uils{
@@ -41,7 +39,6 @@ library Delegation_Uils{
      *          - Ivote_address Address of the IVote contract that will be used during voting stage
     */
     struct Law_Project_Parameters{
-        //uint Revert_Penalty_Limit;
         uint Member_Max_Token_Usage;
         uint Law_Initialisation_Price;
         uint FunctionCall_Price; 
@@ -51,7 +48,6 @@ library Delegation_Uils{
         uint16 Censor_Proposition_Petition_Rate;
         uint16 Censor_Penalty_Rate;
         address Ivote_address;
-        //EnumerableSet.AddressSet Associated_Institutions;
     }
     
    
@@ -245,18 +241,7 @@ library Delegation_Uils{
         mandate.Version= 1;
     }
     
-    /*function Set_Legislatif_Process_Param(uint[6] calldata Uint256_Legislatifs_Arg, uint16 Censor_Proposition_Petition_Rate, uint16 Censor_Penalty_Rate, address Ivote_address, uint version)external{
-        this.Law_Parameters_Versions[version].Member_Max_Token_Usage = Uint256_Legislatifs_Arg[0];
-        this.Law_Parameters_Versions[version].Law_Initialisation_Price = Uint256_Legislatifs_Arg[1];
-        this.Law_Parameters_Versions[version].FunctionCall_Price = Uint256_Legislatifs_Arg[2];
-        this.Law_Parameters_Versions[version].Proposition_Duration = Uint256_Legislatifs_Arg[3];
-        this.Law_Parameters_Versions[version].Vote_Duration = Uint256_Legislatifs_Arg[4];
-        this.Law_Parameters_Versions[version].Law_Censor_Period_Duration = Uint256_Legislatifs_Arg[5];
-        this.Law_Parameters_Versions[version].Censor_Proposition_Petition_Rate = Censor_Proposition_Petition_Rate;
-        this.Law_Parameters_Versions[version].Censor_Penalty_Rate = Censor_Penalty_Rate;
-        this.Law_Parameters_Versions[version].Ivote_address = Ivote_address;
-    }*/
-    
+   
     
     /** 
      * @dev Utility function for computing Percentage.
@@ -273,7 +258,7 @@ library Delegation_Uils{
 
 
 /**
- * @dev Delegation contract is an implementation of IDelegation and thus aims at implementing a governance system in which a group of elected accounts is allowed to rule one or more controled registers contract. 
+ * @notice Delegation contract is an implementation of IDelegation and thus aims at implementing a governance system in which a group of elected accounts is allowed to rule one or more controled registers contract. 
 */
 
  contract Delegation is Institution, IDelegation{// Initiative_Legislative{
@@ -283,9 +268,7 @@ library Delegation_Uils{
     using Delegation_Uils for Delegation_Uils.Mandate_Parameter;
     using Delegation_Uils for Delegation_Uils.Mandate;
     using Delegation_Uils for Delegation_Uils.Law_Project_Parameters;
-    /*using Delegation_Uils for Delegation_Uils.Controlable_Register;
-    using Delegation_Uils for Delegation_Uils.Delegation_Law_Project;
-    using Delegation_Uils for Delegation_Uils.Status;*/
+    
     
     /**
      * @dev status of a law project
@@ -323,7 +306,6 @@ library Delegation_Uils{
         uint16 Censor_Proposition_Petition_Rate;
         uint16 Censor_Penalty_Rate;
         address Ivote_address;
-        //EnumerableSet.AddressSet Associated_Institutions;
     }
     
     /**
@@ -466,12 +448,7 @@ library Delegation_Uils{
         Agora_address = agora_address;
         
         Mandates[0].Set_First_Mandate( Initial_members);
-        /*Mandates[1].Inauguration_Timestamps = block.timestamp;
-        for(uint i=0; i<Initial_members.length; i++){
-            Mandates[1].Members.add(Initial_members[i]);
-        }
-        Mandates[1].Version= 0;*/
-        //Actual_Mandate = 1;
+        
     }
     
     
@@ -484,9 +461,7 @@ library Delegation_Uils{
         require(!In_election_stage, "Election Time");
         Mandates[Actual_Mandate].Add_Candidats(msg.sender);
         emit New_Candidat(msg.sender);
-        /*uint num_mandate = Actual_Mandate;
-        require(!Mandates[num_mandate].Next_Mandate_Candidats.contains(msg.sender), "Already Candidate");
-        Mandates[num_mandate].Next_Mandate_Candidats.add(msg.sender);*/
+        
     }
     
      /** 
@@ -496,10 +471,7 @@ library Delegation_Uils{
         require(!In_election_stage, "Election Time");
         Mandates[Actual_Mandate].Remove_Candidats(msg.sender);
         emit Remove_Candidat(msg.sender);
-        /*uint num_mandate = Actual_Mandate;
-        require(Mandates[num_mandate].Next_Mandate_Candidats.contains(msg.sender), "Not Candidate");
-        require(!In_election_stage, "Election Time");
-        Mandates[num_mandate].Next_Mandate_Candidats.remove(msg.sender);*/
+        
     }
     
     /** 
@@ -518,16 +490,6 @@ library Delegation_Uils{
             emit New_Mandate();
         }
         
-        //Mandates[num_mandate].New_Election(Mandates_Versions[Mandates[num_mandate].Version], Citizens.Get_Citizen_Number(), num_mandate, Contains_Function_Selector);
-        //In_election_stage=true;
-        /*uint num_mandate = Actual_Mandate;
-        uint version = Mandates[num_mandate].Version;
-    
-        require(Mandates[num_mandate].New_Election_Petitions.length() >= Percentage(Mandates_Versions[version].New_Election_Petition_Rate, Citizens.Get_Citizen_Number()) || block.timestamp.sub(Mandates[num_mandate].Inauguration_Timestamps) > Mandates_Versions[version].Mandate_Duration, "New election impossible for now");
-            
-        IVote Vote_Instance = IVote(Law_Parameters_Versions[version].Ivote_address);
-        Vote_Instance.Create_Ballot(keccak256(abi.encodePacked(address(this),num_mandate)), address(this), Contains_Function_Selector, Mandates_Versions[version].Election_Duration, Mandates_Versions[version].Validation_Duration, Mandates[num_mandate].Next_Mandate_Candidats.length(), Mandates_Versions[version].Num_Max_Members);
-        In_election_stage=true;*/
     }
     
     
@@ -538,25 +500,9 @@ library Delegation_Uils{
         uint num_mandate = Actual_Mandate;
         Mandates[num_mandate].Sign_Petition(Mandates_Versions[Mandates[num_mandate].Version].Immunity_Duration, msg.sender);
         emit Sign();
-        /*require(block.timestamp.sub(Mandates[num_mandate].Inauguration_Timestamps) > Mandates_Versions[Mandates[num_mandate].Version].Immunity_Duration);
-        require(!Mandates[num_mandate].New_Election_Petitions.contains(msg.sender), "Already signed petition");
-        Mandates[num_mandate].New_Election_Petitions.add(msg.sender);*/
+        
     }
     
-    /*function End_Election()external{
-        uint num_mandate = Actual_Mandate;
-        uint new_num_mandate = num_mandate.add(1);
-        uint[] memory results;
-        IVote Vote_Instance = IVote(Law_Parameters_Versions[Mandates[num_mandate].Version].Ivote_address);
-        results = Vote_Instance.Get_Winning_Propositions(keccak256(abi.encodePacked(address(this),num_mandate)));
-        for(uint i =0; i<results.length; i++){
-            Mandates[new_num_mandate].Members.add(Mandates[num_mandate].Next_Mandate_Candidats.at(results[i]));
-        }
-        Mandates[new_num_mandate].Inauguration_Timestamps = block.timestamp;
-        Mandates[num_mandate].Version=Internal_Governance_Version;
-        Actual_Mandate = new_num_mandate;
-        In_election_stage=false;
-    }*/
     
     /** 
      * @dev When voting stage is over, any citizen can call this function to end the election and start a new mandate.
@@ -608,8 +554,7 @@ library Delegation_Uils{
         Controled_Registers[register_address].Law_Project_Counter++;
         
         emit New_Law(key);
-        //List_Law_Project[key].Add_Law_Project(Title, Description);
-        //Add_Law_Project(Title,  Description, key);
+        
     }
     
      /** 
@@ -629,13 +574,12 @@ library Delegation_Uils{
         Token_Consumption_Handler(msg.sender, Law_Parameters_Versions[version].FunctionCall_Price.mul(New_Function_Call.length), law_project);
         uint proposal_index = List_Law_Project[law_project].Proposal_Count.add(1);
         List_Law_Project[law_project].Proposals_Tree[proposal_index].Author = msg.sender;
-       // Add_Corpus_Proposal( law_project, Parent, Parent_Proposals_Reuse, New_Function_Call, Description) ;
        List_Law_Project[law_project].Add_Corpus_Proposal(Parent, Parent_Proposals_Reuse, New_Function_Call, Description);
        emit New_Proposal( law_project, proposal_index);
     }
     
     /** 
-     * @dev Function can be called by a delegation member to modify a proposition that he has already created (He have to be the author of the proposition). 
+     * @dev Function can be called by a delegation member to add function calls to a proposition that he has already created (He have to be the author of the proposition). 
      * Caller must approve {FunctionCall_Price} (see {Law_Project_Parameters} struct of {Delegation_Uils library}) 
      * multiplied by the number of function call he wants to add to the proposition, token for Delegation contract.
      * @param law_project Id of the law project the caller wants to add a proposition to. The Id is obtained by hashing the Title with the Description of the law project.
@@ -650,7 +594,6 @@ library Delegation_Uils{
         
         Token_Consumption_Handler(msg.sender, Law_Parameters_Versions[version].FunctionCall_Price.mul(New_Items.length), law_project);
         
-        //Add_Item_Proposal(law_project, Proposal, New_Items, Indexs, msg.sender);
         List_Law_Project[law_project].Add_Item_Proposal( Proposal, New_Items, Indexs, msg.sender);
         emit Proposal_Modified(law_project, Proposal);
     }
@@ -681,9 +624,6 @@ library Delegation_Uils{
      * @param law_project Id of the law project the caller wants to add a proposition to. The Id is obtained by hashing the Title with the Description of the law project.
      */
     function Achiev_Vote(bytes32 law_project) external override Delegation_Only{
-        //require( version != 0, "No existing Law Project");
-        //require(Delegation_Law_Projects[law_project].Law_Project_Status == Status.VOTE, "Law Not at VOTE status");
-        //require(block.timestamp.sub(Delegation_Law_Projects[law_project].Start_Vote_Timestamps) > Law_Parameters_Versions[version].Vote_Duration, "VOTE stage not finished");
         
         IVote Vote_Instance = IVote(Law_Parameters_Versions[Delegation_Law_Projects[law_project].Version].Ivote_address);
         bytes32 key = keccak256(abi.encodePacked(law_project,Delegation_Law_Projects[law_project].Start_Vote_Timestamps));
@@ -745,7 +685,6 @@ library Delegation_Uils{
      */
     function Execute_Law(bytes32 law_project, uint num_function_call_ToExecute)external override Delegation_Only nonReentrant{
         require(Delegation_Law_Projects[law_project].Law_Project_Status == Status.ADOPTED, "Law Not ADOPTED");
-        //if(Execute_Winning_Proposal(law_project, num_function_call_ToExecute, Delegation_Law_Projects[law_project].Institution_Address)){
         emit Function_Call_Executed( law_project, num_function_call_ToExecute);
         if(List_Law_Project[law_project].Execute_Winning_Proposal(num_function_call_ToExecute, Delegation_Law_Projects[law_project].Institution_Address)){
             Delegation_Law_Projects[law_project].Law_Project_Status = Status.EXECUTED;
@@ -758,27 +697,7 @@ library Delegation_Uils{
     
     
     
-    /*Constitution_Only Delegation paramters initialisation*/
-    
-    /*function Update_Legislatif_Process(uint Member_Max_Token_Usage, uint Law_Initialisation_Price, uint FunctionCall_Price, uint Proposition_Duration,
-         uint Vote_Duration, uint Law_Censor_Period_Duration, uint16 Censor_Proposition_Petition_Rate, 
-         uint16 Censor_Penalty_Rate, address Ivote_address)external Constitution_Only{
-             
-             uint version = Legislatif_Process_Version.add(1);
-             
-             Law_Parameters_Versions[version].Member_Max_Token_Usage = Member_Max_Token_Usage;
-             Law_Parameters_Versions[version].Law_Initialisation_Price = Law_Initialisation_Price;
-             Law_Parameters_Versions[version].FunctionCall_Price = FunctionCall_Price;
-             Law_Parameters_Versions[version].Proposition_Duration = Proposition_Duration;
-             Law_Parameters_Versions[version].Vote_Duration = Vote_Duration;
-             Law_Parameters_Versions[version].Law_Censor_Period_Duration = Law_Censor_Period_Duration;
-             Law_Parameters_Versions[version].Censor_Proposition_Petition_Rate = Censor_Proposition_Petition_Rate;
-             Law_Parameters_Versions[version].Censor_Penalty_Rate = Censor_Penalty_Rate;
-             Law_Parameters_Versions[version].Ivote_address = Ivote_address;
-             
-             Legislatif_Process_Version = version;
-             
-    }*/
+    /*Constitution_Only Delegation parameters initialisation*/
          
     /**
      * @dev See {IDelegation} interface
@@ -861,23 +780,7 @@ library Delegation_Uils{
     
     /*Utils*/
 
-    /*function _Update_Law_Project() internal{
-        IConstitution_Delegation constitution = IConstitution_Delegation(Constitution_Address);
-        uint new_version = constitution.Get_Delegation_Legislatif_Process_Versions(address(this));
-        uint[6] memory Temp;
-        if(new_version>Legislatif_Process_Version){
-            
-            (Temp, Law_Parameters_Versions[new_version].Censor_Proposition_Petition_Rate, Law_Parameters_Versions[new_version].Censor_Penalty_Rate) = constitution.Get_Delegation_Legislation_Process(address(this));
-            
-            Law_Parameters_Versions[new_version].Member_Max_Token_Usage = Temp[0];
-            Law_Parameters_Versions[new_version].Law_Initialisation_Price = Temp[1];
-            Law_Parameters_Versions[new_version].FunctionCall_Price = Temp[2];
-            Law_Parameters_Versions[new_version].Proposition_Duration = Temp[3];
-            Law_Parameters_Versions[new_version].Vote_Duration = Temp[4];
-            Law_Parameters_Versions[new_version].Law_Censor_Period_Duration = Temp[5];
-        }
-        Legislatif_Process_Version = new_version;
-    }*/
+    
     
 
     /**
@@ -914,7 +817,6 @@ library Delegation_Uils{
      * @param institution_address Address of the controled register to be updated.
     */
     function Update_Controled_Registers(address institution_address) internal{
-        //address institution_address = Law_Projects[law_project].Institution_Address;
         uint counter = Controled_Registers[institution_address].Law_Project_Counter.sub(1);
         Controled_Registers[institution_address].Law_Project_Counter = counter;
         if(counter==0 && !Controled_Registers[institution_address].Active){
@@ -1012,16 +914,5 @@ library Delegation_Uils{
     function Get_Law_Results(bytes32 key)external view returns(uint Winning_Proposal, Initiative_Legislative_Lib.Function_Call_Result[] memory Receipts){
         return(List_Law_Project[key].Winning_Proposal, List_Law_Project[key].Function_Call_Receipts);
     }
-    /*Overite functions*/
-    /*function Before_Add_Law_Project(bytes calldata Title, bytes calldata Description) internal override returns(bytes32){
-        
-    }
     
-    function Before_Add_Corpus_Proposal(bytes32 law_project, uint Parent, uint[] calldata Parent_Proposals_Reuse, bytes[] calldata New_Function_Call, bytes calldata Description) internal override{
-        
-    }
-    
-    function Before_Add_Item_Proposal(bytes32 law_project, uint Proposal, bytes[] calldata New_Items, uint[] calldata Indexs) internal override{
-        
-    }*/
 }

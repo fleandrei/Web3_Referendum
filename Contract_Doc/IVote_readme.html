@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="description" content="Web site created with EthDoc">
+  <link rel="stylesheet" href="IVote_readme_fichiers/bootstrap.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  </head>
+  <body>
+      
+    <style>
+        #ethdoc-viewer{
+            font-size: 0.8em;
+            padding: 1em;
+        }
+        #ethdoc-viewer .lead{
+            font-size: 1em;
+        }
+        #ethdoc-viewer table {
+            width: 50%;
+        }
+        #ethdoc-viewer hr {
+            margin: 0;
+            margin-bottom: 0.5rem;
+        }
+        #ethdoc-viewer p{
+            margin-bottom: 0.5rem;
+        }
+    </style>
+
+    <div id="ethdoc-viewer">
+    
+        
+    <h3>IVote </h3>
+
+    <p class="lead">IVote is an interface for contracts that implements a
+ voting system. IVote contract should allow voters to chose M Winning 
+Propositions among N Candidates Propositions (M smaller than N).  
+Propositions are represented by numbers going from 1 to N. 0 proposition
+ is the default proposition and represent the blank vote.  Voting 
+choices can be clear or hashed with a bytes32 salt in order to prevent 
+voters that hasn't voted yet from being influenced by oders voter's 
+voting choices.  If votes are hashed, voters should validate their vote 
+after the voting period is over, by submiting their clear voting choice 
+with the corresponding salt. Serverals voting sessions with different 
+parameters can be hold at the same time for various use case.  Each new 
+ballot should be provided with the address of a "Voter register" 
+contract that contain a whitelist of account allowed to vote and with 
+the function selector of a "Voter register" contract function that allow
+ to check whether an account is allowed to vote or not. </p>
+
+    
+
+    <p><strong>Functions</strong></p>
+
+
+        
+          <hr>
+            <h6>Create_Ballot - read </h6>
+
+            <p>Creates a new voting session</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>key</td>
+        <td>bytes32</td>
+        <td>Id of the new voting session. It's up to caller to define one.</td>
+        </tr><tr>
+        <td>Voters_Register_Address</td>
+        <td>address</td>
+        <td>address of the contract that store account that are allowed to vote in this voting session</td>
+        </tr><tr>
+        <td>Check_Voter_Selector</td>
+        <td>bytes4</td>
+        <td>Function Selector of a Voters_Register_Address contract's 
+function in charge of checking whether an address belongs to accounts 
+allowed to vote. The function should take an address in parameters and 
+return a boolean. </td>
+        </tr><tr>
+        <td>Vote_Duration</td>
+        <td>uint256</td>
+        <td>Duration of the stage in which members are allowed to vote </td>
+        </tr><tr>
+        <td>Vote_Validation_Duration</td>
+        <td>uint256</td>
+        <td>Duration of the stage in which accounts who have voted have to validate their voting choice.</td>
+        </tr><tr>
+        <td>Propositions_Number</td>
+        <td>uint256</td>
+        <td>Number N of candidats Propositions</td>
+        </tr><tr>
+        <td>Max_Winning_Propositions_Number</td>
+        <td>uint256</td>
+        <td>Number M of places.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>End_Validation_Vote - read </h6>
+
+            <p>End the validation stage if it is over. Votes are tailled and we should have access to winning propositions</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>key</td>
+        <td>bytes32</td>
+        <td>Id of the voting session</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>End_Vote - read </h6>
+
+            <p>End the voting stage if it is over. If votes are hashed 
+then we start the validation stage, else votes are tailled and we should
+ have access to winning propositions</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>key</td>
+        <td>bytes32</td>
+        <td>Id of the voting session</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Get_Voter_Number - read </h6>
+
+            <p>Get the number of accounts that have voted in the Voting session</p>
+
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>key</td>
+        <td>bytes32</td>
+        <td>Id of the voting session</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>voter_num</td>
+        <td>uint256</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Get_Winning_Proposition_byId - read </h6>
+
+            <p>Get a winning proposition by it's rank. Only callable if 
+the ballot have been tailled (after End_Vote of End_Validation_Vote 
+call).</p>
+
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>key</td>
+        <td>bytes32</td>
+        <td>Id of the voting session</td>
+        </tr><tr>
+        <td>Id</td>
+        <td>uint256</td>
+        <td>Rank (index) of the proposition we want to get in the List of winning propositions.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>Winning_Propositions</td>
+        <td>uint256</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Get_Winning_Propositions - read </h6>
+
+            <p>Get winning propositions list of a voting session. Only 
+callable if the ballot have been tailled (after End_Vote of 
+End_Validation_Vote call).</p>
+
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>key</td>
+        <td>bytes32</td>
+        <td>Id of the voting session</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>Winning_Propositions_List</td>
+        <td>uint256[]</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>HasValidated - read </h6>
+
+            <p>Check whether an account has Validated his vote or not.</p>
+
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>key</td>
+        <td>bytes32</td>
+        <td>Id of the voting session</td>
+        </tr><tr>
+        <td>voter_address</td>
+        <td>address</td>
+        <td>Address of the account </td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>Validated</td>
+        <td>bool</td>
+        <td></td>
+        </tr><tr>
+        <td>Choice</td>
+        <td>bytes32</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>HasVoted - read </h6>
+
+            <p>Check whether an account has voted or not.</p>
+
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>key</td>
+        <td>bytes32</td>
+        <td>Id of the voting session</td>
+        </tr><tr>
+        <td>voter_address</td>
+        <td>address</td>
+        <td>Address of the account </td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>hasvoted</td>
+        <td>bool</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Valdiate_Vote - read </h6>
+
+            <p>Allows voter to validate their hashed voting choice by 
+submitting it coupled with the salt bytes32 value that has been used to 
+hash it. nly callable during Validation stage of a voting session.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>key</td>
+        <td>bytes32</td>
+        <td>Id of the voting session</td>
+        </tr><tr>
+        <td>Choices</td>
+        <td>uint256[]</td>
+        <td>Array of propositions Ids that correspond to voter choice</td>
+        </tr><tr>
+        <td>salt</td>
+        <td>bytes32</td>
+        <td>bytes32 value that has been used to hash the "Choice" value.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Vote_Clear - read </h6>
+
+            <p>Allows a voter to vote clear in a voting session. Only callable during Voting stage of a voting session.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>key</td>
+        <td>bytes32</td>
+        <td>Id of the voting session</td>
+        </tr><tr>
+        <td>Choices</td>
+        <td>uint256[]</td>
+        <td>Array of propositions Ids that correspond to voter choice</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Vote_Hashed - read </h6>
+
+            <p>Allows a voter to vote in a voting session with an hashed
+ voting choice in order to keep it secret until the vote validation 
+stage. Only callable during Voting stage of a voting session.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>key</td>
+        <td>bytes32</td>
+        <td>Id of the voting session</td>
+        </tr><tr>
+        <td>Choice</td>
+        <td>bytes32</td>
+        <td>Hash of the Array of propositions Ids that correspond to voter's choice with a salt bytes32 value created by the voter.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+    
+    </div>
+
+  
+  
+</body></html>

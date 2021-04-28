@@ -11,27 +11,23 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contr
 */
 
 /** 
- * @dev Implementation of IVote interface. Majority_Judgment_Ballot contract implement the Majority Judgment which is a ballot process proven to be able to avoid biases of classical Uninominal ballot such as strategic vote. In Majority Judgment ballot, 
+ * @notice Implementation of IVote interface. Majority_Judgment_Ballot contract implement the Majority Judgment which is a ballot process proven to be able to avoid biases of classical Uninominal ballot such as strategic vote. In Majority Judgment ballot, 
  * citizens assess each candidat and give it a grade. In our implementation, each candidat proposition can be assessed as «Reject», «Bad», «Neutral», «Good» and «Excelent». 
  * For each candidat proposition, citizens assessment are sorted from best grades to worst ones (from «Excelent» to «Reject»). The majority grade of a proposition corresponds to it’s median grade. If the majority grade of a candidat proposition is «Good», 
  * it means that 50% of citizens think that this proposition is «Good» or Better.
  * Winning propositions are the M candidats propositions that have the best Majority grade.
  * If the most popular proposition is the blank vote, then we ignore the other M-1 winning propositions.
  * */
+ 
+ /// @dev Implementation of IVote interface. Majority_Judgment_Ballot contract implement the Majority Judgment which is a ballot process proven to be able to avoid biases of classical Uninominal ballot such as strategic vote. In Majority Judgment ballot, 
 contract Majority_Judgment_Ballot is IVote{
-    //using SafeMath for uint; 
-    
+
     enum Assessement{
         EXCELENT,
         GOOD,
         NEUTRAL,
         BAD,
         REJECT
-        /*Reject,
-        BAD,
-        NEUTRAL,
-        GOOD,
-        EXCELENT*/
     }
     
     enum Ballot_Status{
@@ -63,10 +59,8 @@ contract Majority_Judgment_Ballot is IVote{
         uint Propositions_Number;  
         uint Max_Winning_Propositions_Number;
         uint Voter_Number;
-        //mapping(uint=>uint[]) Propositions_By_Grades;
         uint[] Winning_Propositions;
         mapping(address=>Voter) Voters;
-        //mapping(uint=>uint[5]) Proposition_Cumulated_Score;
         mapping(uint=>Propositions_Result) Propositions_Results; //From 0 to Propositions_Number. If the 0 proposition get the first place, the oder propositions are rejected.
     }
     
@@ -83,7 +77,6 @@ contract Majority_Judgment_Ballot is IVote{
     /// @dev See {IVote} interface.
     function Create_Ballot(bytes32 key, address Voters_Register_Address, bytes4 Check_Voter_Selector, uint Vote_Duration, uint Vote_Validation_Duration, uint Propositions_Number, uint Max_Winning_Propositions_Number) external override {
         require(Ballots[key].Creation_Timestamp == 0, "Already Existing Ballot");
-        //if(Voters_Register_Address==address(0) || Check_Voter_Selector==bytes4(0) || Vote_Duration==0 || Propositions_Number.sub(Max_Winning_Propositions_Number) == 0 || Max_Winning_Propositions_Number==0 ){
         if(Voters_Register_Address==address(0) || Check_Voter_Selector==bytes4(0) || Vote_Duration==0 || Max_Winning_Propositions_Number==0 ){
             revert("Bad Argument Values");
         }
@@ -110,7 +103,6 @@ contract Majority_Judgment_Ballot is IVote{
         
     /// @dev See {IVote} interface.
     function Vote_Clear(bytes32 key, uint[] calldata Choices) external override{
-        //require(Ballots[key].Vote_Duration > block.timestamp.sub(Ballots[key].Creation_Timestamp), "Voting is over");
         require(Ballots[key].Status == Ballot_Status.VOTE, "Not at voting stage");
         require(!Ballots[key].Voters[msg.sender].Voted, "Already Voted");
         require(Check_Voter_Address(key, msg.sender), "Address Not Allowed");
@@ -124,7 +116,6 @@ contract Majority_Judgment_Ballot is IVote{
         for(uint i=0; i< choice_len; i++){
             for(uint j=Choices[i]; j<5; j++){
                 Ballots[key].Propositions_Results[i].Cumulated_Score[j]++;
-                //Ballots[key].Proposition_Cumulated_Score[i][j]++;
             }
         }
         emit Voted_Clear(key, msg.sender);
@@ -132,13 +123,11 @@ contract Majority_Judgment_Ballot is IVote{
     
     /// @dev See {IVote} interface.
     function Vote_Hashed(bytes32 key, bytes32 Hash) external override{
-        //require(Ballots[key].Vote_Duration > block.timestamp.sub(Ballots[key].Creation_Timestamp), "Voting is over");
         require(Ballots[key].Status == Ballot_Status.VOTE, "Not at voting stage");
         require(!Ballots[key].Voters[msg.sender].Voted, "Already Voted");
         require(Check_Voter_Address(key, msg.sender), "Address Not Allowed");
         require(Ballots[key].Vote_Validation_Duration > 0, "Should Use Vote_Clear");
-        //require(Ballots[key].Propositions_Number.add(1) == choice_len);
-        
+
         Ballots[key].Voters[msg.sender].Voted = true;
         Ballots[key].Voters[msg.sender].Choice = Hash;
         
@@ -164,7 +153,6 @@ contract Majority_Judgment_Ballot is IVote{
     /// @dev See {IVote} interface.
     function Valdiate_Vote(bytes32 key, uint[] calldata Choices, bytes32 salt )external override {
         require(Ballots[key].Status==Ballot_Status.VOTE_VALIDATION, "Not at vote validation stage");
-        //require(Check_Voter_Address(key, msg.sender), "Address Not Allowed");
         require(!Ballots[key].Voters[msg.sender].Validated, "Vote Already Validated");
         uint choice_len = Choices.length ;
         require(Ballots[key].Propositions_Number+1 == choice_len, "Choices argument wrong size");
@@ -178,7 +166,6 @@ contract Majority_Judgment_Ballot is IVote{
         for(uint i=0; i<Choices.length; i++){
             for(uint j=Choices[i]; j<5; j++){
                 Ballots[key].Propositions_Results[i].Cumulated_Score[j]++;
-                //Ballots[key].Proposition_Cumulated_Score[i][j]++;
             }
         }
         
@@ -202,7 +189,6 @@ contract Majority_Judgment_Ballot is IVote{
         uint number_propositions = Ballots[key].Propositions_Number;
         uint half_voters = Ballots[key].Voter_Number/2 +  Ballots[key].Voter_Number%2;
         uint winning_propositions_number = Ballots[key].Max_Winning_Propositions_Number;
-        //uint[][2] memory winning_propositions = new uint[][2](winning_propositions_number+1);
         uint[] memory winning_propositions = new uint[](winning_propositions_number+1);
         uint[] memory winning_propositions_grades = new uint[](winning_propositions_number+1);
         uint mention;
@@ -210,18 +196,14 @@ contract Majority_Judgment_Ballot is IVote{
         uint winning_list_size;
         bool continu;
         uint Temp_prop;
-        //uint counter;
-        //uint Temp_mention;
-        
+
         //Assessement of eaxh proposition
         for(uint prop=0; prop<=number_propositions; prop++){
             while(Ballots[key].Propositions_Results[prop].Cumulated_Score[mention]<half_voters){
-            //while(Ballots[key].Proposition_Cumulated_Score[prop][mention]<half_voters){
                 mention++;
             }
             Ballots[key].Propositions_Results[prop].Median_Grade = Assessement(mention);
-            //Ballots[key].Propositions_By_Grades[mention].push(prop);
-            
+
          
          //Fetching the "winning_propositions_number" winning propositions.
             continu=true;
@@ -311,7 +293,6 @@ contract Majority_Judgment_Ballot is IVote{
     
     /// @dev See {IVote} interface
     function Get_Winning_Proposition_byId(bytes32 key, uint Id)external view override returns(uint Winning_Proposition){
-        //require(Ballots[key].Status == Ballot_Status.FINISHED, "Ballot still Pending");
         require(Id<Ballots[key].Winning_Propositions.length, "Id exceed Winning length");
         return Ballots[key].Winning_Propositions[Id];
     }

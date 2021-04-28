@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="description" content="Web site created with EthDoc">
+  <link rel="stylesheet" href="Constitution_readme_fichiers/bootstrap.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  </head>
+  <body>
+      
+    <style>
+        #ethdoc-viewer{
+            font-size: 0.8em;
+            padding: 1em;
+        }
+        #ethdoc-viewer .lead{
+            font-size: 1em;
+        }
+        #ethdoc-viewer table {
+            width: 50%;
+        }
+        #ethdoc-viewer hr {
+            margin: 0;
+            margin-bottom: 0.5rem;
+        }
+        #ethdoc-viewer p{
+            margin-bottom: 0.5rem;
+        }
+    </style>
+
+    <div id="ethdoc-viewer">
+    
+        
+    <h3>Constitution </h3>
+
+    <p class="lead">Constitution register contract is used to edit 
+parameters of a Web3 Direct Democracy project.  It contains address of 
+all deployed contracts used in a project. Particularly, it contains a 
+list of address of all register contracts that are used in the project, 
+and another list for all Delegations.  Hence, Constitution is the 
+central contract in a project. To launch a Web3 Direct Democracy 
+project, we have to launch the Constitution contract.  From Constitution
+ deployed contract, we can have access to all the project. There is a 
+single Constitution contract in a project. With Constitution register 
+contract, we can add new register and delegations to the project, we can
+ modify their democratic process parameters, change other register’s 
+_Register_Authorities_ array… Constitution contract goal is to customize
+ the project to specific use cases and to keep it updatable.   Once a 
+Web3 Direct Democracy project has just been deployed, it hasn’t any 
+register or delegation. Citizens_Register and DemoCoin contracts haven’t
+ any authority in their _Register_Authorities_ list.  Thus, at the 
+beginning of a Web3 Direct Democracy project, we need an initialisation 
+stage.  In this initialisation stage, there is a 
+_Transitional_Government_ account that has authority on the constitution
+ and can quickly perform necessary operations without passing by any 
+democratic process :</p>
+
+    
+
+    <p><strong>Functions</strong></p>
+
+
+        
+          <hr>
+            <h6>constructor - read </h6>
+
+            
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>Constitution_Name</td>
+        <td>string</td>
+        <td>Name of the Constitution contract</td>
+        </tr><tr>
+        <td>DemoCoin_Address</td>
+        <td>address</td>
+        <td>Address of the {DemoCoin} contract of the project</td>
+        </tr><tr>
+        <td>Citizen_Address</td>
+        <td>address</td>
+        <td>Address of the {Citizens_Register} contract of the project</td>
+        </tr><tr>
+        <td>Agora_Address</td>
+        <td>address</td>
+        <td>Address of the {Agora} contract of the project</td>
+        </tr><tr>
+        <td>transition_government</td>
+        <td>address</td>
+        <td>Address of the Transitional_Government.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Add_Authority - read </h6>
+
+            <p>Add an account address to {Register_Authorities}</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>authority</td>
+        <td>address</td>
+        <td>address to add to the {Register_Authorities} </td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Add_Banning_Authority - read </h6>
+
+            <p>Allows an address to register ban citizens. The address is added to {Citizens_Banning_Authorities} list</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>new_authority</td>
+        <td>address</td>
+        <td>Address to add to {Citizens_Banning_Authorities} list</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Add_Delegation_Controled_Register - read </h6>
+
+            <p>Put a Register contract under the control of a 
+Delegation. The Register contract address is added to 
+{Controled_Registers} list of the Delegation.  It means that the 
+Delegation recognize the Register contract as a controled one. But to 
+allow the Delegation to call Register functions of the Register 
+contract, you also have to to add the Delegation' address to the 
+{Register_Authorities} list of the register contract via the 
+{Add_Register_Authority} function.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>delegation_address</td>
+        <td>address</td>
+        <td>Address of the Delegation</td>
+        </tr><tr>
+        <td>new_controled_register</td>
+        <td>address</td>
+        <td>Address of the Register contract.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Add_Register_Authority - read </h6>
+
+            <p>Add a new address to a Register contract's (contract that
+ inherit from a {Register} abstract contract) {Register_Authorities} 
+list.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>register</td>
+        <td>address</td>
+        <td>Address of the register contract</td>
+        </tr><tr>
+        <td>authority</td>
+        <td>address</td>
+        <td>Address to add to the {Register_Authorities} list.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Add_Registering_Authority - read </h6>
+
+            <p>Allows an address to register new citizens. The address is added to {Citizens_Registering_Authorities} list</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>new_authority</td>
+        <td>address</td>
+        <td>Address to add to {Citizens_Registering_Authorities} list</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Agora_Instance - read </h6>
+
+            <p><strong>**Add Documentation for the method here**</strong></p>
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>address</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Citizen_Instance - read </h6>
+
+            <p><strong>**Add Documentation for the method here**</strong></p>
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>address</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Citizen_Register_Remove_Authority - read </h6>
+
+            <p>Removes address from {Citizens_Registering_Authorities} 
+(address allowed to register new citizens) and/or from 
+{Citizens_Banning_Authorities} (address allowed to ban citizens)</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>removed_authority</td>
+        <td>address</td>
+        <td>Address to removes {Citizens_Register} contract authorities lists.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Constitution_Address - read </h6>
+
+            <p><strong>**Add Documentation for the method here**</strong></p>
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>address</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Create_Delegation - read </h6>
+
+            <p>Add/Deploy a new Delegation contract to the project. It's address is added to {Delegation_Address_List}</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>Name</td>
+        <td>string</td>
+        <td>Name of the Delegation contract</td>
+        </tr><tr>
+        <td>delegation_address</td>
+        <td>address</td>
+        <td>Address of an already deployed Delegation contract to add to
+ the Project. If the delegation_address argument is address(0) then the 
+function deploy a new Delegation contract.</td>
+        </tr><tr>
+        <td>Uint256_Legislatifs_Arg</td>
+        <td>uint256[6]</td>
+        <td>Array of uitn256 parameters related to Delegation's 
+legislatif process. We use an array in order to reduce stack size (to 
+avoid the "stack too deep" error). Array elements represent following 
+parameters:          - Member_Max_Token_Usage: The maximum amount of 
+token a member is allowed to use for a law project elaboration          -
+ Law_Initialisation_Price: The price in token for creating a law project
+          - FunctionCall_Price: The price in token for one FunctionCall.
+          - Proposition_Duration: The duration of the stage in which 
+members are allowed to submit propositions          - Vote_Duration: The
+ duration of the stage in which members are allowed to vote for the 
+proposition they want          - Law_Censor_Period_Duration: The 
+duration of the stage in which all citizens are allowed to sign a 
+etition against the law project proposed by the Delegation </td>
+        </tr><tr>
+        <td>Uint256_Governance_Arg</td>
+        <td>uint256[5]</td>
+        <td>Array of uitn256 parameters related to Delegation's Internal
+ governance. We use an array in order to reduce stack size (to avoid the
+ "stack too deep" error). Array elements represent following parameters:
+          - Election_Duration: Duration of the stage in which citizens 
+are allowed to vote for Candidats they prefer          - 
+Validation_Duration: Duration of the stage in which citizens can 
+validate their hased vote by revealing their choice and the salt that 
+has been used for hasing           - Mandate_Duration: Duration of a 
+delegation mandate          - Immunity_Duration: Amount of time after 
+the beginning of a new mandate during which delegation's members can't 
+be revoked          - Mint_Token: Amount of token to mint for the 
+Delegation</td>
+        </tr><tr>
+        <td>Num_Max_Members</td>
+        <td>uint16</td>
+        <td>Maximum number of members in the delegation.</td>
+        </tr><tr>
+        <td>Revert_Proposition_Petition_Rate</td>
+        <td>uint16</td>
+        <td>The minimum ratio of citizens required to cancel a law project</td>
+        </tr><tr>
+        <td>Revert_Penalty_Rate</td>
+        <td>uint16</td>
+        <td>Ratio of total amount of token belonged by the delegation that will be lost if a law project is rejected by citizens</td>
+        </tr><tr>
+        <td>New_Election_Petition_Rate</td>
+        <td>uint16</td>
+        <td>The minimum ratio of citizens required to revoke the current delegation's members and start a new election</td>
+        </tr><tr>
+        <td>Initial_members</td>
+        <td>address[]</td>
+        <td>: Initials members of the delegation</td>
+        </tr><tr>
+        <td>Ivote_address_legislatif</td>
+        <td>address</td>
+        <td>Address of the IVote contract that will be used during Legislatif process</td>
+        </tr><tr>
+        <td>Ivote_address_governance</td>
+        <td>address</td>
+        <td>Address of the IVote contract that will be used during election stage</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Create_Register - read </h6>
+
+            <p>Add/create a new Register Contract to the Web3 Direct Democracy project. It's address is added to {Registers_Address_List}</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>Name</td>
+        <td>string</td>
+        <td>Name of the new Register contract</td>
+        </tr><tr>
+        <td>register_type</td>
+        <td>uint8</td>
+        <td>Type of the Register Contract (see {Institution_Type} enum of {Institution} abstract contract).</td>
+        </tr><tr>
+        <td>Petition_Duration</td>
+        <td>uint256</td>
+        <td>Duration of the proposition/petition stage</td>
+        </tr><tr>
+        <td>Vote_Duration</td>
+        <td>uint256</td>
+        <td>Duration of the voting stage</td>
+        </tr><tr>
+        <td>Vote_Checking_Duration</td>
+        <td>uint256</td>
+        <td>Duration of the validation stage</td>
+        </tr><tr>
+        <td>Law_Initialisation_Price</td>
+        <td>uint256</td>
+        <td>Amount of DemoCoin token to pay to submit a new Referendum proposition.</td>
+        </tr><tr>
+        <td>FunctionCall_Price</td>
+        <td>uint256</td>
+        <td>Amount of DemoCoin token to pay for each new function call of a function call corpus proposal submission.</td>
+        </tr><tr>
+        <td>Required_Petition_Rate</td>
+        <td>uint16</td>
+        <td>The minimum ratio of citizens signatures required to submit the referendum proposition as a referendum to all citizens.</td>
+        </tr><tr>
+        <td>Ivote_address</td>
+        <td>address</td>
+        <td>Address of the IVote contract used in the voting and validation stage</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Democoin_Instance - read </h6>
+
+            <p><strong>**Add Documentation for the method here**</strong></p>
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>address</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>End_Transition_Government - read </h6>
+
+            <p>Function called by the {Transitional_Government} account 
+to end the Transitional Government stage. This step is mandatory to 
+start using a Web3 Direct Democracy in a safe way.</p>
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Get_Authorities - read </h6>
+
+            <p>Getter for {Register_Authorities}</p>
+
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>bytes32[]</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Get_Delegation_List - read </h6>
+
+            <p>Get the list of all address of Delegation contracts registered in the Constitution</p>
+
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>delegation_list</td>
+        <td>bytes32[]</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Get_Register_List - read </h6>
+
+            <p>Get the list of all address of Register contracts registered in the Constitution</p>
+
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>register_list</td>
+        <td>bytes32[]</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Name - read </h6>
+
+            <p>Change the Name of an Institution contract.</p>
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>string</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Remove_Authority - read </h6>
+
+            <p>Removes address from {Citizens_Registering_Authorities} 
+(address allowed to register new citizens) and/or from 
+{Citizens_Banning_Authorities} (address allowed to ban citizens)</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>authority</td>
+        <td>address</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Remove_Delegation_Controled_Register - read </h6>
+
+            <p>Removes a Register contract from the control of a 
+Delegation. The Register contract address is removed from the 
+{Controled_Registers} list of the Delegation.  It means that the 
+Delegation doesn't recognize anymore the Register contract as a 
+controled one. But to fully cut bonds between the Delegation and the 
+Register contract, you also have to to remove the Delegation' address 
+from the {Register_Authorities} list of the register contract via the 
+{Remove_Register_Authority} function.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>delegation_address</td>
+        <td>address</td>
+        <td>Address of the Delegation</td>
+        </tr><tr>
+        <td>removed_controled_register</td>
+        <td>address</td>
+        <td>Address of the Register contract.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Remove_Register_Authority - read </h6>
+
+            <p>Removes a, address from a Register contract's {Register_Authorities} list.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>register</td>
+        <td>address</td>
+        <td>Address of the register contract</td>
+        </tr><tr>
+        <td>authority</td>
+        <td>address</td>
+        <td>Address to remove from the {Register_Authorities} list.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Set_Burner - read </h6>
+
+            <p>Change address that are allowed to burn DemoCoin Token 
+(Burner authorities). They are contained in the {Burn_Authorities} list 
+of {DemoCoin} contract.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>Add_Burner</td>
+        <td>address[]</td>
+        <td>List of new Burner address</td>
+        </tr><tr>
+        <td>Remove_Burner</td>
+        <td>address[]</td>
+        <td>List of Burner address to remove from {Burn_Authorities}</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Set_Citizen_Mint_Amount - read </h6>
+
+            <p>Change the amount of DemoCoin token to mint for new registered citizens.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>amount</td>
+        <td>uint256</td>
+        <td>Amount of token to mint.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Set_Constitution - read </h6>
+
+            <p>The function Allows to change the Constitution contract 
+the current Institution obey to. The function is only callable by the 
+{Constitution_Address}</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>new_constitution</td>
+        <td>address</td>
+        <td>Address of the new Constitution contract.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Set_Delegation_Internal_Governance - read </h6>
+
+            <p>Modify parameters related to the Legislatif process of a Delegation.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>delegation_address</td>
+        <td>address</td>
+        <td>Address of the Delegation contract</td>
+        </tr><tr>
+        <td>Election_Duration</td>
+        <td>uint256</td>
+        <td>: Duration of the stage in which citizens are allowed to vote for Candidats they prefer</td>
+        </tr><tr>
+        <td>Validation_Duration</td>
+        <td>uint256</td>
+        <td>: Duration of the stage in which citizens can validate their
+ hased vote by revealing their choice and the salt that has been used 
+for hasing </td>
+        </tr><tr>
+        <td>Mandate_Duration</td>
+        <td>uint256</td>
+        <td>: Duration of a delegation mandate</td>
+        </tr><tr>
+        <td>Immunity_Duration</td>
+        <td>uint256</td>
+        <td>: Amount of time after the beginning of a new mandate during which delegation's members can't be revoked</td>
+        </tr><tr>
+        <td>Num_Max_Members</td>
+        <td>uint16</td>
+        <td>: Maximum number of members in the delegation.</td>
+        </tr><tr>
+        <td>New_Election_Petition_Rate</td>
+        <td>uint16</td>
+        <td>: The minimum ratio of citizens required to revoke the current delegation's members and start a new election</td>
+        </tr><tr>
+        <td>Mint_Token</td>
+        <td>uint256</td>
+        <td>Amount of token to mint for the Delegation: Initials members of the delegation</td>
+        </tr><tr>
+        <td>Ivote_address</td>
+        <td>address</td>
+        <td>Address of the IVote contract that will be used during election stage</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Set_Delegation_Legislatif_Process - read </h6>
+
+            <p>Modify parameters related to the Legislatif process of a Delegation.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>delegation_address</td>
+        <td>address</td>
+        <td>Address of an already deployed Delegation contract to add to
+ the Project. If the delegation_address argument is address(0) then the 
+function deploy a new Delegation contract.</td>
+        </tr><tr>
+        <td>Uint256_Legislatifs_Arg</td>
+        <td>uint256[6]</td>
+        <td>Array of uitn256 parameters related to Delegation's 
+legislatif process. We use an array in order to reduce stack size (to 
+avoid the "stack too deep" error). Array elements represent following 
+parameters:          - Member_Max_Token_Usage: The maximum amount of 
+token a member is allowed to use for a law project elaboration          -
+ Law_Initialisation_Price: The price in token for creating a law project
+          - FunctionCall_Price: The price in token for one FunctionCall.
+          - Proposition_Duration: The duration of the stage in which 
+members are allowed to submit propositions          - Vote_Duration: The
+ duration of the stage in which members are allowed to vote for the 
+proposition they want          - Law_Censor_Period_Duration: The 
+duration of the stage in which all citizens are allowed to sign a 
+etition against the law project proposed by the Delegation </td>
+        </tr><tr>
+        <td>Revert_Proposition_Petition_Rate</td>
+        <td>uint16</td>
+        <td>The minimum ratio of citizens required to cancel a law project</td>
+        </tr><tr>
+        <td>Revert_Penalty_Rate</td>
+        <td>uint16</td>
+        <td>Ratio of total amount of token belonged by the delegation that will be lost if a law project is rejected by citizens</td>
+        </tr><tr>
+        <td>Ivote_address</td>
+        <td>address</td>
+        <td>Address of the IVote contract that will be used during Legislatif process</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Set_Instances_Constitution - read </h6>
+
+            <p>Change the Constitution address of an Institution 
+contract belonging to current project. After this call, this Institution
+ will not recognize this Constitution anymore.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>institution_address</td>
+        <td>address</td>
+        <td>Address of the Institution contract</td>
+        </tr><tr>
+        <td>new_address</td>
+        <td>address</td>
+        <td>New Constitution address of the {institution_address} Institution </td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Set_Institution_Name - read </h6>
+
+            <p>Change the Name of an Institution contract.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>institution_address</td>
+        <td>address</td>
+        <td>Address of the Institution contract</td>
+        </tr><tr>
+        <td>name</td>
+        <td>string</td>
+        <td>New name of the {institution_address} Institution.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Set_Minnter - read </h6>
+
+            <p>Change address that are allowed to mint DemoCoin Token 
+(Minter authorities). They are contained in the {Mint_Authorities} list 
+of {DemoCoin} contract.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>Add_Minter</td>
+        <td>address[]</td>
+        <td>List of new Minter address</td>
+        </tr><tr>
+        <td>Remove_Minter</td>
+        <td>address[]</td>
+        <td>List of Minter address to remove from {Mint_Authorities}</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Set_Name - read </h6>
+
+            <p>The function Allows to change the Name of the Institution. The function is only callable by the {Constitution_Address}</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>name</td>
+        <td>string</td>
+        <td>New name of the Institution.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Set_Register_Param - read </h6>
+
+            <p>Change parameters of a Register Contract of the project.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>register_address</td>
+        <td>address</td>
+        <td>Address of the Register contract</td>
+        </tr><tr>
+        <td>Petition_Duration</td>
+        <td>uint256</td>
+        <td>Duration of the proposition/petition stage</td>
+        </tr><tr>
+        <td>Vote_Duration</td>
+        <td>uint256</td>
+        <td>Duration of the voting stage</td>
+        </tr><tr>
+        <td>Vote_Checking_Duration</td>
+        <td>uint256</td>
+        <td>Duration of the validation stage</td>
+        </tr><tr>
+        <td>Law_Initialisation_Price</td>
+        <td>uint256</td>
+        <td>Amount of DemoCoin token to pay to submit a new Referendum proposition.</td>
+        </tr><tr>
+        <td>FunctionCall_Price</td>
+        <td>uint256</td>
+        <td>Amount of DemoCoin token to pay for each new function call of a function call corpus proposal submission.</td>
+        </tr><tr>
+        <td>Required_Petition_Rate</td>
+        <td>uint16</td>
+        <td>The minimum ratio of citizens signatures required to submit the referendum proposition as a referendum to all citizens.</td>
+        </tr><tr>
+        <td>Ivote_address</td>
+        <td>address</td>
+        <td>Address of the IVote contract used in the voting and validation stage</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Transitional_Government - read </h6>
+
+            <p><strong>**Add Documentation for the method here**</strong></p>
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>address</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Type_Institution - read </h6>
+
+            <p><strong>**Add Documentation for the method here**</strong></p>
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>uint8</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+    
+    </div>
+
+  
+  
+</body></html>

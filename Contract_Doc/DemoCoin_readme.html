@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="description" content="Web site created with EthDoc">
+  <link rel="stylesheet" href="DemoCoin_readme_fichiers/bootstrap.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  </head>
+  <body>
+      
+    <style>
+        #ethdoc-viewer{
+            font-size: 0.8em;
+            padding: 1em;
+        }
+        #ethdoc-viewer .lead{
+            font-size: 1em;
+        }
+        #ethdoc-viewer table {
+            width: 50%;
+        }
+        #ethdoc-viewer hr {
+            margin: 0;
+            margin-bottom: 0.5rem;
+        }
+        #ethdoc-viewer p{
+            margin-bottom: 0.5rem;
+        }
+    </style>
+
+    <div id="ethdoc-viewer">
+    
+        
+    <h3>DemoCoin </h3>
+
+    <p class="lead">It's an ERC20 token used for submiting referendum 
+propositions and rewarding voters of a Web3 Direct Democracy DAO.  It 
+offers features for handling address that are allowed to mint and burn 
+tokens.</p>
+
+    
+
+    <p><strong>Functions</strong></p>
+
+
+        
+          <hr>
+            <h6>constructor - read </h6>
+
+            <p>Set parameters of token </p>
+
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>name_</td>
+        <td>string</td>
+        <td>Name of the token</td>
+        </tr><tr>
+        <td>symbol_</td>
+        <td>string</td>
+        <td>Symbole of the token</td>
+        </tr><tr>
+        <td>initials_accounts</td>
+        <td>address[]</td>
+        <td>Addesses of initials owners of the token</td>
+        </tr><tr>
+        <td>initials_amount</td>
+        <td>uint256[]</td>
+        <td>List of amount of token to attribute to {initials_accounts}</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Add_Burner - read </h6>
+
+            <p>Add an address to the list of accounts allowed to burn token</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>burner</td>
+        <td>address</td>
+        <td>New account allowed to burn token</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Add_Minter - read </h6>
+
+            <p>Add an address to the list of accounts allowed to mint token</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>minter</td>
+        <td>address</td>
+        <td>New account allowed to mint token </td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Burn - read </h6>
+
+            <p>Add an address to the list of accounts allowed to burn token</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>account</td>
+        <td>address</td>
+        <td></td>
+        </tr><tr>
+        <td>amount</td>
+        <td>uint256</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Constitution_Address - read </h6>
+
+            <p><strong>**Add Documentation for the method here**</strong></p>
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>address</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Get_Burn_Authorities - read </h6>
+
+            <p>Getter for {Burn_Authorities}</p>
+
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>bytes32[]</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Get_Mint_Authorities - read </h6>
+
+            <p>Getter for {Mint_Authorities}</p>
+
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>bytes32[]</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Mint - read </h6>
+
+            <p>Add an address to the list of accounts allowed to mint token</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>account</td>
+        <td>address</td>
+        <td></td>
+        </tr><tr>
+        <td>amount</td>
+        <td>uint256</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Remove_Burner - read </h6>
+
+            <p>Removes an address from the list of accounts allowed to burn token</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>burner</td>
+        <td>address</td>
+        <td>Burner address removed from {Burn_Authorities] </td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Remove_Minter - read </h6>
+
+            <p>Removes an address from the list of accounts allowed to mint token</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>minter</td>
+        <td>address</td>
+        <td>Minter address removed from {Mint_Authorities} </td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Set_Constitution - read </h6>
+
+            <p>Modify the constitution of DemoCoin token </p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>new_constitution</td>
+        <td>address</td>
+        <td>New constitution of DemoCoin.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>allowance - read </h6>
+
+            <p>See {IERC20-allowance}.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>owner</td>
+        <td>address</td>
+        <td></td>
+        </tr><tr>
+        <td>spender</td>
+        <td>address</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>uint256</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>approve - read </h6>
+
+            <p>See {IERC20-approve}. Requirements: - `spender` cannot be the zero address.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>spender</td>
+        <td>address</td>
+        <td></td>
+        </tr><tr>
+        <td>amount</td>
+        <td>uint256</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>bool</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>balanceOf - read </h6>
+
+            <p>See {IERC20-balanceOf}.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>account</td>
+        <td>address</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>uint256</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>decimals - read </h6>
+
+            <p>Returns the number of decimals used to get its user 
+representation. For example, if `decimals` equals `2`, a balance of 
+`505` tokens should be displayed to a user as `5,05` (`505 / 10 ** 2`). 
+Tokens usually opt for a value of 18, imitating the relationship between
+ Ether and Wei. This is the value {ERC20} uses, unless this function is 
+overloaded; NOTE: This information is only used for _display_ purposes: 
+it in no way affects any of the arithmetic of the contract, including 
+{IERC20-balanceOf} and {IERC20-transfer}.</p>
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>uint8</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>decreaseAllowance - read </h6>
+
+            <p>Atomically decreases the allowance granted to `spender` 
+by the caller. This is an alternative to {approve} that can be used as a
+ mitigation for problems described in {IERC20-approve}. Emits an 
+{Approval} event indicating the updated allowance. Requirements: - 
+`spender` cannot be the zero address. - `spender` must have allowance 
+for the caller of at least `subtractedValue`.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>spender</td>
+        <td>address</td>
+        <td></td>
+        </tr><tr>
+        <td>subtractedValue</td>
+        <td>uint256</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>bool</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>increaseAllowance - read </h6>
+
+            <p>Atomically increases the allowance granted to `spender` 
+by the caller. This is an alternative to {approve} that can be used as a
+ mitigation for problems described in {IERC20-approve}. Emits an 
+{Approval} event indicating the updated allowance. Requirements: - 
+`spender` cannot be the zero address.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>spender</td>
+        <td>address</td>
+        <td></td>
+        </tr><tr>
+        <td>addedValue</td>
+        <td>uint256</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>bool</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>name - read </h6>
+
+            <p>Returns the name of the token.</p>
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>string</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>symbol - read </h6>
+
+            <p>Returns the symbol of the token, usually a shorter version of the name.</p>
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>string</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>totalSupply - read </h6>
+
+            <p>See {IERC20-totalSupply}.</p>
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>uint256</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>transfer - read </h6>
+
+            <p>See {IERC20-transfer}. Requirements: - `recipient` cannot
+ be the zero address. - the caller must have a balance of at least 
+`amount`.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>recipient</td>
+        <td>address</td>
+        <td></td>
+        </tr><tr>
+        <td>amount</td>
+        <td>uint256</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>bool</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>transferFrom - read </h6>
+
+            <p>See {IERC20-transferFrom}. Emits an {Approval} event 
+indicating the updated allowance. This is not required by the EIP. See 
+the note at the beginning of {ERC20}. Requirements: - `sender` and 
+`recipient` cannot be the zero address. - `sender` must have a balance 
+of at least `amount`. - the caller must have allowance for ``sender``'s 
+tokens of at least `amount`.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>sender</td>
+        <td>address</td>
+        <td></td>
+        </tr><tr>
+        <td>recipient</td>
+        <td>address</td>
+        <td></td>
+        </tr><tr>
+        <td>amount</td>
+        <td>uint256</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>bool</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+    
+    </div>
+
+  
+  
+</body></html>

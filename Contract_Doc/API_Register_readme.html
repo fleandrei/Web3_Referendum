@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="description" content="Web site created with EthDoc">
+  <link rel="stylesheet" href="API_Register_readme_fichiers/bootstrap.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  </head>
+  <body>
+      
+    <style>
+        #ethdoc-viewer{
+            font-size: 0.8em;
+            padding: 1em;
+        }
+        #ethdoc-viewer .lead{
+            font-size: 1em;
+        }
+        #ethdoc-viewer table {
+            width: 50%;
+        }
+        #ethdoc-viewer hr {
+            margin: 0;
+            margin-bottom: 0.5rem;
+        }
+        #ethdoc-viewer p{
+            margin-bottom: 0.5rem;
+        }
+    </style>
+
+    <div id="ethdoc-viewer">
+    
+        
+    <h3>API_Register </h3>
+
+    <p class="lead">Contract registering an API of third party contract 
+functions callable via Web3 Direct Democracy democratic process.   API 
+functions can be edited (add, remove) and executed by address contained 
+in {Register_Authorities} list (Defined in the "Register" inherited 
+contract)  </p>
+
+    
+
+    <p><strong>Functions</strong></p>
+
+
+        
+          <hr>
+            <h6>constructor - read </h6>
+
+            <p>Add the address of Agora Contract to {Register_Authorities}.</p>
+
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>Name</td>
+        <td>string</td>
+        <td>Name of the {API_Register} contract</td>
+        </tr><tr>
+        <td>agora</td>
+        <td>address</td>
+        <td>Address of Agora contract </td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Add_Authority - read </h6>
+
+            <p>Add an account address to {Register_Authorities}</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>authority</td>
+        <td>address</td>
+        <td>address to add to the {Register_Authorities} </td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Add_Contract - read </h6>
+
+            <p>Add a third party smart contract to the API (it's address is added to {Contract} mapping and {List_Contracts} list)</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>contract_address</td>
+        <td>address</td>
+        <td>Address of the third party smart contract to add to the API</td>
+        </tr><tr>
+        <td>name</td>
+        <td>bytes</td>
+        <td>Name of the smart contract.</td>
+        </tr><tr>
+        <td>description</td>
+        <td>bytes</td>
+        <td>Text describing the smart contract and justifying it's add to the API. Can be a hash</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Add_Function - read </h6>
+
+            <p>Add a third party smart contract's function to the list of functions callable via the API.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>contract_address</td>
+        <td>address</td>
+        <td>Address of the third party smart contract.</td>
+        </tr><tr>
+        <td>function_selector</td>
+        <td>bytes4</td>
+        <td>Function selector of the function</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Constitution_Address - read </h6>
+
+            <p><strong>**Add Documentation for the method here**</strong></p>
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>address</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Contracts - read </h6>
+
+            <p><strong>**Add Documentation for the method here**</strong></p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>address</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>Name</td>
+        <td>bytes</td>
+        <td></td>
+        </tr><tr>
+        <td>Description</td>
+        <td>bytes</td>
+        <td></td>
+        </tr><tr>
+        <td>Timestamps</td>
+        <td>uint256</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Execute_Function - read </h6>
+
+            <p>Make a call to a function of a third party smart contract belonging to the API</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>contract_address</td>
+        <td>address</td>
+        <td>Address of the third party smart contract </td>
+        </tr><tr>
+        <td>data</td>
+        <td>bytes</td>
+        <td>Data corresponding to the function call. It's a bytes 
+composed by the function selector + encoded parameters. It correspond to
+ the field {data} of a transaction.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Get_Authorities - read </h6>
+
+            <p>Getter for {Register_Authorities}</p>
+
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>bytes32[]</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Get_Contract_List_Functions - read </h6>
+
+            <p>Get the list of all function selector of a contract registered in the API.</p>
+
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>contract_address</td>
+        <td>address</td>
+        <td>Address of the contract</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>list_functions</td>
+        <td>bytes4[]</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Get_Functions_By_Selector - read </h6>
+
+            <p>Get the receipts of all call to a function of a contract 
+registered in the API. It also returns the index of the function 
+selector in the contract structure's {List_Functions} array.</p>
+
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>contract_address</td>
+        <td>address</td>
+        <td>Address of the contract</td>
+        </tr><tr>
+        <td>function_selector</td>
+        <td>bytes4</td>
+        <td>Function selector of the function</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>index</td>
+        <td>uint256</td>
+        <td></td>
+        </tr><tr>
+        <td>receipts</td>
+        <td>tuple[]</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Get_List_Contract - read </h6>
+
+            <p>Get the list of all third party smart contract registered in the API.</p>
+
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>list_contracts</td>
+        <td>bytes32[]</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Name - read </h6>
+
+            <p>The function Allows to change the Name of the Institution. The function is only callable by the {Constitution_Address}</p>
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>string</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Remove_Authority - read </h6>
+
+            <p>Removes an account address from the {Register_Authorities}</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>authority</td>
+        <td>address</td>
+        <td>address to remove from the {Register_Authorities} </td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Remove_Contract - read </h6>
+
+            <p>Remove a third party smart contract from the API</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>contract_address</td>
+        <td>address</td>
+        <td>Address of the third party smart contract to remove from the API</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Remove_Function - read </h6>
+
+            <p>Remove a function from the list of third party smart contract's functions callable via the API</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>contract_address</td>
+        <td>address</td>
+        <td>Address of the third party smart contract.</td>
+        </tr><tr>
+        <td>function_selector</td>
+        <td>bytes4</td>
+        <td>Function selector of the function to remove.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Set_Constitution - read </h6>
+
+            <p>The function Allows to change the Constitution contract 
+the current Institution obey to. The function is only callable by the 
+{Constitution_Address}</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>new_constitution</td>
+        <td>address</td>
+        <td>Address of the new Constitution contract.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Set_Name - read </h6>
+
+            <p>The function Allows to change the Name of the Institution. The function is only callable by the {Constitution_Address}</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>name</td>
+        <td>string</td>
+        <td>New name of the Institution.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Set_Param - read </h6>
+
+            <p>Modify the name and description of third party contract registered in the API</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>contract_address</td>
+        <td>address</td>
+        <td>Address of the third party smart contract.</td>
+        </tr><tr>
+        <td>name</td>
+        <td>bytes</td>
+        <td>New name of the contract.</td>
+        </tr><tr>
+        <td>description</td>
+        <td>bytes</td>
+        <td>New description of the contract</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Type_Institution - read </h6>
+
+            <p><strong>**Add Documentation for the method here**</strong></p>
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>uint8</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+    
+    </div>
+
+  
+  
+</body></html>

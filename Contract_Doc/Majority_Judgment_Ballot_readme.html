@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="description" content="Web site created with EthDoc">
+  <link rel="stylesheet" href="Majority_Judgment_Ballot_readme_fichiers/bootstrap.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  </head>
+  <body>
+      
+    <style>
+        #ethdoc-viewer{
+            font-size: 0.8em;
+            padding: 1em;
+        }
+        #ethdoc-viewer .lead{
+            font-size: 1em;
+        }
+        #ethdoc-viewer table {
+            width: 50%;
+        }
+        #ethdoc-viewer hr {
+            margin: 0;
+            margin-bottom: 0.5rem;
+        }
+        #ethdoc-viewer p{
+            margin-bottom: 0.5rem;
+        }
+    </style>
+
+    <div id="ethdoc-viewer">
+    
+        
+    <h3>Majority_Judgment_Ballot </h3>
+
+    
+
+    
+
+    <p><strong>Functions</strong></p>
+
+
+        
+          <hr>
+            <h6>Ballots - read </h6>
+
+            <p><strong>**Add Documentation for the method here**</strong></p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>bytes32</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>Voters_Register_Address</td>
+        <td>address</td>
+        <td></td>
+        </tr><tr>
+        <td>Check_Voter_Selector</td>
+        <td>bytes4</td>
+        <td></td>
+        </tr><tr>
+        <td>Status</td>
+        <td>uint8</td>
+        <td></td>
+        </tr><tr>
+        <td>Creation_Timestamp</td>
+        <td>uint256</td>
+        <td></td>
+        </tr><tr>
+        <td>End_Vote_Timestamp</td>
+        <td>uint256</td>
+        <td></td>
+        </tr><tr>
+        <td>Vote_Duration</td>
+        <td>uint256</td>
+        <td></td>
+        </tr><tr>
+        <td>Vote_Validation_Duration</td>
+        <td>uint256</td>
+        <td></td>
+        </tr><tr>
+        <td>Propositions_Number</td>
+        <td>uint256</td>
+        <td></td>
+        </tr><tr>
+        <td>Max_Winning_Propositions_Number</td>
+        <td>uint256</td>
+        <td></td>
+        </tr><tr>
+        <td>Voter_Number</td>
+        <td>uint256</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Create_Ballot - read </h6>
+
+            <p>See {IVote} interface.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>key</td>
+        <td>bytes32</td>
+        <td></td>
+        </tr><tr>
+        <td>Voters_Register_Address</td>
+        <td>address</td>
+        <td></td>
+        </tr><tr>
+        <td>Check_Voter_Selector</td>
+        <td>bytes4</td>
+        <td></td>
+        </tr><tr>
+        <td>Vote_Duration</td>
+        <td>uint256</td>
+        <td></td>
+        </tr><tr>
+        <td>Vote_Validation_Duration</td>
+        <td>uint256</td>
+        <td></td>
+        </tr><tr>
+        <td>Propositions_Number</td>
+        <td>uint256</td>
+        <td></td>
+        </tr><tr>
+        <td>Max_Winning_Propositions_Number</td>
+        <td>uint256</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>End_Validation_Vote - read </h6>
+
+            <p>See {IVote} interface.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>key</td>
+        <td>bytes32</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>End_Vote - read </h6>
+
+            <p>See {IVote} interface.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>key</td>
+        <td>bytes32</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Get_Propositions_Result - read </h6>
+
+            <p>Get the score obtained by a proposition</p>
+
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>key</td>
+        <td>bytes32</td>
+        <td>Id of the voting session</td>
+        </tr><tr>
+        <td>proposition_Id</td>
+        <td>uint256</td>
+        <td>Index of the proposition</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>proposition_result</td>
+        <td>tuple</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Get_Voter_Number - read </h6>
+
+            <p>See {IVote} interface</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>key</td>
+        <td>bytes32</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>voter_num</td>
+        <td>uint256</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Get_Winning_Proposition_byId - read </h6>
+
+            <p>See {IVote} interface</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>key</td>
+        <td>bytes32</td>
+        <td></td>
+        </tr><tr>
+        <td>Id</td>
+        <td>uint256</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>Winning_Proposition</td>
+        <td>uint256</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Get_Winning_Propositions - read </h6>
+
+            <p>See {IVote} interface</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>key</td>
+        <td>bytes32</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>Winning_Propositions_List</td>
+        <td>uint256[]</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>HasValidated - read </h6>
+
+            <p>See {IVote} interface</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>key</td>
+        <td>bytes32</td>
+        <td></td>
+        </tr><tr>
+        <td>voter_address</td>
+        <td>address</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>Validated</td>
+        <td>bool</td>
+        <td></td>
+        </tr><tr>
+        <td>Choice</td>
+        <td>bytes32</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>HasVoted - read </h6>
+
+            <p>See {IVote} interface</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>key</td>
+        <td>bytes32</td>
+        <td></td>
+        </tr><tr>
+        <td>voter_address</td>
+        <td>address</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>hasvoted</td>
+        <td>bool</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Valdiate_Vote - read </h6>
+
+            <p>See {IVote} interface.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>key</td>
+        <td>bytes32</td>
+        <td></td>
+        </tr><tr>
+        <td>Choices</td>
+        <td>uint256[]</td>
+        <td></td>
+        </tr><tr>
+        <td>salt</td>
+        <td>bytes32</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Vote_Clear - read </h6>
+
+            <p>See {IVote} interface.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>key</td>
+        <td>bytes32</td>
+        <td></td>
+        </tr><tr>
+        <td>Choices</td>
+        <td>uint256[]</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Vote_Hashed - read </h6>
+
+            <p>See {IVote} interface.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>key</td>
+        <td>bytes32</td>
+        <td></td>
+        </tr><tr>
+        <td>Hash</td>
+        <td>bytes32</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+    
+    </div>
+
+  
+  
+</body></html>

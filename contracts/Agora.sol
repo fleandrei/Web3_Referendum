@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
-
-/*import "Initiative_Legislative_lib.sol";
+/*
+import "Initiative_Legislative_lib.sol";
 import "Citizens_Register.sol";
 import "IVote.sol";
 */
@@ -10,18 +10,12 @@ import "contracts/Initiative_Legislative_lib.sol";
 import "contracts/Citizens_Register.sol";
 import "contracts/IVote.sol";
 
-//import "Constitution.sol";
 
-interface IConstitution_Agora{
-    function Get_Register_Parameter(address register) external view returns(uint,uint);
-    function Get_Register_Referendum_Parameters(address register) external view returns(uint[7] memory Uint256_Arg, uint16 Assembly_Max_Members, uint8[7] memory Uint8_Arg, address OffChain_Vote_Delegation, address Assembly_Associated_Delegation);
-    //function Get_Register(address register) external view returns(Register_Parameters memory);
-}
 
 /**
  * @notice In the ancient Greece the Agora was the public place where the population used to gather and which  was the center of social, economic and political life of the city. Etymologically, Agora means «gathering place», «Assembly». 
  * In a Web3 Direct Democracy project, the Agora is the contract used to implement direct democracy via a legislative referendum of people initiative.
- * @dev There is a single Agora contract in a Web3 Direct Democracy and all citizens can take part in it's democratic process.
+ * There is a single Agora contract in a Web3 Direct Democracy and all citizens can take part in it's democratic process.
 */
 contract Agora is Institution{
     using EnumerableSet for EnumerableSet.AddressSet;
@@ -36,28 +30,6 @@ contract Agora is Institution{
         REJECTED
     }
     
-    /*struct Referendum_Parameters{
-        uint Petition_Duration;
-         uint Vote_Duration;
-         uint Vote_Checking_Duration;
-         uint Helper_Max_Duration;
-         uint Law_Initialisation_Price;
-         uint FunctionCall_Price;
-         uint Helper_Amount_Escrow;
-         uint16 Assembly_Max_Members;
-         
-         uint8 Required_Petition_Rate;
-         uint8 Representatives_Rates;
-         uint8 Voters_Reward_Rate;
-         uint8 Helper_Reward_Rate;
-         uint8 Assembly_Voluteer_Reward_Rate;
-         //uint8 OffChain_Delegation_Reward;
-         uint8 Vote_Type;
-         //address OffChain_Vote_Delegation;   
-         address Assembly_Associated_Delegation;
-         address Ivote_address;
-    }*/
-    
     struct Referendum_Parameters{
         uint Petition_Duration;
          uint Vote_Duration;
@@ -66,8 +38,6 @@ contract Agora is Institution{
          uint FunctionCall_Price;
 
          uint16 Required_Petition_Rate;
-         //uint8 Voters_Reward_Rate;
-         //uint8 Helper_Reward_Rate;
          address Ivote_address;
     }
     
@@ -79,7 +49,6 @@ contract Agora is Institution{
     }
     
     struct Referendum{
-        //EnumerableSet.AddressSet Assembly_Volunteer;
         uint Token_Amount_Consummed;
         uint Petition_Counter;
         uint Version;
@@ -127,7 +96,11 @@ contract Agora is Institution{
     Citizens_Register Citizens;
     
     
-    
+    /**
+     * @param Name Name of the Agora contract
+     * @param token_address Address of the {DemoCoin} contract of the Web3 Direct Democracy project
+     * @param citizen_address Address of the {Citizens_Register} contract of the Web3 Direct Democracy project
+     */ 
     constructor(string memory Name, address token_address, address citizen_address)Institution(Name){
         Type_Institution =Institution_Type.AGORA;
 
@@ -144,12 +117,10 @@ contract Agora is Institution{
     */
     function Add_Law_Project(address register_address, bytes calldata Title, bytes calldata Description)external Citizen_Only{
        
-        //_Update_Register_Referendum(register_address);
         uint version = Referendums_Registers[register_address].Last_Version;
         require(version!=0, "Register unknown");
         uint Law_Initialisation_Price = Referendums_Registers[register_address].Parameters_Versions[version].Law_Initialisation_Price;
-        //uint Description_Max_Size = Registers_Referendums[register_address].Parameters_Versions[version].Description_Max_Size;
-        
+
         /*Token operations AND Size checking*/
         require(Democoin.allowance(msg.sender, address(this)) >= Law_Initialisation_Price, "Increase Token Allowance");
         
@@ -212,7 +183,7 @@ contract Agora is Institution{
     }
     
     /** 
-     * @dev Function can be called by a citizen to modify a proposition that he has already created (He have to be the author of the proposition). 
+     * @dev Function can be called by a citizen to add function calls to a proposition that he has already created (He have to be the author of the proposition). 
      * Caller must approve {FunctionCall_Price} multiplied by the number of function call he wants to add to the proposition.
      * @param register_address Address of the register concerned by the referendum project.
      * @param referendum_key Id of the referendum proposition the caller wants to add function calls to. The Id is obtained by hashing the Title with the Description of the law project.
@@ -294,7 +265,6 @@ contract Agora is Institution{
     */
     function End_Vote(address register_address, bytes32 referendum_key)external Citizen_Only{
         uint version = Referendums[referendum_key].Version;
-        //require(version!=0,"No existing Referendum Project");
         require(Referendums_Registers[register_address].Last_Version!=0,"Register unknown");
         require(Referendums[referendum_key].Referendum_Status == Status.VOTE, "Not at VOTE status");
         bytes32 ballot_key = keccak256(abi.encodePacked(referendum_key,  Referendums[referendum_key].Start_Vote_Timestamps));
@@ -322,7 +292,6 @@ contract Agora is Institution{
     function Execute_Law(address register_address, bytes32 referendum_key, uint num_function_call_ToExecute)external Citizen_Only nonReentrant{
         require(Referendums_Registers[register_address].Last_Version!=0,"Register unknown");
         require(Referendums[referendum_key].Referendum_Status ==  Status.ADOPTED, "Project Not ADOPTED");
-        //if(Execute_Winning_Proposal(law_project, num_function_call_ToExecute, Delegation_Law_Projects[law_project].Institution_Address)){
         emit Function_Call_Executed( register_address, referendum_key, num_function_call_ToExecute);
         if(List_Law_Project[referendum_key].Execute_Winning_Proposal(num_function_call_ToExecute, register_address)){
             bytes32 ballot_key = keccak256(abi.encodePacked(referendum_key,  Referendums[referendum_key].Start_Vote_Timestamps));
@@ -379,8 +348,6 @@ contract Agora is Institution{
      * @param register_type Type of the new register ({Status} enum)
      */
     function Create_Register_Referendum(address register_address, uint8 register_type) external Constitution_Only {
-        
-        //Registers_Referendums[register_address].Last_Version = 1;
         Referendums_Registers[register_address].Type = Institution_Type(register_type);
     }
     
@@ -393,7 +360,7 @@ contract Agora is Institution{
      * @param Law_Initialisation_Price Amount of DemoCoin token to pay to submit a new Referendum proposition.
      * @param FunctionCall_Price Amount of DemoCoin token to pay for each new function call of a function call corpus proposal submission.
      * @param Required_Petition_Rate The minimum ratio of citizens signatures required to submit the referendum proposition as a referendum to all citizens.
-     * @param Ivote_address Address of the IVote contract used in the voting and validation stage (see later in the Vote sub-section)
+     * @param Ivote_address Address of the IVote contract used in the voting and validation stage
      */
     function Update_Register_Referendum_Parameters(address register_address, uint Petition_Duration, uint Vote_Duration, uint Vote_Checking_Duration, uint Law_Initialisation_Price, uint FunctionCall_Price, uint16 Required_Petition_Rate, address Ivote_address) external Constitution_Only{
         
@@ -412,36 +379,6 @@ contract Agora is Institution{
         
         emit Referendum_Parameters_Updated( register_address,  new_version);
     }
-    
-    /*function Update_Register_Referendum_Parameters(address register_address, uint[7] memory Uint256_Arg, uint16 Assembly_Max_Members, uint8[6] memory Uint8_Arg, address Assembly_Associated_Delegation, address Ivote_address) external Constitution_Only{
-        uint new_version = Referendums_Registers[register_address].Last_Version.add(1);
-        Referendums_Registers[register_address].Parameters_Versions[new_version].Petition_Duration= Uint256_Arg[0];
-        Referendums_Registers[register_address].Parameters_Versions[new_version].Vote_Duration = Uint256_Arg[1];
-        Referendums_Registers[register_address].Parameters_Versions[new_version].Vote_Checking_Duration = Uint256_Arg[2];
-        //Referendums_Registers[register_address].Parameters_Versions[new_version].Helper_Max_Duration = Uint256_Arg[3];
-        Referendums_Registers[register_address].Parameters_Versions[new_version].Law_Initialisation_Price = Uint256_Arg[4];
-        Referendums_Registers[register_address].Parameters_Versions[new_version].FunctionCall_Price = Uint256_Arg[5];
-        //Referendums_Registers[register_address].Parameters_Versions[new_version].Helper_Amount_Escrow = Uint256_Arg[6];
-        
-        //Referendums_Registers[register_address].Parameters_Versions[new_version].Assembly_Max_Members = Assembly_Max_Members;
-        
-        Referendums_Registers[register_address].Parameters_Versions[new_version].Required_Petition_Rate = Uint8_Arg[0];
-        //Referendums_Registers[register_address].Parameters_Versions[new_version].Representatives_Rates = Uint8_Arg[1];
-        //Referendums_Registers[register_address].Parameters_Versions[new_version].Voters_Reward_Rate = Uint8_Arg[2];
-        //Referendums_Registers[register_address].Parameters_Versions[new_version].Helper_Reward_Rate = Uint8_Arg[3];
-        //Referendums_Registers[register_address].Parameters_Versions[new_version].Assembly_Voluteer_Reward_Rate = Uint8_Arg[4];
-        //Referendums_Registers[register_address].Parameters_Versions[new_version].OffChain_Delegation_Reward = Uint8_Arg[5];
-        //Referendums_Registers[register_address].Parameters_Versions[new_version].Vote_Type = Uint8_Arg[5];
-        
-        //Referendums_Registers[register_address].Parameters_Versions[new_version].Assembly_Associated_Delegation = Assembly_Associated_Delegation;
-        Referendums_Registers[register_address].Parameters_Versions[new_version].Ivote_address; Ivote_address;
-        
-        Referendums_Registers[register_address].Last_Version = new_version;
-        
-        emit Referendum_Parameters_Updated( register_address,  new_version);
-    }*/
-    
-    
     
     
     
@@ -496,9 +433,5 @@ contract Agora is Institution{
         return(List_Law_Project[key].Winning_Proposal, List_Law_Project[key].Function_Call_Receipts);
     }
     
-    /*TEMP*/
-    /*function Set_Constitution(address consti)external{
-        Constitution_Address = consti;
-        Constitution_Interface = IConstitution_Agora(consti);
-    }*/
+    
 }

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 /** 
-    @dev IDelegation is an interface for contracts that implement a governance system in which a group of elected accounts is allowed to rule one or more controled registers contract. 
+    @notice IDelegation is an interface for contracts that implement a governance system in which a group of elected accounts is allowed to rule one or more controled registers contract. 
     It allows to implement a repesentativ democracy system in which representatives (delegation members) mandate and decisions can be canceled via direct democracy.
     Delegation.sol contract is an implementation of this interface.
     By implementing this interface you can develop your own custom Delegations and plug them into a DAO project via the Constitution contract.

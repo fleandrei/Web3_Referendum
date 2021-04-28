@@ -17,7 +17,7 @@ import "contracts/DemoCoin.sol";
 
 
 /** 
- * @dev This abstract contract is inherited by almost all contracts of "Web3 Direct Democracy" (except "DemoCoin" token and ballot contracts inheriting from "IVote" interface). 
+ * @notice This abstract contract is inherited by almost all contracts of "Web3 Direct Democracy" (except "DemoCoin" token and ballot contracts inheriting from "IVote" interface). 
  * It gathers some common features such as constitution address handling.
 */
 abstract contract Institution is ReentrancyGuard{

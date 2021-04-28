@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/utils/EnumerableSet.sol";
 
 
 /**
- *  It's an ERC20 token used for submiting referendum propositions and rewarding voters of a Web3 Direct Democracy DAO. 
+ * It's an ERC20 token used for submiting referendum propositions and rewarding voters of a Web3 Direct Democracy DAO. 
  * It offers features for handling address that are allowed to mint and burn tokens.
  */
 

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 /** 
- * @dev IVote is an interface for contracts that implements a voting system. IVote contract should allow voters to chose M Winning Propositions among N Candidates Propositions (M<N). 
+ * @notice IVote is an interface for contracts that implements a voting system. IVote contract should allow voters to chose M Winning Propositions among N Candidates Propositions (M<N). 
  * Propositions are represented by numbers going from 1 to N. 0 proposition is the default proposition and represent the blank vote. 
  * Voting choices can be clear or hashed with a bytes32 salt in order to prevent voters that hasn't voted yet from being influenced by oders voter's voting choices. 
  * If votes are hashed, voters should validate their vote after the voting period is over, by submiting their clear voting choice with the corresponding salt.

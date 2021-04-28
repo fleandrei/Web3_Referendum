@@ -3,20 +3,18 @@ pragma solidity ^0.8.0;
 
 import "contracts/Register.sol";
 //import "Register.sol";
+
+
+
 /**
  * @notice Contract registering written laws. 
- * @dev Laws can be edited (add, remove) by address contained in {Register_Authorities} list (Defined in the "Register" inherited contract)
+ * Laws can be edited (add, remove) by address contained in {Register_Authorities} list (Defined in the "Register" inherited contract)
  * 
  * */
  contract Loi is Register{
     using EnumerableSet for EnumerableSet.AddressSet;
     using EnumerableSet for EnumerableSet.Bytes32Set;
-    
-    /*struct Clear_Article{
-        string Title;
-        string Content;
-        uint Timestamp;
-    }*/
+
     
     struct Article{
         bytes Title;
@@ -39,8 +37,7 @@ import "contracts/Register.sol";
     event Law_Removed(bytes title);
     
     /*State*/
-    //mapping(bytes32=>Clear_Article) public Claire_Articles;
-    
+
     /**
      * @dev Mapping of All registered in the contract (No matter which Law they belong to). The key is the keccak256 hash of it's Title and Content field. 
      * */
@@ -59,7 +56,7 @@ import "contracts/Register.sol";
     
     /**
      * @dev Add the address of Agora Contract to {Register_Authorities}.
-     * 
+     * @param Name Name of the {Loi} contract
      * @param agora Address of Agora contract
      * */
     constructor(string memory Name, address agora) Register(Name){
@@ -179,11 +176,6 @@ import "contracts/Register.sol";
         emit Law_Removed(law);
     }
     
-    /*function Check_Function_Call(bytes memory Data) public override view returns(bool){
-        
-    }*/
-    
-    
     
     /*GETTERS*/
     /*function Get_Number_of_Law() external view returns(uint){
@@ -217,6 +209,6 @@ import "contracts/Register.sol";
     function Get_Law_Info(bytes calldata law) external view returns(bytes memory description, uint timestamp){
         return (Lois[law].Description, Lois[law].Timestamp);
     }
-    
+
     
 }

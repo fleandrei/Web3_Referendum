@@ -8,7 +8,7 @@ import "contracts/Register.sol";
 
 /**
  * @notice Contract registering an API of third party contract functions callable via Web3 Direct Democracy democratic process. 
- * @dev API functions can be edited (add, remove) and executed by address contained in {Register_Authorities} list (Defined in the "Register" inherited contract)
+ * API functions can be edited (add, remove) and executed by address contained in {Register_Authorities} list (Defined in the "Register" inherited contract)
  * 
  * */
  contract API_Register is Register{
@@ -58,6 +58,12 @@ import "contracts/Register.sol";
     
     /*Register API functions. Callable by Register_Authorities contracts*/
     
+    /** 
+     * @dev Add a third party smart contract to the API (it's address is added to {Contract} mapping and {List_Contracts} list)
+     * @param contract_address Address of the third party smart contract to add to the API
+     * @param name Name of the smart contract.
+     * @param description Text describing the smart contract and justifying it's add to the API. Can be a hash
+    */ 
     function Add_Contract(address contract_address, bytes calldata name, bytes calldata description)external Register_Authorities_Only{
         //require(contract_address!=address(0), "Contract address null");
         require(Contracts[contract_address].Timestamps==0, "Already created contract");
@@ -69,6 +75,12 @@ import "contracts/Register.sol";
         emit Contract_Created(contract_address);
     }
     
+     
+    /** 
+     * @dev Add a third party smart contract's function to the list of functions callable via the API.
+     * @param contract_address Address of the third party smart contract.
+     * @param function_selector Function selector of the function
+    */
     function Add_Function(address contract_address, bytes4 function_selector)external Register_Authorities_Only{
         //require(function_selector!=bytes4(0), "function selector null");
         require(Contracts[contract_address].Callables_functions[function_selector].Index==0, "function already registered");
@@ -79,6 +91,12 @@ import "contracts/Register.sol";
         emit Function_Added(contract_address, function_selector);
     }
     
+     /** 
+     * @dev Modify the name and description of third party contract registered in the API
+     * @param contract_address Address of the third party smart contract.
+     * @param name New name of the contract.
+     * @param description New description of the contract
+    */
     function Set_Param(address contract_address, bytes calldata name, bytes calldata description)external Register_Authorities_Only{
         require(Contracts[contract_address].Timestamps!=0, "Not registered contract");
         Contracts[contract_address].Name=name;
@@ -87,6 +105,11 @@ import "contracts/Register.sol";
         emit Contract_param_Changed(contract_address);
     }
     
+    /** 
+     * @dev Remove a function from the list of third party smart contract's functions callable via the API
+     * @param contract_address Address of the third party smart contract.
+     * @param function_selector Function selector of the function to remove.
+    */
     function Remove_Function(address contract_address, bytes4 function_selector)external Register_Authorities_Only{
         uint valueIndex = Contracts[contract_address].Callables_functions[function_selector].Index;
         require(valueIndex!=0, "function not registered");
@@ -106,7 +129,10 @@ import "contracts/Register.sol";
     }
     
     
-    
+    /** 
+     * @dev Remove a third party smart contract from the API
+     * @param contract_address Address of the third party smart contract to remove from the API
+    */
     function Remove_Contract(address contract_address)external Register_Authorities_Only{
         require(Contracts[contract_address].Timestamps!=0, "Not registered contract");
         
@@ -124,6 +150,11 @@ import "contracts/Register.sol";
         emit Contract_Removed(contract_address);
     }
     
+    /** 
+     * @dev Make a call to a function of a third party smart contract belonging to the API
+     * @param contract_address Address of the third party smart contract 
+     * @param data Data corresponding to the function call. It's a bytes composed by the function selector + encoded parameters. It correspond to the field {data} of a transaction.
+    */
     function Execute_Function(address contract_address, bytes memory data)external Register_Authorities_Only nonReentrant{
         bytes4 selector= (bytes4(data[0]) | bytes4(data[1]) >> 8 |
             bytes4(data[2]) >> 16 | bytes4(data[3]) >> 24);//= bytes4(data);
@@ -139,18 +170,32 @@ import "contracts/Register.sol";
         emit Function_Executed(contract_address, selector);
     }
     
-    
    /*GETTER*/
     
+    /** 
+     * @dev Get the list of all third party smart contract registered in the API.
+     * @return list_contracts
+    */
     function Get_List_Contract() external view returns(bytes32[] memory list_contracts){
         list_contracts = List_Contracts._inner._values;
     }
     
-    
+     /** 
+     * @dev Get the list of all function selector of a contract registered in the API.
+     * @param contract_address Address of the contract
+     * @return list_functions
+    */
     function Get_Contract_List_Functions(address contract_address) external view returns(bytes4[] memory list_functions){
         list_functions = Contracts[contract_address].List_Functions;
     }
     
+     /** 
+     * @dev Get the receipts of all call to a function of a contract registered in the API. It also returns the index of the function selector in the contract structure's {List_Functions} array.
+     * @param contract_address Address of the contract
+     * @param function_selector Function selector of the function
+     * @return index
+     * @return receipts
+    */
     function Get_Functions_By_Selector(address contract_address, bytes4 function_selector) external view returns(uint index, Receipt[] memory receipts){
         index = Contracts[contract_address].Callables_functions[function_selector].Index;
         receipts = Contracts[contract_address].Callables_functions[function_selector].FunctionCall_receipts;

@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="description" content="Web site created with EthDoc">
+  <link rel="stylesheet" href="Agora_readme_fichiers/bootstrap.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  </head>
+  <body>
+      
+    <style>
+        #ethdoc-viewer{
+            font-size: 0.8em;
+            padding: 1em;
+        }
+        #ethdoc-viewer .lead{
+            font-size: 1em;
+        }
+        #ethdoc-viewer table {
+            width: 50%;
+        }
+        #ethdoc-viewer hr {
+            margin: 0;
+            margin-bottom: 0.5rem;
+        }
+        #ethdoc-viewer p{
+            margin-bottom: 0.5rem;
+        }
+    </style>
+
+    <div id="ethdoc-viewer">
+    
+        
+    <h3>Agora </h3>
+
+    <p class="lead">In the ancient Greece the Agora was the public place
+ where the population used to gather and which  was the center of 
+social, economic and political life of the city. Etymologically, Agora 
+means «gathering place», «Assembly».  In a Web3 Direct Democracy 
+project, the Agora is the contract used to implement direct democracy 
+via a legislative referendum of people initiative. There is a single 
+Agora contract in a Web3 Direct Democracy and all citizens can take part
+ in it's democratic process.</p>
+
+    
+
+    <p><strong>Functions</strong></p>
+
+
+        
+          <hr>
+            <h6>constructor - read </h6>
+
+            
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>Name</td>
+        <td>string</td>
+        <td>Name of the Agora contract</td>
+        </tr><tr>
+        <td>token_address</td>
+        <td>address</td>
+        <td>Address of the {DemoCoin} contract of the Web3 Direct Democracy project</td>
+        </tr><tr>
+        <td>citizen_address</td>
+        <td>address</td>
+        <td>Address of the {Citizens_Register} contract of the Web3 Direct Democracy project</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Add_Item - read </h6>
+
+            <p>Function can be called by a citizen to add function calls
+ to a proposition that he has already created (He have to be the author 
+of the proposition).  Caller must approve {FunctionCall_Price} 
+multiplied by the number of function call he wants to add to the 
+proposition.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>register_address</td>
+        <td>address</td>
+        <td>Address of the register concerned by the referendum project.</td>
+        </tr><tr>
+        <td>referendum_key</td>
+        <td>bytes32</td>
+        <td>Id of the referendum proposition the caller wants to add 
+function calls to. The Id is obtained by hashing the Title with the 
+Description of the law project.</td>
+        </tr><tr>
+        <td>Proposal</td>
+        <td>uint256</td>
+        <td>Proposition Id to modify.</td>
+        </tr><tr>
+        <td>New_Items</td>
+        <td>bytes[]</td>
+        <td>Array of new function calls to add to the Proposition.</td>
+        </tr><tr>
+        <td>Indexs</td>
+        <td>uint256[]</td>
+        <td>array of Proposition's function call list indexs to inser 
+new function call (contained in {New_Items}) to. {New_Items} and 
+{Indexs} have the same length.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Add_Law_Project - read </h6>
+
+            <p>Function can be called by any citizen to submit a new law
+ project. Caller must approve {Law_Initialisation_Price} DemoCoin token 
+for Agora contract</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>register_address</td>
+        <td>address</td>
+        <td>Address of the register contract the law proposition is about. The address must be contained in Referendums_Registers mapping.</td>
+        </tr><tr>
+        <td>Title</td>
+        <td>bytes</td>
+        <td>Title of the Referendum Proposition. Can be an hash.</td>
+        </tr><tr>
+        <td>Description</td>
+        <td>bytes</td>
+        <td>Text explaining the spirit and generals goals of the referendum proposition. Can be an hash.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Add_Proposal - read </h6>
+
+            <p>Function can be called by a citizen to submit a corpus of
+ function calls propositions to an existing pending law project. Caller 
+must approve {FunctionCall_Price} DemoCoin Token multiplied by the 
+number of function call contained in the proposition, token for 
+Delegation contract.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>register_address</td>
+        <td>address</td>
+        <td>Address of the register concerned by the referendum project.</td>
+        </tr><tr>
+        <td>referendum_key</td>
+        <td>bytes32</td>
+        <td>Id of the referendum proposition the caller wants to add a 
+proposition to. The Id is obtained by hashing the Title with the 
+Description of the referendum proposition.</td>
+        </tr><tr>
+        <td>Parent</td>
+        <td>uint256</td>
+        <td>Id of the parent proposition the caller wants to attach his 
+proposition to. It's the parent proposition in the proposal tree. If 
+there isn't any proposition in the tree we want to attach the new 
+proposition to, we set Parent to 0</td>
+        </tr><tr>
+        <td>Parent_Proposals_Reuse</td>
+        <td>uint256[]</td>
+        <td>List of Parent's function calls index we want to reuse in 
+the new proposition. Function calls are ordered in the order we want 
+them to be executed. 0 elements correspond to new function calls that 
+have to be added by the caller in {New_Function_Call} argument.</td>
+        </tr><tr>
+        <td>New_Function_Call</td>
+        <td>bytes[]</td>
+        <td>List of new function calls added by the caller. For each 
+element of the New_Function_Call array, caller must set a 0 element in 
+{Parent_Proposals_Reuse} array at the index he want the custom function 
+call to be positioned </td>
+        </tr><tr>
+        <td>Description</td>
+        <td>bytes</td>
+        <td>Text to justify the new proposal. Can be an hash.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Constitution_Address - read </h6>
+
+            <p><strong>**Add Documentation for the method here**</strong></p>
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>address</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Create_Register_Referendum - read </h6>
+
+            <p>Add a new register under Agora's control. Register's address is added as a {Referendum_Register} struct.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>register_address</td>
+        <td>address</td>
+        <td>Address of the register contract to add </td>
+        </tr><tr>
+        <td>register_type</td>
+        <td>uint8</td>
+        <td>Type of the new register ({Status} enum)</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>End_Proposition_Stage - read </h6>
+
+            <p>Function can be called by any citizen to end the 
+proposition stage if it's finished. If there are enough signatures then 
+we pass to the Voting stage, else the referendum proposition is aborted.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>register_address</td>
+        <td>address</td>
+        <td>Address of the register contract the Referendum proposition 
+is about. The address must be contained in Referendums_Registers 
+mapping.</td>
+        </tr><tr>
+        <td>referendum_key</td>
+        <td>bytes32</td>
+        <td>Id of the referendum proposition. </td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>End_Vote - read </h6>
+
+            <p>Function can be called by any citizen to end the voting 
+stage if it's finished. If the winning proposal id is &gt;0 then the 
+proposal is adopted and can be executed, else if the default proposition
+ is chosen, the referendum proposition is rejected.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>register_address</td>
+        <td>address</td>
+        <td>Address of the register contract the Referendum proposition is about.</td>
+        </tr><tr>
+        <td>referendum_key</td>
+        <td>bytes32</td>
+        <td>Id of the referendum proposition. </td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Execute_Law - read </h6>
+
+            <p>Once the referendum proposition has been adopted (ADOPTED
+ value of {Status} enum) then any citizen can call this function to 
+execute all or some of the remaining function call of the winning 
+proposition.  For the Referendum proposition to be fully executed all 
+function call have to be executed.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>register_address</td>
+        <td>address</td>
+        <td>Address of the register contract the Referendum proposition is about.</td>
+        </tr><tr>
+        <td>referendum_key</td>
+        <td>bytes32</td>
+        <td>Id of the referendum proposition. </td>
+        </tr><tr>
+        <td>num_function_call_ToExecute</td>
+        <td>uint256</td>
+        <td>Number of function calls to execute.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Get_Law_Results - read </h6>
+
+            <p>Get results of a Referendum proposition.</p>
+
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>key</td>
+        <td>bytes32</td>
+        <td>Id of the law project tha contains the proposal</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>Winning_Proposal</td>
+        <td>uint256</td>
+        <td></td>
+        </tr><tr>
+        <td>Receipts</td>
+        <td>tuple[]</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Get_Proposal - read </h6>
+
+            <p>Get informations about a proposal ({Corpus_Proposal} 
+structure of {Initiative_Legislative_Lib} library) of a law project 
+({Law_Project} structure of {Initiative_Legislative_Lib} library.</p>
+
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>key</td>
+        <td>bytes32</td>
+        <td>Id of the law project tha contains the proposal</td>
+        </tr><tr>
+        <td>id</td>
+        <td>uint256</td>
+        <td>Id of the proposal in the law project</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>description</td>
+        <td>bytes</td>
+        <td></td>
+        </tr><tr>
+        <td>childrens</td>
+        <td>uint256[]</td>
+        <td></td>
+        </tr><tr>
+        <td>function_calls</td>
+        <td>bytes[]</td>
+        <td></td>
+        </tr><tr>
+        <td>func_call_counter</td>
+        <td>uint256</td>
+        <td></td>
+        </tr><tr>
+        <td>parent</td>
+        <td>uint256</td>
+        <td></td>
+        </tr><tr>
+        <td>author</td>
+        <td>address</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Get_Referendum_Register - read </h6>
+
+            <p>Get globals informations about a Register contract ruled 
+by Agora: The last version of Parameters related to the Register 
+contract, it's institution type and the list of referendums (represented
+ by their Ids) that are related to it. </p>
+
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>register_address</td>
+        <td>address</td>
+        <td>Address of the corresponding Register Contract</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>last_version</td>
+        <td>uint256</td>
+        <td></td>
+        </tr><tr>
+        <td>institution_type</td>
+        <td>uint8</td>
+        <td></td>
+        </tr><tr>
+        <td>list_referendums</td>
+        <td>bytes32[]</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Get_Referendum_Register_Parameters - read </h6>
+
+            <p>Get Parameters related to a register Contract ruled by Agora. It return a {Referendum_Parameters} structure</p>
+
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>register_address</td>
+        <td>address</td>
+        <td>Address of the corresponding Register Contract</td>
+        </tr><tr>
+        <td>version</td>
+        <td>uint256</td>
+        <td>Parameters version.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>parameters</td>
+        <td>tuple</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Get_Voter_Reward - read </h6>
+
+            <p>Once the referendum proposition has been executed 
+(EXECUTED value of {status} enum), each citizen that has voted can get 
+his DemoCoin token reward. If proposition proposition had a validation 
+stage, then accounts must have voted AND validated their vote for 
+getting their rewards.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>register_address</td>
+        <td>address</td>
+        <td>Address of the register contract the Referendum proposition is about.</td>
+        </tr><tr>
+        <td>referendum_key</td>
+        <td>bytes32</td>
+        <td>Id of the referendum proposition. </td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>List_Law_Project - read </h6>
+
+            <p><strong>**Add Documentation for the method here**</strong></p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>bytes32</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>Title</td>
+        <td>bytes</td>
+        <td></td>
+        </tr><tr>
+        <td>Description</td>
+        <td>bytes</td>
+        <td></td>
+        </tr><tr>
+        <td>Proposal_Count</td>
+        <td>uint256</td>
+        <td></td>
+        </tr><tr>
+        <td>Winning_Proposal</td>
+        <td>uint256</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Name - read </h6>
+
+            <p>The function Allows to change the Name of the Institution. The function is only callable by the {Constitution_Address}</p>
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>string</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Referendums - read </h6>
+
+            <p><strong>**Add Documentation for the method here**</strong></p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>bytes32</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>Token_Amount_Consummed</td>
+        <td>uint256</td>
+        <td></td>
+        </tr><tr>
+        <td>Petition_Counter</td>
+        <td>uint256</td>
+        <td></td>
+        </tr><tr>
+        <td>Version</td>
+        <td>uint256</td>
+        <td></td>
+        </tr><tr>
+        <td>Creation_Timestamps</td>
+        <td>uint256</td>
+        <td></td>
+        </tr><tr>
+        <td>Start_Vote_Timestamps</td>
+        <td>uint256</td>
+        <td></td>
+        </tr><tr>
+        <td>Voter_Reward</td>
+        <td>uint256</td>
+        <td></td>
+        </tr><tr>
+        <td>Referendum_Status</td>
+        <td>uint8</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Set_Constitution - read </h6>
+
+            <p>The function Allows to change the Constitution contract 
+the current Institution obey to. The function is only callable by the 
+{Constitution_Address}</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>new_constitution</td>
+        <td>address</td>
+        <td>Address of the new Constitution contract.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Set_Name - read </h6>
+
+            <p>The function Allows to change the Name of the Institution. The function is only callable by the {Constitution_Address}</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>name</td>
+        <td>string</td>
+        <td>New name of the Institution.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Sign_Petition - read </h6>
+
+            <p>Function can be called by any citizen to a Referendum 
+proposition petition. A citizen can sign for a specific Referendum 
+proposition only once.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>register_address</td>
+        <td>address</td>
+        <td>Address of the register contract the Referendum proposition 
+is about. The address must be contained in Referendums_Registers 
+mapping.</td>
+        </tr><tr>
+        <td>referendum_key</td>
+        <td>bytes32</td>
+        <td>Id of the referendum proposition the caller wants to sign. 
+The Id is obtained by hashing the Title with the Description of the law 
+project.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Total_Token_To_Redistribute - read </h6>
+
+            <p><strong>**Add Documentation for the method here**</strong></p>
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>uint256</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Type_Institution - read </h6>
+
+            <p><strong>**Add Documentation for the method here**</strong></p>
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td></td>
+        <td>uint8</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>Update_Register_Referendum_Parameters - read </h6>
+
+            <p>Update parameters of referendums related to a specific register. Parameters are registered in a {Referendum_Parameters} struct</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>register_address</td>
+        <td>address</td>
+        <td>Address of the register contract.</td>
+        </tr><tr>
+        <td>Petition_Duration</td>
+        <td>uint256</td>
+        <td>Duration of the proposition/petition stage</td>
+        </tr><tr>
+        <td>Vote_Duration</td>
+        <td>uint256</td>
+        <td>Duration of the validation stage</td>
+        </tr><tr>
+        <td>Vote_Checking_Duration</td>
+        <td>uint256</td>
+        <td></td>
+        </tr><tr>
+        <td>Law_Initialisation_Price</td>
+        <td>uint256</td>
+        <td>Amount of DemoCoin token to pay to submit a new Referendum proposition.</td>
+        </tr><tr>
+        <td>FunctionCall_Price</td>
+        <td>uint256</td>
+        <td>Amount of DemoCoin token to pay for each new function call of a function call corpus proposal submission.</td>
+        </tr><tr>
+        <td>Required_Petition_Rate</td>
+        <td>uint16</td>
+        <td>The minimum ratio of citizens signatures required to submit the referendum proposition as a referendum to all citizens.</td>
+        </tr><tr>
+        <td>Ivote_address</td>
+        <td>address</td>
+        <td>Address of the IVote contract used in the voting and validation stage</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+    
+    </div>
+
+  
+  
+</body></html>

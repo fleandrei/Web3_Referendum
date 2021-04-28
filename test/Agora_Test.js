@@ -304,7 +304,6 @@ contract('TEST: Agora.sol', function(accounts){
 			var project = await Agora_Instance.List_Law_Project(referendum_key);
 			var Total_Token_To_Redistribute = await Agora_Instance.Total_Token_To_Redistribute();
 
-			console.log("Referendums",Referendums);
 
 			expect(referendum_register.list_referendums.includes(referendum_key)).to.equal(true);
 			expect(Referendums.Version).to.be.bignumber.equal(new BN(1));
@@ -312,7 +311,6 @@ contract('TEST: Agora.sol', function(accounts){
 			expect(Referendums.Token_Amount_Consummed).to.be.bignumber.equal(new BN(Law_Initialisation_Price));
 
 			expect(Total_Token_To_Redistribute).to.be.bignumber.equal(new BN(Law_Initialisation_Price));
-
 			expect(project.Title).to.equal(Title);
 			expect(project.Description).to.equal(Description);
 
@@ -362,7 +360,6 @@ contract('TEST: Agora.sol', function(accounts){
 			functioncall_num = chance.natural({min:0,max:functionCall_max});
 			var proposal_arrays = Create_Proposal_Data(functioncall_num, 0, 0, loi, web3);
 
-			console.log("proposal_arrays",proposal_arrays);
 
 			await DemoCoin_Instance.approve(Agora_Instance.address, FunctionCall_Price*functioncall_num, {from:Citizens[1]});
 			await expectRevert(Agora_Instance.Add_Proposal(Loi_instance.address, referendum_key, 1, proposal_arrays.Reuse, proposal_arrays.Functioncalls, proposal_Description, {from:External_Account}), "Citizen Only");
@@ -1022,7 +1019,6 @@ contract('TEST: Agora.sol', function(accounts){
 			var voter_reward = Total_Reward.divn(Citizens.length);
 			var rest = Total_Reward.modn(Citizens.length);
 
-			console.log("Total_Token_To_Redistribute_after",Total_Token_To_Redistribute_after.toNumber(),"\nExtra_token_received:",Extra_token_received,"\nTotal_Reward",Total_Reward.toNumber(),"\n voter_reward",voter_reward.toNumber(),"\n rest:",rest);
 
 			for(var i=0; i<Functioncalls_nbr; i++){
 				var parameters = Proposal_to_execute.function_calls[i].slice(0,2).concat(Proposal_to_execute.function_calls[i].slice(10));//We remove function selector
@@ -1376,11 +1372,7 @@ contract('TEST: Agora.sol', function(accounts){
 			await Ballot_Instance.End_Vote(ballot_key);
 
 			for (var i = 1; i <Citizens.length; i++) {
-				console.log("i",i,"  Citizens_Votes[i]=",Citizens_Votes[i]);
-				console.log("Citizens_Votes[i].Choice=",Citizens_Votes[i].Choice);
-				console.log("Citizens_Votes[i].Salt=",Citizens_Votes[i].Salt,"\nTypeof",typeof Citizens_Votes[i].Salt);
-				console.log("\n Hash de Choice et Salt:",web3.utils.soliditySha3(web3.eth.abi.encodeParameters(["uint[]", "bytes32"],[Citizens_Votes[i].Choice, Citizens_Votes[i].Salt])));
-				console.log("\n Hash of ballot:",await Ballot_Instance.HasValidated(ballot_key, Citizens[i], {from:Citizens[i]}))
+				
 				await Ballot_Instance.Valdiate_Vote(ballot_key, Citizens_Votes[i].Choice, Citizens_Votes[i].Salt, {from:Citizens[i]});
 			}
 

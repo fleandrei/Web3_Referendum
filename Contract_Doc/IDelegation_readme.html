@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="description" content="Web site created with EthDoc">
+  <link rel="stylesheet" href="IDelegation_readme_fichiers/bootstrap.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  </head>
+  <body>
+      
+    <style>
+        #ethdoc-viewer{
+            font-size: 0.8em;
+            padding: 1em;
+        }
+        #ethdoc-viewer .lead{
+            font-size: 1em;
+        }
+        #ethdoc-viewer table {
+            width: 50%;
+        }
+        #ethdoc-viewer hr {
+            margin: 0;
+            margin-bottom: 0.5rem;
+        }
+        #ethdoc-viewer p{
+            margin-bottom: 0.5rem;
+        }
+    </style>
+
+    <div id="ethdoc-viewer">
+    
+        
+    <h3>IDelegation </h3>
+
+    <p class="lead">IDelegation is an interface for contracts that 
+implement a governance system in which a group of elected accounts is 
+allowed to rule one or more controled registers contract.  It allows to 
+implement a repesentativ democracy system in which representatives 
+(delegation members) mandate and decisions can be canceled via direct 
+democracy. Delegation.sol contract is an implementation of this 
+interface. By implementing this interface you can develop your own 
+custom Delegations and plug them into a DAO project via the Constitution
+ contract.</p>
+
+    
+
+    <p><strong>Functions</strong></p>
+
+
+        
+          <hr>
+            <h6>Achiev_Vote - read </h6>
+
+            <p>When the voting period is over, any citizen can call this
+ function to end the voting stage. If the winning proposition is the 
+default proposition is the default one (Proposition 0) the law proejct 
+is aborted. Otherwise, the Law Censoring stage is started.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>law_project</td>
+        <td>bytes32</td>
+        <td>Id of the law project the caller wants to add a proposition 
+to. The Id is obtained by hashing the Title with the Description of the 
+law project.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Add_Controled_Register - read </h6>
+
+            <p>Function used to add a register contract under the control of current delegation. </p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>register_address</td>
+        <td>address</td>
+        <td>Address of the register contract that can now be ruled by current delegation</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Add_Item - read </h6>
+
+            <p>Function can be called by a delegation member to modify a
+ proposition that he has already created (He have to be the author of 
+the proposition).  Caller must approve {FunctionCall_Price} (see 
+{Law_Project_Parameters} struct of {Delegation_Uils library})  
+multiplied by the number of function call he wants to add to the 
+proposition, token for Delegation contract.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>law_project</td>
+        <td>bytes32</td>
+        <td>Id of the law project the caller wants to add a proposition 
+to. The Id is obtained by hashing the Title with the Description of the 
+law project.</td>
+        </tr><tr>
+        <td>Proposal</td>
+        <td>uint256</td>
+        <td>Proposition Id to modify.</td>
+        </tr><tr>
+        <td>New_Items</td>
+        <td>bytes[]</td>
+        <td>Array of new function calls to add to the Proposition.</td>
+        </tr><tr>
+        <td>Indexs</td>
+        <td>uint256[]</td>
+        <td>array of Proposition's function call list indexs to inser 
+new function call (contained in {New_Items}) to. {New_Items} and 
+{Indexs} have the same length.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Add_Law_Project - read </h6>
+
+            <p>Function can be called by a delegation member to submit a
+ new law project. This function put {Law_Initialisation_Price} (see 
+{Law_Project_Parameters} struct of {Delegation_Uils library}) DemoCoin 
+token of Delegation contract in Escrow.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>register_address</td>
+        <td>address</td>
+        <td>Address of the register contract the law project is about. Must be contained in Controled_Registers mapping.</td>
+        </tr><tr>
+        <td>Title</td>
+        <td>bytes</td>
+        <td>Title of the law project. Can be an hash.</td>
+        </tr><tr>
+        <td>Description</td>
+        <td>bytes</td>
+        <td>Text explaining the spirit and generals goals of the law project. Can be an hash.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Add_Proposal - read </h6>
+
+            <p>Function can be called by a delegation member to submit a
+ corpus of function calls propositions to an existing pending law 
+project. This function put in Escrow {FunctionCall_Price} (see 
+{Law_Project_Parameters} struct of {Delegation_Uils library}) DemoCoin 
+token multiplied by the number of function call contained in the 
+proposition.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>law_project</td>
+        <td>bytes32</td>
+        <td>Id of the law project hte caller wants to add a proposition 
+to. The Id is obtained by hashing the Title with the Description of the 
+law project.</td>
+        </tr><tr>
+        <td>Parent</td>
+        <td>uint256</td>
+        <td>Proposition Id the caller wants to attach his proposition 
+to. It's the parent proposition in the proposal tree. If there isn't any
+ proposition in the tree we want to attach the new proposition to, we 
+set Parent to 0</td>
+        </tr><tr>
+        <td>Parent_Proposals_Reuse</td>
+        <td>uint256[]</td>
+        <td>List of Parent's function calls index we want to reuse in 
+the new proposition. Function calls are ordered in the order we want 
+them to be executed. 0 elements correspond to new function calls that 
+have to be added by the caller in {New_Function_Call} argument.</td>
+        </tr><tr>
+        <td>New_Function_Call</td>
+        <td>bytes[]</td>
+        <td>List of new function calls added by the caller. For each 
+element of the New_Function_Call array, caller must set a 0 element in 
+{Parent_Proposals_Reuse} array at the index he want the custom function 
+call to be positioned </td>
+        </tr><tr>
+        <td>Description</td>
+        <td>bytes</td>
+        <td>Text to justify the new proposal. Can be an hash.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Adopt_Law - read </h6>
+
+            <p>If the Law censor period is over and the law project 
+hasn't been rejected by citizens, then any delegation member can call 
+this function to set the law project as ADOPTED (see {Status} 
+enumeration).</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>law_project</td>
+        <td>bytes32</td>
+        <td>Id of the law project the caller wants to add a proposition 
+to. The Id is obtained by hashing the Title with the Description of the 
+law project.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Candidate_Election - read </h6>
+
+            <p>Function called by a citizen who wish to candidate to next mandate's elections.</p>
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Censor_Law - read </h6>
+
+            <p>If we are at the Law censor stage, any citizen can call 
+this function to sign the petition for canceling the law project. If the
+ {Censor_Proposition_Petition_Rate} (see {Law_Project_Parameters} 
+structure) is reached, the law project is aborted.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>law_project</td>
+        <td>bytes32</td>
+        <td>Id of the law project the caller wants to add a proposition 
+to. The Id is obtained by hashing the Title with the Description of the 
+law project.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Contains - read </h6>
+
+            <p>Allows to check if an account belong to current delegation</p>
+
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>member_address</td>
+        <td>address</td>
+        <td>address of the account we want to check whether it belongs to current delegation or not.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>contain</td>
+        <td>bool</td>
+        <td></td>
+        </tr>
+              </tbody>
+      </table>
+            
+
+          <hr>
+            <h6>End_Election - read </h6>
+
+            <p>When voting stage is over, any citizen can call this function to end the election and start a new mandate.</p>
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Execute_Law - read </h6>
+
+            <p>Once the law project has been adopted (ADOPTED value of 
+{Status} enum) then any delegation member can call this function to 
+execute all or some of the remaining function call of the winning 
+proposition.  For the law project to be fully executed all function call
+ have to be executed.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>law_project</td>
+        <td>bytes32</td>
+        <td>Id of the law project the caller wants to add a proposition 
+to. The Id is obtained by hashing the Title with the Description of the 
+law project.</td>
+        </tr><tr>
+        <td>num_function_call_ToExecute</td>
+        <td>uint256</td>
+        <td>Number of function calls to execute.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>New_Election - read </h6>
+
+            <p>When the current mandate duration is over or if the 
+{New_Election_Petition_Rate} (see {Mandate} struct of {Delegation_Uils} 
+library) is reached, any citizen can call this function to start a new 
+election</p>
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Remove_Candidature - read </h6>
+
+            <p>Function called by a citizen who wish to remove his candidature from next mandate's elections.</p>
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Remove_Controled_Register - read </h6>
+
+            <p>Function used to remove the control of a register contract from current delegation.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>register_address</td>
+        <td>address</td>
+        <td>Address of the register contract that isn't rulable anymore by current delegation</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Sign_New_Election_Petition - read </h6>
+
+            <p>Function can be called by a citizen to sign petition for a new election</p>
+
+            <p>No parameters</p>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Start_Vote - read </h6>
+
+            <p>When the period of proposition submiting is over, any 
+citizen can call this function to start the voting stage. The Id of the 
+ballot corresponding to current law project the IVote contract is 
+computed by hashing {law_project} Id with current block timestamps.</p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>law_project</td>
+        <td>bytes32</td>
+        <td>Id of the law project the caller wants to add a proposition 
+to. The Id is obtained by hashing the Title with the Description of the 
+law project.</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Update_Internal_Governance - read </h6>
+
+            <p>Change parameters related to the democratic process of Delegation's members election. </p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>Election_Duration</td>
+        <td>uint256</td>
+        <td>Duration of the stage in which citizens are allowed to vote for Candidats they prefer</td>
+        </tr><tr>
+        <td>Validation_Duration</td>
+        <td>uint256</td>
+        <td>Duration of the stage in which citizens can validate their 
+hased vote by revealing their choice and the salt that has been used for
+ hasing </td>
+        </tr><tr>
+        <td>Mandate_Duration</td>
+        <td>uint256</td>
+        <td>Duration of a delegation mandate</td>
+        </tr><tr>
+        <td>Immunity_Duration</td>
+        <td>uint256</td>
+        <td>Amount of time after the beginning of a new mandate during which delegation's members can't be revoked</td>
+        </tr><tr>
+        <td>Num_Max_Members</td>
+        <td>uint16</td>
+        <td>Maximum number of members in the delegation.</td>
+        </tr><tr>
+        <td>New_Election_Petition_Rate</td>
+        <td>uint16</td>
+        <td>The minimum ratio of citizens required to revoke the current delegation's members and start a new election</td>
+        </tr><tr>
+        <td>Ivote_address</td>
+        <td>address</td>
+        <td>Address of the IVote contract that will be used during election stage</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+
+          <hr>
+            <h6>Update_Legislatif_Process - read </h6>
+
+            <p>Change parameters related to the democratic process of registers governance.  </p>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <tr>
+        <td>Uint256_Legislatifs_Arg</td>
+        <td>uint256[6]</td>
+        <td>It's an array (We use an array to prevent the "stack to deep
+ error") of uint256 arguments representing respectively:           - 
+Member_Max_Token_Usage: The maximum amount of token a member is allowed 
+to use for a law project elaboration          - 
+Law_Initialisation_Price: The price in token for creating a law project 
+         - FunctionCall_Price: The price in token for one FunctionCall. 
+         - Proposition_Duration: The duration of the stage in which 
+members are allowed to submit propositions          - Vote_Duration: The
+ duration of the stage in which members are allowed to vote for the 
+proposition they want          - Law_Censor_Period_Duration: The 
+duration of the stage in which all citizens are allowed to sign a 
+etition against the law project proposed by the Delegation   </td>
+        </tr><tr>
+        <td>Censor_Proposition_Petition_Rate</td>
+        <td>uint16</td>
+        <td>The minimum ratio of citizens required to cancel a law project</td>
+        </tr><tr>
+        <td>Censor_Penalty_Rate</td>
+        <td>uint16</td>
+        <td>Ratio of total amount of token belonged by the delegation that will be lost if a law project is rejected by citizens</td>
+        </tr><tr>
+        <td>Ivote_address</td>
+        <td>address</td>
+        <td>Address of the IVote contract that will be used during voting stage</td>
+        </tr>
+              </tbody>
+      </table>
+                  
+            <p>Returns:</p>
+           
+            <p>No parameters</p>
+            
+    
+    </div>
+
+  
+  
+</body></html>

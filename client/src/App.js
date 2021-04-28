@@ -1,5 +1,6 @@
 import React, { Component, useState, useEffect, useRef } from "react";
 import {Constitution, Register, Delegation, Governance_Instance} from "./WDD_API";
+import Propositions_Submission from "./Propositions_Submission";
 
 import Constitution_Artifact from "./contracts/Constitution.json";
 
@@ -291,7 +292,7 @@ function Constitution_Data_Show(props){
            
             <Nav variant="pills" className="flex-column">
               {
-                (props.Constitution.Agora.Referendum_Parameters.length != 0)&&
+                (props.Constitution.Agora.Parameters.length != 0)&&
                 <Nav.Item>
                   <Nav.Link eventKey={props.Constitution.Instance._address}>{props.Constitution.Name} (Constitution) </Nav.Link>
                 </Nav.Item>
@@ -329,7 +330,7 @@ function Constitution_Data_Show(props){
             
             <Tab.Content>
             {
-              (props.Constitution.Agora.Referendum_Parameters.length != 0)&&
+              (props.Constitution.Agora.Parameters.length != 0)&&
               <Tab.Pane eventKey={props.Constitution.Instance._address}>
                 <div className=" d-flex align-items-center justify-content-center ">
                 <h4 className="p-3"> {props.Constitution.Name}:  </h4>
@@ -348,7 +349,7 @@ function Constitution_Data_Show(props){
                 <br/>
                 <h5>  Referendum Parameters </h5>
 
-                <Referendum_Parameter_Table Parameters={props.Constitution.Agora.Referendum_Parameters} last_version={props.Constitution.Agora.Referendum_Parameters.length}/>
+                <Referendum_Parameter_Table Parameters={props.Constitution.Agora.Parameters} last_version={props.Constitution.Agora.Parameters.length}/>
                 <br/>
                 <br/>
                 <h5>  Register Authorities </h5>
@@ -442,6 +443,16 @@ function Constitution_Show(props){
                       web3={props.web3}/>;
         break;
       case Sub_Tab.PROPOSITIONS:
+        return <Propositions_Submission Governance_Instance={Constitution.Agora}
+                      Title="Referendum Propositions Submission"
+                      Left_Title="Pending Referendum Propositions"
+                      account={props.account}
+                      web3={props.web3}
+                      />
+
+      break;
+
+      case Sub_Tab.VOTE:
 
       break;
     }
@@ -641,6 +652,8 @@ class Main extends Component {
                                  web3={this.state.web3}
                                  /></div>
         break;
+
+
     }
     
     var constitution = this.state.Constitution;
@@ -726,47 +739,7 @@ class Main extends Component {
         <hr></hr>
         {Institution_Tab}
 
-        <div>
-           <div style={{display: 'flex', justifyContent: 'center'}}>
-          <Card style={{ width: '50rem' }}>
-            <Card.Header><strong>Instances Address</strong></Card.Header>
-            <Card.Body>
-            <div >
-              <ListGroup variant="flush"   >
-                <ListGroup.Item>
-                  <Table striped bordered hover>
-                    <thead>
-                      <tr>
-                        <th>@</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      
-                    </tbody>
-                  </Table>
-                </ListGroup.Item>
-              </ListGroup>
-              </div>
-            </Card.Body>
-          </Card>
-        </div>
-           <br></br>
-        <h3 className="text-center">Enregistrement des élécteurs</h3>
-        <br></br>
-       </div>
-       
-        <br/>
-
-        <p>Your Truffle Box is installed and ready.</p>
-        <h2>Smart Contract Example</h2>
-        <p>
-          If your contracts compiled and migrated successfully, below will show
-          a stored value of 5 (by default).
-        </p>
-        <p>
-          Try changing the value stored on <strong>line 40</strong> of App.js.
-        </p>
-        <div>The stored value is: {constitution.Name}</div>
+        
         
       </div>
 
