@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect, useRef } from "react";
-import {Constitution, Register, Delegation, Governance_Instance} from "./WDD_API";
+import {Register, Constitution, Loi, Delegation, Governance_Instance, DemoCoin} from "./WDD_API";
 import Propositions_Submission from "./Propositions_Submission";
 
 import Constitution_Artifact from "./contracts/Constitution.json";
@@ -78,8 +78,13 @@ function Referendum_Parameter_Table(props){
                       onChange={Handle_New_Version}
                     >
                       {
-                        props.Parameters.map((elem,idx)=>{
-                          return <option key={idx+1} value={idx+1}>Version {idx+1}</option>
+                        props.Parameters.map((elem,idx, arr)=>{
+                          if(arr.length == idx+1){
+                            return <option key={idx+1} value={idx+1} default>Version {idx+1}</option>
+                          }else{
+                            return <option key={idx+1} value={idx+1}>Version {idx+1}</option>
+                          }
+                          
                         })
                       }
                   </Form.Control>
@@ -118,37 +123,39 @@ function Create_Function_Call(props){
   }
 
   const Handle_Submit = async(event)=>{
-    const form = event.currentTarget;
-    event.preventDefault();
-    event.stopPropagation();
-    if (form.checkValidity() === false) {
+    try{
+      const form = event.currentTarget;
       event.preventDefault();
       event.stopPropagation();
-    }
-    var function_selector = form[0].value;
-    if(function_selector==""){ alert("You should choose a register function")}
-    var Function = Register.Register_Functions.get(function_selector);
-    var Param_num = Function.Param_Types.length;
-    var Param_value = Array.from({length:Param_num});
-    console.log("Param_num:",Param_num);
-    for (var i =1; i <=Param_num; i++) {
-      console.log("form[",i,"].value=",form[i].value);
-      Param_value[i-1]=form[i].value;
-    }
-    console.log("Create_Function_Call: Param_Values",Param_value);
+      if (form.checkValidity() === false) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      var function_selector = form[0].value;
+      if(function_selector==""){ alert("You should choose a register function")}
+      var Function = Register.Register_Functions.get(function_selector);
+      var Param_num = Function.Param_Types.length;
+      var Param_value = Array.from({length:Param_num});
+      for (var i =1; i <=Param_num; i++) {
+        Param_value[i-1]=form[i].value;
+      }
+      console.log("Create_Function_Call: Param_Values",Param_value);
 
-    var Encoded_Function_Call = await Register.Encode_Register_Functions_BySelector(function_selector, Param_value);
-    console.log("Create_Function_Call: Encoded_Function_Call:",Encoded_Function_Call);
-    SetValidated(true);
-    console.log("\n\n\n Create_Function_Call: form:",form, "form.0.value",form[0].value);
-    props.Handle_Function_Call(Register.Instance._address, Encoded_Function_Call);
+      var Encoded_Function_Call = await Register.Encode_Register_Functions_BySelector(function_selector, Param_value);
+      console.log("Create_Function_Call: Encoded_Function_Call:",Encoded_Function_Call);
+      SetValidated(true);
+      console.log("\n\n\n Create_Function_Call: form:",form, "form.0.value",form[0].value);
+      props.Handle_Function_Call(Register.Instance._address, Encoded_Function_Call);
+    }catch(err){
+      alert("Create_Function_Call.Handle_Submit error: Function call submission failed. Check console for details");
+      console.error(err);
+    }
   }
 
   if(Register!==props.Register){
     SetRegister(props.Register);
   }
 
-  console.log("Create_Function_Call:", Current_Function_Selector);
   if(Register==null){return <div> </div>}
 
   return(
@@ -202,14 +209,12 @@ function Constitution_Data_Show(props){
 
   const Transitional_Governement_FunctionCall = async (register_address, function_call)=>{
     try{
-    console.log("Transitional_Governement_FunctionCall: function_call", function_call);
     await props.web3.eth.sendTransaction({
       from:props.account,
       to:props.Constitution.Instance._address,
       data:function_call.slice(2)
     })
     var Register_Address = props.Constitution.Register_Address;
-    console.log("props.Constitution Register_Address after function call:",Register_Address);
   }catch(error){
     alert("Transitional_Government function call error:" + error.toString());
     console.error(error);
@@ -218,7 +223,6 @@ function Constitution_Data_Show(props){
 
 
 
-  console.log("Constitution_Data_Show: Constitution",props.Constitution);
   if(props.Constitution==null){return <div> </div>}
 
   return(
@@ -247,7 +251,7 @@ function Constitution_Data_Show(props){
               </OverlayTrigger>
               </div>
             <div className="col d-flex align-items-center  ">
-              <h5 className="p-3">{props.Constitution.Name}: </h5>
+              <h5 className="p-3">{props.Constitution.Agora.Name}: </h5>
               <OverlayTrigger
                 key={"Agora_Address"}
                 placement={"top"}
@@ -261,7 +265,7 @@ function Constitution_Data_Show(props){
               </OverlayTrigger>
             </div>
             <div className="col d-flex align-items-center  ">
-              <h5 className="p-3">{props.Constitution.Name}: </h5>
+              <h5 className="p-3">{props.DemoCoin.Name}: </h5>
               <OverlayTrigger
                 key={"DemoCoin_Address"}
                 placement={"top"}
@@ -297,15 +301,15 @@ function Constitution_Data_Show(props){
                   <Nav.Link eventKey={props.Constitution.Instance._address}>{props.Constitution.Name} (Constitution) </Nav.Link>
                 </Nav.Item>
               } 
-              { props.Loi.map((loi)=>{
-                  return <Nav.Item>
-                  <Nav.Link eventKey={loi.Instance._address}>{loi.Name}+" (Loi)" </Nav.Link>
+              { props.Lois.map((loi)=>{
+                  return <Nav.Item key={loi.Instance._address}>
+                  <Nav.Link eventKey={loi.Instance._address}>{loi.Name} (Loi) </Nav.Link>
                 </Nav.Item>
                 })
               }
               {props.API.map((api)=>{
                   return <Nav.Item>
-                  <Nav.Link eventKey={api.Instance._address}>{api.Name}+" (API_Register)" </Nav.Link>
+                  <Nav.Link eventKey={api.Instance._address}>{api.Name} (API_Register) </Nav.Link>
                 </Nav.Item>
                 })
               }
@@ -363,9 +367,38 @@ function Constitution_Data_Show(props){
               </Tab.Pane>
             } 
             {
-              props.Loi.map((loi)=>{
-                return <Tab.Pane eventKey={loi.Instance._address}>
-                loi
+              props.Lois.map((loi)=>{
+                return <Tab.Pane key={loi.Instance._address} eventKey={loi.Instance._address}>
+                  
+                  <div className=" d-flex align-items-center justify-content-center ">
+                  <h4 className="p-3"> {loi.Name}:  </h4>
+                  <OverlayTrigger
+                    key={loi.Instance._address}
+                    placement={"top"}
+                    overlay={
+                    <Tooltip id={loi.Instance._address}>
+                    <strong>Click to copy</strong>.
+                    </Tooltip>
+                     }
+                  > 
+                    <Button variant="secondary" onClick={()=>{navigator.clipboard.writeText(loi.Instance._address)}}>{loi.Instance._address.slice(0,8)+"..."+loi.Instance._address.slice(36)+" "}</Button>     
+                  </OverlayTrigger>
+                  </div>
+                  <br/>
+                  <h5>  Referendum Parameters </h5>
+
+                  <Referendum_Parameter_Table Parameters={loi.Agora.Parameters} last_version={loi.Agora.Parameters.length}/>
+                  <br/>
+                  <br/>
+                  <h5>  Register Authorities </h5>
+                  <ListGroup>             
+                  {
+                    loi.Register_Authorities.map((elem)=>{
+                    return <ListGroup.Item key={elem}>{elem}</ListGroup.Item>
+                    })
+                  }
+                  </ListGroup>
+              
               </Tab.Pane>
               })
             } 
@@ -407,7 +440,7 @@ function Constitution_Data_Show(props){
             
           </Card.Body>
           <Card.Footer className="text-muted">
-            <Button variant="danger"  onClick={()=>{props.Constitution.Instance.End_Transition_Government().send({from:props.account})}}>End Transitional Government </Button>
+            <Button variant="danger"  onClick={()=>{props.Constitution.Instance.methods.End_Transition_Government().send({from:props.account})}}>End Transitional Government </Button>
           </Card.Footer>
       </Card>
       </div>
@@ -436,9 +469,11 @@ function Constitution_Show(props){
     switch(tab){
       case Sub_Tab.DATA:
         return <Constitution_Data_Show Constitution={Constitution} 
-                      Loi={props.Loi}
+                      Lois={props.Lois}
                       API={props.API}
                       Delegations={props.Delegations}
+                      Citizens_Register={props.Citizens_Register}
+                      DemoCoin={props.DemoCoin}
                       account={props.account}
                       web3={props.web3}/>;
         break;
@@ -460,7 +495,7 @@ function Constitution_Show(props){
 
   
   useEffect(() => {
-    Constitution.Event.on("State_Changed", ()=>{console.log("Constitution_Show: State_Changed: Constitution",Constitution); SetConstitution(Constitution)});
+    Constitution.Event.on("State_Changed", ()=>{ SetConstitution(Constitution)});
   }, [Constitution]);
 
   if(Constitution==null){
@@ -491,13 +526,16 @@ function Constitution_Show(props){
               Vote
             </Nav.Link>
           </Nav.Item>
-          <NavDropdown title="Dropdown" id="nav-dropdown">
-            <NavDropdown.Item eventKey="4.1">Action</NavDropdown.Item>
-            <NavDropdown.Item eventKey="4.2">Another action</NavDropdown.Item>
-            <NavDropdown.Item eventKey="4.3">Something else here</NavDropdown.Item>
-            <NavDropdown.Divider />
-            <NavDropdown.Item eventKey="4.4">Separated link</NavDropdown.Item>
-          </NavDropdown>
+          <Nav.Item>
+            <Nav.Link eventKey="Execute/Result">
+              Execute
+            </Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link eventKey="Execute/Result">
+              Result
+            </Nav.Link>
+          </Nav.Item>
         </Nav>
         </div>
       
@@ -526,7 +564,7 @@ function Constitution_Show(props){
 
   
 class Main extends Component {
-  state = { web3: null, accounts: null, Current_Institution_Tab:Institution_Type.LOI, Sub_Tab_Index:0, Ether_Balance:0, DemoCoin_Balance:0, Constitution:null, Loi:[], API:[], Delegations:[], Citizen:null, Democoin_Instance:null };
+  state = { web3: null, accounts: null, Current_Institution_Tab:Institution_Type.LOI, Sub_Tab_Index:0, Ether_Balance:0, DemoCoin_Balance:0, Constitution:null, Lois:[], API:[], Delegations:[], Citizens_Register:null, DemoCoin:null };
 
   
   /*static getDerivedStateFromProps = async (props, state)=>{
@@ -573,7 +611,6 @@ class Main extends Component {
 
       //await constitution.Event.on("Constitution_Changed", ()=>{console.log("Constitution changed"); this.setState({Constitution})});
       
-
       this.setState({Constitution:constitution, web3:web3, accounts:accounts });
 
       //this.setState({Constitution:constitution, web3, accounts });
@@ -603,13 +640,31 @@ class Main extends Component {
   LoadProject = async (constitution_address)=>{
     const { accounts, Constitution } = this.state;
 
+    console.log("LoadProject: Constitution.Instance",Constitution.Instance);
+
     await Constitution.SetInstance(constitution_address);
 
-    console.log("Constitution Register_List",await Constitution.Instance.methods.Get_Register_List());
+    console.log("LoadProject: after SetInstance Constitution.Instance",Constitution.Instance);
+
+    var Democoin = new DemoCoin(this.state.web3);
+    await Democoin.SetInstance(Constitution.DemoCoin_Address, accounts[0]);
+
+    console.log("LoadProject: DemoCoin",DemoCoin);
+
+    var Lois=[];
+    console.log("LoadState: Loi_Register_List:",Constitution.Loi_Register_List);
+
+    Constitution.Loi_Register_List.forEach((Loi_address, idx)=>{
+      Lois.push(new Loi(this.state.web3));
+      Lois[idx].Event.on("State_Changed", this.SetState_Lois);
+      Lois[idx].SetInstance(Loi_address, Constitution.Agora.Instance._address, Democoin.Instance._address);
+
+    })
+
     //await Constitution.Set_Citizen_Mint_Amount(40, accounts[0]);
     //var Agora_Instance = Constitution.Agora_Instance;
 
-    this.setState({ Constitution: Constitution});
+    this.setState({ Constitution: Constitution, Lois:Lois, DemoCoin:Democoin});
   }
 
   SetState_Constitution = async ()=>{
@@ -619,21 +674,32 @@ class Main extends Component {
     console.log("SetState_Constitution: this.state.Constitution", this.state.Constitution);
   }
 
-  Handle_New_Loi_Register = async (Loi_address)=>{
+  SetState_Lois= async()=>{
+    var Lois = this.state.Lois;
+    console.log("SetState_Loi: Lois:",Lois);
+    this.setState({Lois:Lois});
+  }
 
+  Handle_New_Loi_Register = async (Loi_address)=>{
+    var Lois=this.state.Lois;
+    var loi= new Loi(this.state.web3);
+    loi.Event.on("State_Changed", this.SetState_Lois);
+    loi.SetInstance(Loi_address, this.state.Constitution.Agora.Instance._address, this.state.DemoCoin.Instance._address);
+    Lois.push(loi);
+    this.setState({Lois:Lois});
   }
 
   Handle_New_API_Register = async (Loi_address)=>{
 
   }
 
-  render() {
+  render(){
 
     if (!this.state.web3) {
       return <div>Loading Web3, accounts, and contract...</div>;
     }
 
-    var show;
+    var show=<div></div>;
     var Institution_Tab;
     this.state.web3.eth.getBalance(this.state.accounts[0]).then((balance)=>{
       if(balance!=this.state.Ether_Balance){
@@ -645,9 +711,11 @@ class Main extends Component {
     switch (this.state.Current_Institution_Tab){
       case Institution_Type.CONSTITUTION:
         Institution_Tab= <div> <Constitution_Show Constitution={this.state.Constitution}
-                                 Loi={this.state.Loi}
+                                 Lois={this.state.Lois}
                                  API={this.state.API}
                                  Delegations={this.state.Delegations}
+                                 Citizens_Register={this.state.Citizens_Register}
+                                 DemoCoin={this.state.DemoCoin}
                                  account={this.state.accounts[0]}
                                  web3={this.state.web3}
                                  /></div>
@@ -657,21 +725,27 @@ class Main extends Component {
     }
     
     var constitution = this.state.Constitution;
-    console.log("Constitution:",constitution);
-    console.log("Constitution delegation List:",constitution.Delegation_Address_List);
-    
-    if(this.state.Constitution.Instance==null){
-      //show = <Set_Constitution LoadProject= {this.LoadProject}/>
-      this.LoadProject("0xb7D71D60d09BF8EA9673983542d59B1b477e84c5");
+    console.log("Main: Render: Constitution:",constitution);
+    console.log("Main: Render: DemoCoin",this.state.DemoCoin);
+
+
+    //this.LoadProject("0xb7D71D60d09BF8EA9673983542d59B1b477e84c5");
+    if(this.state.Constitution.Instance==null || this.state.DemoCoin==null){
+      show = <Set_Constitution LoadProject= {this.LoadProject}/>
+      //this.LoadProject("0xb7D71D60d09BF8EA9673983542d59B1b477e84c5");
+      console.log("after if state.Constitution.Instance==null")
     }else{
+      console.log("\n\nDemoCoin:",this.state.DemoCoin);
+      console.log("this.state.Constitution",this.state.Constitution);
       show = <div>
 
+        {(this.state.Constitution.Is_Transitional_Government_Stage)&&<span style={{color:"red"}}>!!!In Transitional Government Stage!!!</span>}
         <div>
           <strong> Ether Balance: </strong>{this.state.Ether_Balance}, 
-          <strong> DemoCoin Balance: </strong>{this.state.Ether_Balance} 
+          <strong> DemoCoin Balance: </strong>{this.state.DemoCoin.Balance} 
 
         </div>
-
+        
         <Navbar bg="light" expand="lg">
         <Navbar.Brand href="#home">
         <Row className="align-items-center">
@@ -695,7 +769,7 @@ class Main extends Component {
 
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mr-auto" onSelect={(eventKey)=>(console.log("Nav: eventKey",eventKey), this.setState({Current_Institution_Tab:eventKey}))}>
+            <Nav className="mr-auto" onSelect={(eventKey)=>( this.setState({Current_Institution_Tab:eventKey}))}>
               <Nav.Link eventKey="CONSTITUTION" onClick={()=>{this.setState({Current_Institution_Tab:Institution_Type.CONSTITUTION})}} >Constitution</Nav.Link>
               
               <NavDropdown title="Loi" id="basic-nav-dropdown">
@@ -723,14 +797,11 @@ class Main extends Component {
             </Nav>
 
             <Nav >
-              <NavDropdown title="Mandates" id="basic-nav-dropdown">
-                {
-
-                }
-              </NavDropdown>
+              
+              
               <div>
               {' '}<Badge pill variant="primary">Citizen</Badge>{' '}
-              <Badge pill variant="danger">Transitional Government</Badge>{' '}
+              {(this.state.Constitution.Transitional_Government == this.state.accounts[0])&&<Badge pill variant="danger">Transitional Government</Badge>}{' '}
               <Badge pill variant="warning">Delegation member</Badge>{' '}
               </div>
             </Nav>            
@@ -744,6 +815,7 @@ class Main extends Component {
       </div>
 
     }
+
 
     return (
       <div className="App">
@@ -762,19 +834,22 @@ function Set_Constitution(props){
 
   const LoadProject = async ()=>{
     var constitution_address = target.current.value;
-    console.log("this.constitution_address", constitution_address);
     await props.LoadProject(constitution_address);
   }
 
   return(
-    <div className="App">
-      
+    <div>
+    <br/>
+    <br/>
+    <div className="App" style={{display: 'flex', justifyContent: 'center'}}>
+
       <Form inline>
-              <Form.Label>Enter Project's Constitution address</Form.Label>
+              <Form.Label className="p-3">Enter Project's Constitution address: </Form.Label>
               <FormControl ref={target} type="text" placeholder="constitution address" className="mr-sm-2"/>
               <Button variant="outline-success" onClick={LoadProject}>Load Project</Button>
       </Form>
 
+    </div>
     </div>
   )
 }

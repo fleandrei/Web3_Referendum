@@ -112,7 +112,7 @@ In a Web3 Direct Democracy project, the Agora is the contract used to implement 
 
 * __Referendum proposition elaboration and signing__ : Every citizen can submit a new referendum proposition (Title + Description) and/or take part in the elaboration of the Function call Corpus of an already submitted referendum proposition by submitting a list of function call. These operations cost DemoCoin token. These fees are transferred to Agora address.
 We get a list of several Function call Corpus proposals. This list is named the Proposal Corpus. 
-In parallel, during this stage, every citizen can sign the petition to submit the referendum proposition as a referendum to all citizens.
+In parallel, during this stage, every citizen can sign the petition (this is done automaticaly if you submit a new referendum proposition or a function call corpus proposal) to submit the referendum proposition as a referendum to all citizens.
 * __Voting__ : If the referendum proposition gets enough signatures, then all citizens can vote for the function call corpus they prefer in the Proposal Corpus. Else, the Referendum proposition is rejected. If the blank vote is majority, then the Referendum proposition is rejected.
 * __Execution__ : Once a winning proposal has been voted, we still have to execute it’s function call list. Every citizen has the right to execute one or more function call via the _Execute_Winning_Proposal_ function. 
 

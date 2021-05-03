@@ -69,5 +69,57 @@ Dans ce fichier, on teste le smart contract _API_Register.sol_ qui permet d’é
 	* On vérifie que la le contrat est bien de type "API_Register"
 	* On vérifie que la liste "Register_Authorities" est correcte (Elle contient l'adresse du contrat Agora). 
 * _Ajout d'un nouveau contrat tiers:_
-	* 
+	* Seul une adresse de « Authority_Register » peut ajouter un nouveau contrat tiers à l'API
+	* On ne peut pas ajouter deux fois le même contrat à l'API
+	* On ajoute un contrat à l'API en vérifiant que le state a bien été mis à jour et que l'évent "Contract_Created" a bien été émit.
+* _Ajout d'une fonction à un contrat tiers:_
+	* Seul une adresse de « Authority_Register » peut ajouter une nouvelle fonction à un contrat de l'API
+	* On ne peut pas ajouter une fonction appartenant à un contrat qui n'est pas dans l'API.
+	* On ajoute une fonction à un contrat de l'API et on vérifie que les changements d'états correspondants ont bien été effectués. On vérifie également l'émission de l'event "Function_Added".
+* _Changemnt des paramètres d'un contrat de l'API:_
+	* Seul une adresse de « Authority_Register » peut modifier les paramètres d'un cotrat de l'API.
+	* On ne peut pas modifier les paramètres d'un contrat qui n'estt pas enregistré dans l'API.
+	* On change le nom et la description d'un contrat de l'API et l'event "Contract_param_Changed" est émit.
+* _Suppression d'une fonction d'un contrat de l'API:_ 
+	* Seul une adresse de « Authority_Register » peut supprimer une fonction de l'API.
+	* On ne peut pas supprimer une fonction d'un contrat qui n'est pas enregistré dans l'API.
+	* On en peut pas supprimer une fonction qui n'est pas enregistrée dans l'API
+	* On supprime une fonction et on vérifie qu'elle n'est plus contenue dans le contrat correspondant. On vérifie que l'event "Function_Removed" a bien été émit.
+* _On supprime un contrat de l'API:_
+	* Seul une adresse de « Authority_Register » peut supprimer un contrat de l'API.
+	* On ne peut pas supprimer un contrat qui n'est pas enregistré dans l'API.
+	* On supprime un contrat en vérifiant que lui et ses fonctions ne sont plus contenues dans l'API et qu'un event "Contract_Removed" a été émit.
+* _On exécute une fonction d'un contrat contenu dans l'API:_
+	* Seul une adresse de « Authority_Register » peut exécuter une fonction de l'API.
+	* On ne peut pas exécuter une fonction appartenant à un contrat qui n'a pas été enregistré dans l'API
+	* On ne peut pas exécuter une fonction qui n'est pas enregistrée dans l'API
+	* On exécute la fonction "set" du smart contrat _SimpleStorage_ via le contrat _API_Register_ (SimpleStorage et sa fonction d'état sont enregistrés dans l'API de _API_Register_). On Vérifie que l'état de _SimpleStorage_ a bien modifié en conséquence, que les receipt de cet appel de fonction sont correct et que l'event "Function_Executed" a bien été émit.
+
+
+
+## DemoCoin_Test.js
+
+### Présentation
+
+Dans ce fichier, on teste les fonctionnalités du token ERC20 DemoCoin. On ne vérifie pas les fonctionnalitées héritées du smart contract _ERC20_ de openzeppelin mais uniquement celles qui ont été rajoutées pour les besoins du projet.
+
+### Tests:
+* _Initialisation:_
+	* On vérifie que le contrat DemoCoin conntaît l'address du contrat _Constitution_ (via la variable _Constitution_Address_) et que cette dernière est contenue dans les listes de Minter (_Mint_Authorities_) et de Burner (_Burn_Authorities_).
+	* On vérifie que les owner de token initiaux détiennent bien les sommes qui leur ont été attribés lors du déploiement du contrat DemoCoin.
+* _Modification des listes Minter_Authorities et Burner_Authorities:_
+ 	* Seul le contrat Constitution peut modifier les listes (ajouter et supprimer des membres) des adresses authorisées à Mint et à Burn des tokens.
+	* Pour chaque une des deux listes, on ne peut ajouter deux fois la même adresse.
+	* Pour chaque une des deux listes, on ne peut supprimer une adresse qui n y a pas été enregistrée.
+	* Pour chaque une des deux listes, on ne peut supprimer l'adresse du Constitution contrat qui y est présent par défaut.
+	* La Constitution ajoute une adresse à la liste Mint_Authorities et on vérifie que l'event "Minter_Added" est émit.
+	* La Constitution ajoute une adresse à la liste Burn_Authorities et on vérifie que l'event "Burner_Added" est émit.
+	* La Constitution supprime une adresse de la liste Mint_Authorities et on vérifie que l'event "Minter_Removed" est émit.
+	* La Constitution supprime une adresse de la liste Burn_Authorities et on vérifie que l'event "Burner_Removed" est émit.
+* _Opérations Mint/Burn:_
+	* Seul une adresse de "Mint_Authorities" peut minter des tokens
+	* Une adresse de "Mint_Authorities" crée des DemoCoin token à une adresse donnée.
+	* Seul une adresse de "Burn_Authorities" peut burn des tokens
+	* Une adresse de "Burn_Authorities" brule des token à une adresse donnée.
+
 

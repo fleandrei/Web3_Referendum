@@ -245,7 +245,7 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.1+commit.df193b15\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"Voters_Register_Address\",\"type\":\"address\"},{\"internalType\":\"bytes4\",\"name\":\"Check_Voter_Selector\",\"type\":\"bytes4\"},{\"internalType\":\"uint256\",\"name\":\"Vote_Duration\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"Vote_Validation_Duration\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"Propositions_Number\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"Max_Winning_Propositions_Number\",\"type\":\"uint256\"}],\"name\":\"Create_Ballot\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"}],\"name\":\"End_Validation_Vote\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"}],\"name\":\"End_Vote\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"}],\"name\":\"Get_Voter_Number\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"voter_num\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"Id\",\"type\":\"uint256\"}],\"name\":\"Get_Winning_Proposition_byId\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"Winning_Propositions\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"}],\"name\":\"Get_Winning_Propositions\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"Winning_Propositions_List\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"voter_address\",\"type\":\"address\"}],\"name\":\"HasValidated\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"Validated\",\"type\":\"bool\"},{\"internalType\":\"bytes32\",\"name\":\"Choice\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"voter_address\",\"type\":\"address\"}],\"name\":\"HasVoted\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"hasvoted\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"internalType\":\"uint256[]\",\"name\":\"Choices\",\"type\":\"uint256[]\"},{\"internalType\":\"bytes32\",\"name\":\"salt\",\"type\":\"bytes32\"}],\"name\":\"Valdiate_Vote\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"internalType\":\"uint256[]\",\"name\":\"Choices\",\"type\":\"uint256[]\"}],\"name\":\"Vote_Clear\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"Choice\",\"type\":\"bytes32\"}],\"name\":\"Vote_Hashed\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"IVote is an interface for contracts that implements a voting system. IVote contract should allow voters to chose M Winning Propositions among N Candidates Propositions (M<N).  Propositions are represented by numbers going from 1 to N. 0 proposition is the default proposition and represent the blank vote.  Voting choices can be clear or hashed with a bytes32 salt in order to prevent voters that hasn't voted yet from being influenced by oders voter's voting choices.  If votes are hashed, voters should validate their vote after the voting period is over, by submiting their clear voting choice with the corresponding salt. Serverals voting sessions with different parameters can be hold at the same time for various use case.  Each new ballot should be provided with the address of a \\\"Voter register\\\" contract that contain a whitelist of account allowed to vote and with the function selector of a \\\"Voter register\\\" contract function that allow to check whether an account is allowed to vote or not. \",\"kind\":\"dev\",\"methods\":{\"Create_Ballot(bytes32,address,bytes4,uint256,uint256,uint256,uint256)\":{\"details\":\"Creates a new voting session\",\"params\":{\"Check_Voter_Selector\":\"Function Selector of a Voters_Register_Address contract's function in charge of checking whether an address belongs to accounts allowed to vote. The function should take an address in parameters and return a boolean. \",\"Max_Winning_Propositions_Number\":\"Number M of places.\",\"Propositions_Number\":\"Number N of candidats Propositions\",\"Vote_Duration\":\"Duration of the stage in which members are allowed to vote \",\"Vote_Validation_Duration\":\"Duration of the stage in which accounts who have voted have to validate their voting choice.\",\"Voters_Register_Address\":\"address of the contract that store account that are allowed to vote in this voting session\",\"key\":\"Id of the new voting session\"}},\"End_Validation_Vote(bytes32)\":{\"details\":\"End the validation stage if it is over. Votes are tailled and we should have access to winning propositions\",\"params\":{\"key\":\"Id of the voting session\"}},\"End_Vote(bytes32)\":{\"details\":\"End the voting stage if it is over. If votes are hashed then we start the validation stage, else votes are tailled and we should have access to winning propositions\",\"params\":{\"key\":\"Id of the voting session\"}},\"Get_Voter_Number(bytes32)\":{\"details\":\"Get the number of accounts that have voted in the Voting session\",\"params\":{\"key\":\"Id of the voting session\"},\"returns\":{\"voter_num\":\"voter_num\"}},\"Get_Winning_Proposition_byId(bytes32,uint256)\":{\"details\":\"Get a winning proposition by it's rank. Only callable if the ballot have been tailled (after End_Vote of End_Validation_Vote call).\",\"params\":{\"Id\":\"Rank (index) of the proposition we want to get in the List of winning propositions.\",\"key\":\"Id of the voting session\"},\"returns\":{\"Winning_Propositions\":\"\"}},\"Get_Winning_Propositions(bytes32)\":{\"details\":\"Get winning propositions list of a voting session. Only callable if the ballot have been tailled (after End_Vote of End_Validation_Vote call).\",\"params\":{\"key\":\"Id of the voting session\"},\"returns\":{\"Winning_Propositions_List\":\"List of winning propositions list.\"}},\"HasValidated(bytes32,address)\":{\"details\":\"Check whether an account has Validated his vote or not.\",\"params\":{\"key\":\"Id of the voting session\",\"voter_address\":\"Address of the account \"},\"returns\":{\"Choice\":\"Validated voting choice.\",\"Validated\":\"Boolean. \"}},\"HasVoted(bytes32,address)\":{\"details\":\"Check whether an account has voted or not.\",\"params\":{\"key\":\"Id of the voting session\",\"voter_address\":\"Address of the account \"},\"returns\":{\"hasvoted\":\"Boolean. \"}},\"Valdiate_Vote(bytes32,uint256[],bytes32)\":{\"details\":\"Allows voter to validate their hashed voting choice by submitting it coupled with the salt bytes32 value that has been used to hash it. nly callable during Validation stage of a voting session.\",\"params\":{\"Choices\":\"Array of propositions Ids that correspond to voter choice\",\"key\":\"Id of the voting session\",\"salt\":\"bytes32 value that has been used to hash the \\\"Choice\\\" value.\"}},\"Vote_Clear(bytes32,uint256[])\":{\"details\":\"Allows a voter to vote clear in a voting session. Only callable during Voting stage of a voting session.\",\"params\":{\"Choices\":\"Array of propositions Ids that correspond to voter choice\",\"key\":\"Id of the voting session\"}},\"Vote_Hashed(bytes32,bytes32)\":{\"details\":\"Allows a voter to vote in a voting session with an hashed voting choice in order to keep it secret until the vote validation stage. Only callable during Voting stage of a voting session.\",\"params\":{\"Choice\":\"Hash of the Array of propositions Ids that correspond to voter's choice with a salt bytes32 value created by the voter.\",\"key\":\"Id of the voting session\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/home/andrei/Alyra/Web3_Referendum/contracts/IVote.sol\":\"IVote\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":20000},\"remappings\":[]},\"sources\":{\"/home/andrei/Alyra/Web3_Referendum/contracts/IVote.sol\":{\"keccak256\":\"0x168095560558bc894211f26e269e62012982142d0055c517a1e1eb7f4de6bf0c\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7ad6a1e0fbdcfe70ec3fbd7bf4f1d89e88b37d202fcb1451404e4702b60bba1c\",\"dweb:/ipfs/QmbTc2TqqDmSUeY4EcqUV4d16jQXUvDSZrLhsY93LtAfcU\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.1+commit.df193b15\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"Voters_Register_Address\",\"type\":\"address\"},{\"internalType\":\"bytes4\",\"name\":\"Check_Voter_Selector\",\"type\":\"bytes4\"},{\"internalType\":\"uint256\",\"name\":\"Vote_Duration\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"Vote_Validation_Duration\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"Propositions_Number\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"Max_Winning_Propositions_Number\",\"type\":\"uint256\"}],\"name\":\"Create_Ballot\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"}],\"name\":\"End_Validation_Vote\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"}],\"name\":\"End_Vote\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"}],\"name\":\"Get_Voter_Number\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"voter_num\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"Id\",\"type\":\"uint256\"}],\"name\":\"Get_Winning_Proposition_byId\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"Winning_Propositions\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"}],\"name\":\"Get_Winning_Propositions\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"Winning_Propositions_List\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"voter_address\",\"type\":\"address\"}],\"name\":\"HasValidated\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"Validated\",\"type\":\"bool\"},{\"internalType\":\"bytes32\",\"name\":\"Choice\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"voter_address\",\"type\":\"address\"}],\"name\":\"HasVoted\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"hasvoted\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"internalType\":\"uint256[]\",\"name\":\"Choices\",\"type\":\"uint256[]\"},{\"internalType\":\"bytes32\",\"name\":\"salt\",\"type\":\"bytes32\"}],\"name\":\"Valdiate_Vote\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"internalType\":\"uint256[]\",\"name\":\"Choices\",\"type\":\"uint256[]\"}],\"name\":\"Vote_Clear\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"Choice\",\"type\":\"bytes32\"}],\"name\":\"Vote_Hashed\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"Create_Ballot(bytes32,address,bytes4,uint256,uint256,uint256,uint256)\":{\"details\":\"Creates a new voting session\",\"params\":{\"Check_Voter_Selector\":\"Function Selector of a Voters_Register_Address contract's function in charge of checking whether an address belongs to accounts allowed to vote. The function should take an address in parameters and return a boolean. \",\"Max_Winning_Propositions_Number\":\"Number M of places.\",\"Propositions_Number\":\"Number N of candidats Propositions\",\"Vote_Duration\":\"Duration of the stage in which members are allowed to vote \",\"Vote_Validation_Duration\":\"Duration of the stage in which accounts who have voted have to validate their voting choice.\",\"Voters_Register_Address\":\"address of the contract that store account that are allowed to vote in this voting session\",\"key\":\"Id of the new voting session\"}},\"End_Validation_Vote(bytes32)\":{\"details\":\"End the validation stage if it is over. Votes are tailled and we should have access to winning propositions\",\"params\":{\"key\":\"Id of the voting session\"}},\"End_Vote(bytes32)\":{\"details\":\"End the voting stage if it is over. If votes are hashed then we start the validation stage, else votes are tailled and we should have access to winning propositions\",\"params\":{\"key\":\"Id of the voting session\"}},\"Get_Voter_Number(bytes32)\":{\"details\":\"Get the number of accounts that have voted in the Voting session\",\"params\":{\"key\":\"Id of the voting session\"},\"returns\":{\"voter_num\":\"voter_num\"}},\"Get_Winning_Proposition_byId(bytes32,uint256)\":{\"details\":\"Get a winning proposition by it's rank. Only callable if the ballot have been tailled (after End_Vote of End_Validation_Vote call).\",\"params\":{\"Id\":\"Rank (index) of the proposition we want to get in the List of winning propositions.\",\"key\":\"Id of the voting session\"},\"returns\":{\"Winning_Propositions\":\"\"}},\"Get_Winning_Propositions(bytes32)\":{\"details\":\"Get winning propositions list of a voting session. Only callable if the ballot have been tailled (after End_Vote of End_Validation_Vote call).\",\"params\":{\"key\":\"Id of the voting session\"},\"returns\":{\"Winning_Propositions_List\":\"List of winning propositions list.\"}},\"HasValidated(bytes32,address)\":{\"details\":\"Check whether an account has Validated his vote or not.\",\"params\":{\"key\":\"Id of the voting session\",\"voter_address\":\"Address of the account \"},\"returns\":{\"Choice\":\"Validated voting choice.\",\"Validated\":\"Boolean. \"}},\"HasVoted(bytes32,address)\":{\"details\":\"Check whether an account has voted or not.\",\"params\":{\"key\":\"Id of the voting session\",\"voter_address\":\"Address of the account \"},\"returns\":{\"hasvoted\":\"Boolean. \"}},\"Valdiate_Vote(bytes32,uint256[],bytes32)\":{\"details\":\"Allows voter to validate their hashed voting choice by submitting it coupled with the salt bytes32 value that has been used to hash it. nly callable during Validation stage of a voting session.\",\"params\":{\"Choices\":\"Array of propositions Ids that correspond to voter choice\",\"key\":\"Id of the voting session\",\"salt\":\"bytes32 value that has been used to hash the \\\"Choice\\\" value.\"}},\"Vote_Clear(bytes32,uint256[])\":{\"details\":\"Allows a voter to vote clear in a voting session. Only callable during Voting stage of a voting session.\",\"params\":{\"Choices\":\"Array of propositions Ids that correspond to voter choice\",\"key\":\"Id of the voting session\"}},\"Vote_Hashed(bytes32,bytes32)\":{\"details\":\"Allows a voter to vote in a voting session with an hashed voting choice in order to keep it secret until the vote validation stage. Only callable during Voting stage of a voting session.\",\"params\":{\"Choice\":\"Hash of the Array of propositions Ids that correspond to voter's choice with a salt bytes32 value created by the voter.\",\"key\":\"Id of the voting session\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"notice\":\"IVote is an interface for contracts that implements a voting system. IVote contract should allow voters to chose M Winning Propositions among N Candidates Propositions (M<N).  Propositions are represented by numbers going from 1 to N. 0 proposition is the default proposition and represent the blank vote.  Voting choices can be clear or hashed with a bytes32 salt in order to prevent voters that hasn't voted yet from being influenced by oders voter's voting choices.  If votes are hashed, voters should validate their vote after the voting period is over, by submiting their clear voting choice with the corresponding salt. Serverals voting sessions with different parameters can be hold at the same time for various use case.  Each new ballot should be provided with the address of a \\\"Voter register\\\" contract that contain a whitelist of account allowed to vote and with the function selector of a \\\"Voter register\\\" contract function that allow to check whether an account is allowed to vote or not. \",\"version\":1}},\"settings\":{\"compilationTarget\":{\"/home/andrei/Alyra/Web3_Referendum/contracts/IVote.sol\":\"IVote\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":20000},\"remappings\":[]},\"sources\":{\"/home/andrei/Alyra/Web3_Referendum/contracts/IVote.sol\":{\"keccak256\":\"0x777b26c9c45b30a9cf06f2c7683452290de7ad0755b7cb79152f210be78a44e0\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://d58567af11876c36174e45a675e44c6c7dab0f2ecd77d414cb8544f03ecbab1d\",\"dweb:/ipfs/QmRMsUFdV8d8eVd4HHdLWx9GZTSoPRLsj3NzRrMo9ijZoN\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
@@ -253,21 +253,21 @@
   "deployedGeneratedSources": [],
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\n/** \n * @dev IVote is an interface for contracts that implements a voting system. IVote contract should allow voters to chose M Winning Propositions among N Candidates Propositions (M<N). \n * Propositions are represented by numbers going from 1 to N. 0 proposition is the default proposition and represent the blank vote. \n * Voting choices can be clear or hashed with a bytes32 salt in order to prevent voters that hasn't voted yet from being influenced by oders voter's voting choices. \n * If votes are hashed, voters should validate their vote after the voting period is over, by submiting their clear voting choice with the corresponding salt.\n * Serverals voting sessions with different parameters can be hold at the same time for various use case. \n * Each new ballot should be provided with the address of a \"Voter register\" contract that contain a whitelist of account allowed to vote and with the function selector of a \"Voter register\" contract function that allow to check whether an account is allowed to vote or not.\n * */\n\ninterface IVote{\n    \n    /** \n     * @dev Creates a new voting session\n     * @param key Id of the new voting session\n     * @param Voters_Register_Address address of the contract that store account that are allowed to vote in this voting session\n     * @param Check_Voter_Selector Function Selector of a Voters_Register_Address contract's function in charge of checking whether an address belongs to accounts allowed to vote. The function should take an address in parameters and return a boolean. \n     * @param Vote_Duration Duration of the stage in which members are allowed to vote \n     * @param Vote_Validation_Duration Duration of the stage in which accounts who have voted have to validate their voting choice.\n     * @param Propositions_Number Number N of candidats Propositions\n     * @param Max_Winning_Propositions_Number Number M of places.\n    */\n    function Create_Ballot(bytes32 key, address Voters_Register_Address, bytes4 Check_Voter_Selector, uint Vote_Duration, uint Vote_Validation_Duration, uint Propositions_Number, uint Max_Winning_Propositions_Number) external;\n    \n    /**\n     * @dev Allows a voter to vote clear in a voting session. Only callable during Voting stage of a voting session.\n     * @param key Id of the voting session\n     * @param Choices Array of propositions Ids that correspond to voter choice\n     */\n    function Vote_Clear(bytes32 key, uint[] calldata Choices) external;\n    \n     /**\n     * @dev Allows a voter to vote in a voting session with an hashed voting choice in order to keep it secret until the vote validation stage. Only callable during Voting stage of a voting session.\n     * @param key Id of the voting session\n     * @param Choice Hash of the Array of propositions Ids that correspond to voter's choice with a salt bytes32 value created by the voter.\n     */\n    function Vote_Hashed(bytes32 key, bytes32 Choice) external;\n    \n    /**\n     * @dev End the voting stage if it is over. If votes are hashed then we start the validation stage, else votes are tailled and we should have access to winning propositions\n     * @param key Id of the voting session\n     */\n    function End_Vote(bytes32 key)external;\n    \n    /**\n     * @dev Allows voter to validate their hashed voting choice by submitting it coupled with the salt bytes32 value that has been used to hash it. nly callable during Validation stage of a voting session.\n     * @param key Id of the voting session\n     * @param Choices Array of propositions Ids that correspond to voter choice\n     * @param salt bytes32 value that has been used to hash the \"Choice\" value.\n     */ \n    function Valdiate_Vote(bytes32 key, uint[] calldata Choices, bytes32 salt )external;\n    \n     /**\n     * @dev End the validation stage if it is over. Votes are tailled and we should have access to winning propositions\n     * @param key Id of the voting session\n     */\n    function End_Validation_Vote(bytes32 key) external;\n    \n     /**\n     * @dev Get winning propositions list of a voting session. Only callable if the ballot have been tailled (after End_Vote of End_Validation_Vote call).\n     * @param key Id of the voting session\n     * @return Winning_Propositions_List List of winning propositions list.\n     */\n    function Get_Winning_Propositions(bytes32 key)external view returns(uint[] memory Winning_Propositions_List);\n    \n    /**\n     * @dev Get a winning proposition by it's rank. Only callable if the ballot have been tailled (after End_Vote of End_Validation_Vote call).\n     * @param key Id of the voting session\n     * @param Id Rank (index) of the proposition we want to get in the List of winning propositions.\n     * @return Winning_Propositions \n     */\n    function Get_Winning_Proposition_byId(bytes32 key, uint Id)external view returns(uint Winning_Propositions);\n    \n     /**\n     * @dev Check whether an account has voted or not.\n     * @param key Id of the voting session\n     * @param voter_address Address of the account \n     * @return hasvoted Boolean. \n     */\n    function HasVoted(bytes32 key, address voter_address) external view returns(bool hasvoted);\n    \n     /**\n     * @dev Check whether an account has Validated his vote or not.\n     * @param key Id of the voting session\n     * @param voter_address Address of the account \n     * @return Validated Boolean. \n     * @return Choice Validated voting choice.\n     */\n    function HasValidated(bytes32 key, address voter_address) external view returns(bool Validated, bytes32 Choice);    \n    \n    /**\n    * @dev Get the number of accounts that have voted in the Voting session\n    * @param key Id of the voting session\n    * @return voter_num\n    */\n    function Get_Voter_Number(bytes32 key)external view returns(uint voter_num);\n}",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\n/** \n * @notice IVote is an interface for contracts that implements a voting system. IVote contract should allow voters to chose M Winning Propositions among N Candidates Propositions (M<N). \n * Propositions are represented by numbers going from 1 to N. 0 proposition is the default proposition and represent the blank vote. \n * Voting choices can be clear or hashed with a bytes32 salt in order to prevent voters that hasn't voted yet from being influenced by oders voter's voting choices. \n * If votes are hashed, voters should validate their vote after the voting period is over, by submiting their clear voting choice with the corresponding salt.\n * Serverals voting sessions with different parameters can be hold at the same time for various use case. \n * Each new ballot should be provided with the address of a \"Voter register\" contract that contain a whitelist of account allowed to vote and with the function selector of a \"Voter register\" contract function that allow to check whether an account is allowed to vote or not.\n * */\n\ninterface IVote{\n    \n    /** \n     * @dev Creates a new voting session\n     * @param key Id of the new voting session\n     * @param Voters_Register_Address address of the contract that store account that are allowed to vote in this voting session\n     * @param Check_Voter_Selector Function Selector of a Voters_Register_Address contract's function in charge of checking whether an address belongs to accounts allowed to vote. The function should take an address in parameters and return a boolean. \n     * @param Vote_Duration Duration of the stage in which members are allowed to vote \n     * @param Vote_Validation_Duration Duration of the stage in which accounts who have voted have to validate their voting choice.\n     * @param Propositions_Number Number N of candidats Propositions\n     * @param Max_Winning_Propositions_Number Number M of places.\n    */\n    function Create_Ballot(bytes32 key, address Voters_Register_Address, bytes4 Check_Voter_Selector, uint Vote_Duration, uint Vote_Validation_Duration, uint Propositions_Number, uint Max_Winning_Propositions_Number) external;\n    \n    /**\n     * @dev Allows a voter to vote clear in a voting session. Only callable during Voting stage of a voting session.\n     * @param key Id of the voting session\n     * @param Choices Array of propositions Ids that correspond to voter choice\n     */\n    function Vote_Clear(bytes32 key, uint[] calldata Choices) external;\n    \n     /**\n     * @dev Allows a voter to vote in a voting session with an hashed voting choice in order to keep it secret until the vote validation stage. Only callable during Voting stage of a voting session.\n     * @param key Id of the voting session\n     * @param Choice Hash of the Array of propositions Ids that correspond to voter's choice with a salt bytes32 value created by the voter.\n     */\n    function Vote_Hashed(bytes32 key, bytes32 Choice) external;\n    \n    /**\n     * @dev End the voting stage if it is over. If votes are hashed then we start the validation stage, else votes are tailled and we should have access to winning propositions\n     * @param key Id of the voting session\n     */\n    function End_Vote(bytes32 key)external;\n    \n    /**\n     * @dev Allows voter to validate their hashed voting choice by submitting it coupled with the salt bytes32 value that has been used to hash it. nly callable during Validation stage of a voting session.\n     * @param key Id of the voting session\n     * @param Choices Array of propositions Ids that correspond to voter choice\n     * @param salt bytes32 value that has been used to hash the \"Choice\" value.\n     */ \n    function Valdiate_Vote(bytes32 key, uint[] calldata Choices, bytes32 salt )external;\n    \n     /**\n     * @dev End the validation stage if it is over. Votes are tailled and we should have access to winning propositions\n     * @param key Id of the voting session\n     */\n    function End_Validation_Vote(bytes32 key) external;\n    \n     /**\n     * @dev Get winning propositions list of a voting session. Only callable if the ballot have been tailled (after End_Vote of End_Validation_Vote call).\n     * @param key Id of the voting session\n     * @return Winning_Propositions_List List of winning propositions list.\n     */\n    function Get_Winning_Propositions(bytes32 key)external view returns(uint[] memory Winning_Propositions_List);\n    \n    /**\n     * @dev Get a winning proposition by it's rank. Only callable if the ballot have been tailled (after End_Vote of End_Validation_Vote call).\n     * @param key Id of the voting session\n     * @param Id Rank (index) of the proposition we want to get in the List of winning propositions.\n     * @return Winning_Propositions \n     */\n    function Get_Winning_Proposition_byId(bytes32 key, uint Id)external view returns(uint Winning_Propositions);\n    \n     /**\n     * @dev Check whether an account has voted or not.\n     * @param key Id of the voting session\n     * @param voter_address Address of the account \n     * @return hasvoted Boolean. \n     */\n    function HasVoted(bytes32 key, address voter_address) external view returns(bool hasvoted);\n    \n     /**\n     * @dev Check whether an account has Validated his vote or not.\n     * @param key Id of the voting session\n     * @param voter_address Address of the account \n     * @return Validated Boolean. \n     * @return Choice Validated voting choice.\n     */\n    function HasValidated(bytes32 key, address voter_address) external view returns(bool Validated, bytes32 Choice);    \n    \n    /**\n    * @dev Get the number of accounts that have voted in the Voting session\n    * @param key Id of the voting session\n    * @return voter_num\n    */\n    function Get_Voter_Number(bytes32 key)external view returns(uint voter_num);\n}",
   "sourcePath": "/home/andrei/Alyra/Web3_Referendum/contracts/IVote.sol",
   "ast": {
     "absolutePath": "/home/andrei/Alyra/Web3_Referendum/contracts/IVote.sol",
     "exportedSymbols": {
       "IVote": [
-        7106
+        7252
       ]
     },
-    "id": 7107,
+    "id": 7253,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6997,
+        "id": 7143,
         "literals": [
           "solidity",
           "^",
@@ -283,45 +283,45 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 6998,
+          "id": 7144,
           "nodeType": "StructuredDocumentation",
-          "src": "57:1035:7",
-          "text": " @dev IVote is an interface for contracts that implements a voting system. IVote contract should allow voters to chose M Winning Propositions among N Candidates Propositions (M<N). \n Propositions are represented by numbers going from 1 to N. 0 proposition is the default proposition and represent the blank vote. \n Voting choices can be clear or hashed with a bytes32 salt in order to prevent voters that hasn't voted yet from being influenced by oders voter's voting choices. \n If votes are hashed, voters should validate their vote after the voting period is over, by submiting their clear voting choice with the corresponding salt.\n Serverals voting sessions with different parameters can be hold at the same time for various use case. \n Each new ballot should be provided with the address of a \"Voter register\" contract that contain a whitelist of account allowed to vote and with the function selector of a \"Voter register\" contract function that allow to check whether an account is allowed to vote or not.\n "
+          "src": "57:1038:7",
+          "text": " @notice IVote is an interface for contracts that implements a voting system. IVote contract should allow voters to chose M Winning Propositions among N Candidates Propositions (M<N). \n Propositions are represented by numbers going from 1 to N. 0 proposition is the default proposition and represent the blank vote. \n Voting choices can be clear or hashed with a bytes32 salt in order to prevent voters that hasn't voted yet from being influenced by oders voter's voting choices. \n If votes are hashed, voters should validate their vote after the voting period is over, by submiting their clear voting choice with the corresponding salt.\n Serverals voting sessions with different parameters can be hold at the same time for various use case. \n Each new ballot should be provided with the address of a \"Voter register\" contract that contain a whitelist of account allowed to vote and with the function selector of a \"Voter register\" contract function that allow to check whether an account is allowed to vote or not.\n "
         },
         "fullyImplemented": false,
-        "id": 7106,
+        "id": 7252,
         "linearizedBaseContracts": [
-          7106
+          7252
         ],
         "name": "IVote",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "documentation": {
-              "id": 6999,
+              "id": 7145,
               "nodeType": "StructuredDocumentation",
-              "src": "1120:836:7",
+              "src": "1123:836:7",
               "text": " @dev Creates a new voting session\n @param key Id of the new voting session\n @param Voters_Register_Address address of the contract that store account that are allowed to vote in this voting session\n @param Check_Voter_Selector Function Selector of a Voters_Register_Address contract's function in charge of checking whether an address belongs to accounts allowed to vote. The function should take an address in parameters and return a boolean. \n @param Vote_Duration Duration of the stage in which members are allowed to vote \n @param Vote_Validation_Duration Duration of the stage in which accounts who have voted have to validate their voting choice.\n @param Propositions_Number Number N of candidats Propositions\n @param Max_Winning_Propositions_Number Number M of places."
             },
             "functionSelector": "e1345358",
-            "id": 7016,
+            "id": 7162,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "Create_Ballot",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7014,
+              "id": 7160,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7001,
+                  "id": 7147,
                   "mutability": "mutable",
                   "name": "key",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7016,
-                  "src": "1984:11:7",
+                  "scope": 7162,
+                  "src": "1987:11:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -329,10 +329,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7000,
+                    "id": 7146,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1984:7:7",
+                    "src": "1987:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -342,12 +342,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7003,
+                  "id": 7149,
                   "mutability": "mutable",
                   "name": "Voters_Register_Address",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7016,
-                  "src": "1997:31:7",
+                  "scope": 7162,
+                  "src": "2000:31:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -355,10 +355,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7002,
+                    "id": 7148,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1997:7:7",
+                    "src": "2000:7:7",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -369,12 +369,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7005,
+                  "id": 7151,
                   "mutability": "mutable",
                   "name": "Check_Voter_Selector",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7016,
-                  "src": "2030:27:7",
+                  "scope": 7162,
+                  "src": "2033:27:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -382,10 +382,10 @@
                     "typeString": "bytes4"
                   },
                   "typeName": {
-                    "id": 7004,
+                    "id": 7150,
                     "name": "bytes4",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2030:6:7",
+                    "src": "2033:6:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes4",
                       "typeString": "bytes4"
@@ -395,12 +395,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7007,
+                  "id": 7153,
                   "mutability": "mutable",
                   "name": "Vote_Duration",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7016,
-                  "src": "2059:18:7",
+                  "scope": 7162,
+                  "src": "2062:18:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -408,10 +408,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7006,
+                    "id": 7152,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2059:4:7",
+                    "src": "2062:4:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -421,12 +421,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7009,
+                  "id": 7155,
                   "mutability": "mutable",
                   "name": "Vote_Validation_Duration",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7016,
-                  "src": "2079:29:7",
+                  "scope": 7162,
+                  "src": "2082:29:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -434,10 +434,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7008,
+                    "id": 7154,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2079:4:7",
+                    "src": "2082:4:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -447,12 +447,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7011,
+                  "id": 7157,
                   "mutability": "mutable",
                   "name": "Propositions_Number",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7016,
-                  "src": "2110:24:7",
+                  "scope": 7162,
+                  "src": "2113:24:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -460,10 +460,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7010,
+                    "id": 7156,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2110:4:7",
+                    "src": "2113:4:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -473,12 +473,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7013,
+                  "id": 7159,
                   "mutability": "mutable",
                   "name": "Max_Winning_Propositions_Number",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7016,
-                  "src": "2136:36:7",
+                  "scope": 7162,
+                  "src": "2139:36:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -486,10 +486,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7012,
+                    "id": 7158,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2136:4:7",
+                    "src": "2139:4:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -498,46 +498,46 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1983:190:7"
+              "src": "1986:190:7"
             },
             "returnParameters": {
-              "id": 7015,
+              "id": 7161,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2182:0:7"
+              "src": "2185:0:7"
             },
-            "scope": 7106,
-            "src": "1961:222:7",
+            "scope": 7252,
+            "src": "1964:222:7",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 7017,
+              "id": 7163,
               "nodeType": "StructuredDocumentation",
-              "src": "2193:251:7",
+              "src": "2196:251:7",
               "text": " @dev Allows a voter to vote clear in a voting session. Only callable during Voting stage of a voting session.\n @param key Id of the voting session\n @param Choices Array of propositions Ids that correspond to voter choice"
             },
             "functionSelector": "f766ddf6",
-            "id": 7025,
+            "id": 7171,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "Vote_Clear",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7023,
+              "id": 7169,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7019,
+                  "id": 7165,
                   "mutability": "mutable",
                   "name": "key",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7025,
-                  "src": "2469:11:7",
+                  "scope": 7171,
+                  "src": "2472:11:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -545,10 +545,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7018,
+                    "id": 7164,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2469:7:7",
+                    "src": "2472:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -558,12 +558,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7022,
+                  "id": 7168,
                   "mutability": "mutable",
                   "name": "Choices",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7025,
-                  "src": "2482:23:7",
+                  "scope": 7171,
+                  "src": "2485:23:7",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
@@ -572,18 +572,18 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 7020,
+                      "id": 7166,
                       "name": "uint",
                       "nodeType": "ElementaryTypeName",
-                      "src": "2482:4:7",
+                      "src": "2485:4:7",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
                       }
                     },
-                    "id": 7021,
+                    "id": 7167,
                     "nodeType": "ArrayTypeName",
-                    "src": "2482:6:7",
+                    "src": "2485:6:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
                       "typeString": "uint256[]"
@@ -592,46 +592,46 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2468:38:7"
+              "src": "2471:38:7"
             },
             "returnParameters": {
-              "id": 7024,
+              "id": 7170,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2515:0:7"
+              "src": "2518:0:7"
             },
-            "scope": 7106,
-            "src": "2449:67:7",
+            "scope": 7252,
+            "src": "2452:67:7",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 7026,
+              "id": 7172,
               "nodeType": "StructuredDocumentation",
-              "src": "2527:394:7",
+              "src": "2530:394:7",
               "text": " @dev Allows a voter to vote in a voting session with an hashed voting choice in order to keep it secret until the vote validation stage. Only callable during Voting stage of a voting session.\n @param key Id of the voting session\n @param Choice Hash of the Array of propositions Ids that correspond to voter's choice with a salt bytes32 value created by the voter."
             },
             "functionSelector": "c0fac250",
-            "id": 7033,
+            "id": 7179,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "Vote_Hashed",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7031,
+              "id": 7177,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7028,
+                  "id": 7174,
                   "mutability": "mutable",
                   "name": "key",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7033,
-                  "src": "2947:11:7",
+                  "scope": 7179,
+                  "src": "2950:11:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -639,10 +639,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7027,
+                    "id": 7173,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2947:7:7",
+                    "src": "2950:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -652,12 +652,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7030,
+                  "id": 7176,
                   "mutability": "mutable",
                   "name": "Choice",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7033,
-                  "src": "2960:14:7",
+                  "scope": 7179,
+                  "src": "2963:14:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -665,10 +665,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7029,
+                    "id": 7175,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2960:7:7",
+                    "src": "2963:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -677,46 +677,46 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2946:29:7"
+              "src": "2949:29:7"
             },
             "returnParameters": {
-              "id": 7032,
+              "id": 7178,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2984:0:7"
+              "src": "2987:0:7"
             },
-            "scope": 7106,
-            "src": "2926:59:7",
+            "scope": 7252,
+            "src": "2929:59:7",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 7034,
+              "id": 7180,
               "nodeType": "StructuredDocumentation",
-              "src": "2995:231:7",
+              "src": "2998:231:7",
               "text": " @dev End the voting stage if it is over. If votes are hashed then we start the validation stage, else votes are tailled and we should have access to winning propositions\n @param key Id of the voting session"
             },
             "functionSelector": "b0a0787e",
-            "id": 7039,
+            "id": 7185,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "End_Vote",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7037,
+              "id": 7183,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7036,
+                  "id": 7182,
                   "mutability": "mutable",
                   "name": "key",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7039,
-                  "src": "3249:11:7",
+                  "scope": 7185,
+                  "src": "3252:11:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -724,10 +724,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7035,
+                    "id": 7181,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3249:7:7",
+                    "src": "3252:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -736,46 +736,46 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3248:13:7"
+              "src": "3251:13:7"
             },
             "returnParameters": {
-              "id": 7038,
+              "id": 7184,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3269:0:7"
+              "src": "3272:0:7"
             },
-            "scope": 7106,
-            "src": "3231:39:7",
+            "scope": 7252,
+            "src": "3234:39:7",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 7040,
+              "id": 7186,
               "nodeType": "StructuredDocumentation",
-              "src": "3280:420:7",
+              "src": "3283:420:7",
               "text": " @dev Allows voter to validate their hashed voting choice by submitting it coupled with the salt bytes32 value that has been used to hash it. nly callable during Validation stage of a voting session.\n @param key Id of the voting session\n @param Choices Array of propositions Ids that correspond to voter choice\n @param salt bytes32 value that has been used to hash the \"Choice\" value."
             },
             "functionSelector": "52d1b523",
-            "id": 7050,
+            "id": 7196,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "Valdiate_Vote",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7048,
+              "id": 7194,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7042,
+                  "id": 7188,
                   "mutability": "mutable",
                   "name": "key",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7050,
-                  "src": "3729:11:7",
+                  "scope": 7196,
+                  "src": "3732:11:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -783,10 +783,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7041,
+                    "id": 7187,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3729:7:7",
+                    "src": "3732:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -796,12 +796,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7045,
+                  "id": 7191,
                   "mutability": "mutable",
                   "name": "Choices",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7050,
-                  "src": "3742:23:7",
+                  "scope": 7196,
+                  "src": "3745:23:7",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
@@ -810,18 +810,18 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 7043,
+                      "id": 7189,
                       "name": "uint",
                       "nodeType": "ElementaryTypeName",
-                      "src": "3742:4:7",
+                      "src": "3745:4:7",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
                       }
                     },
-                    "id": 7044,
+                    "id": 7190,
                     "nodeType": "ArrayTypeName",
-                    "src": "3742:6:7",
+                    "src": "3745:6:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
                       "typeString": "uint256[]"
@@ -831,12 +831,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7047,
+                  "id": 7193,
                   "mutability": "mutable",
                   "name": "salt",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7050,
-                  "src": "3767:12:7",
+                  "scope": 7196,
+                  "src": "3770:12:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -844,10 +844,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7046,
+                    "id": 7192,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3767:7:7",
+                    "src": "3770:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -856,46 +856,46 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3728:53:7"
+              "src": "3731:53:7"
             },
             "returnParameters": {
-              "id": 7049,
+              "id": 7195,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3789:0:7"
+              "src": "3792:0:7"
             },
-            "scope": 7106,
-            "src": "3706:84:7",
+            "scope": 7252,
+            "src": "3709:84:7",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 7051,
+              "id": 7197,
               "nodeType": "StructuredDocumentation",
-              "src": "3801:174:7",
+              "src": "3804:174:7",
               "text": " @dev End the validation stage if it is over. Votes are tailled and we should have access to winning propositions\n @param key Id of the voting session"
             },
             "functionSelector": "3f71f876",
-            "id": 7056,
+            "id": 7202,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "End_Validation_Vote",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7054,
+              "id": 7200,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7053,
+                  "id": 7199,
                   "mutability": "mutable",
                   "name": "key",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7056,
-                  "src": "4009:11:7",
+                  "scope": 7202,
+                  "src": "4012:11:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -903,10 +903,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7052,
+                    "id": 7198,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4009:7:7",
+                    "src": "4012:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -915,46 +915,46 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "4008:13:7"
+              "src": "4011:13:7"
             },
             "returnParameters": {
-              "id": 7055,
+              "id": 7201,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "4030:0:7"
+              "src": "4033:0:7"
             },
-            "scope": 7106,
-            "src": "3980:51:7",
+            "scope": 7252,
+            "src": "3983:51:7",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 7057,
+              "id": 7203,
               "nodeType": "StructuredDocumentation",
-              "src": "4042:285:7",
+              "src": "4045:285:7",
               "text": " @dev Get winning propositions list of a voting session. Only callable if the ballot have been tailled (after End_Vote of End_Validation_Vote call).\n @param key Id of the voting session\n @return Winning_Propositions_List List of winning propositions list."
             },
             "functionSelector": "1d1a8231",
-            "id": 7065,
+            "id": 7211,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "Get_Winning_Propositions",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7060,
+              "id": 7206,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7059,
+                  "id": 7205,
                   "mutability": "mutable",
                   "name": "key",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7065,
-                  "src": "4366:11:7",
+                  "scope": 7211,
+                  "src": "4369:11:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -962,10 +962,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7058,
+                    "id": 7204,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4366:7:7",
+                    "src": "4369:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -974,20 +974,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "4365:13:7"
+              "src": "4368:13:7"
             },
             "returnParameters": {
-              "id": 7064,
+              "id": 7210,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7063,
+                  "id": 7209,
                   "mutability": "mutable",
                   "name": "Winning_Propositions_List",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7065,
-                  "src": "4400:39:7",
+                  "scope": 7211,
+                  "src": "4403:39:7",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -996,18 +996,18 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 7061,
+                      "id": 7207,
                       "name": "uint",
                       "nodeType": "ElementaryTypeName",
-                      "src": "4400:4:7",
+                      "src": "4403:4:7",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
                       }
                     },
-                    "id": 7062,
+                    "id": 7208,
                     "nodeType": "ArrayTypeName",
-                    "src": "4400:6:7",
+                    "src": "4403:6:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
                       "typeString": "uint256[]"
@@ -1016,40 +1016,40 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "4399:41:7"
+              "src": "4402:41:7"
             },
-            "scope": 7106,
-            "src": "4332:109:7",
+            "scope": 7252,
+            "src": "4335:109:7",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 7066,
+              "id": 7212,
               "nodeType": "StructuredDocumentation",
-              "src": "4451:336:7",
+              "src": "4454:336:7",
               "text": " @dev Get a winning proposition by it's rank. Only callable if the ballot have been tailled (after End_Vote of End_Validation_Vote call).\n @param key Id of the voting session\n @param Id Rank (index) of the proposition we want to get in the List of winning propositions.\n @return Winning_Propositions "
             },
             "functionSelector": "ce584e12",
-            "id": 7075,
+            "id": 7221,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "Get_Winning_Proposition_byId",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7071,
+              "id": 7217,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7068,
+                  "id": 7214,
                   "mutability": "mutable",
                   "name": "key",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7075,
-                  "src": "4830:11:7",
+                  "scope": 7221,
+                  "src": "4833:11:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1057,10 +1057,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7067,
+                    "id": 7213,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4830:7:7",
+                    "src": "4833:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1070,12 +1070,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7070,
+                  "id": 7216,
                   "mutability": "mutable",
                   "name": "Id",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7075,
-                  "src": "4843:7:7",
+                  "scope": 7221,
+                  "src": "4846:7:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1083,10 +1083,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7069,
+                    "id": 7215,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4843:4:7",
+                    "src": "4846:4:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1095,20 +1095,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "4829:22:7"
+              "src": "4832:22:7"
             },
             "returnParameters": {
-              "id": 7074,
+              "id": 7220,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7073,
+                  "id": 7219,
                   "mutability": "mutable",
                   "name": "Winning_Propositions",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7075,
-                  "src": "4873:25:7",
+                  "scope": 7221,
+                  "src": "4876:25:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1116,10 +1116,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7072,
+                    "id": 7218,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4873:4:7",
+                    "src": "4876:4:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1128,40 +1128,40 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "4872:27:7"
+              "src": "4875:27:7"
             },
-            "scope": 7106,
-            "src": "4792:108:7",
+            "scope": 7252,
+            "src": "4795:108:7",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 7076,
+              "id": 7222,
               "nodeType": "StructuredDocumentation",
-              "src": "4911:195:7",
+              "src": "4914:195:7",
               "text": " @dev Check whether an account has voted or not.\n @param key Id of the voting session\n @param voter_address Address of the account \n @return hasvoted Boolean. "
             },
             "functionSelector": "6e85cb0a",
-            "id": 7085,
+            "id": 7231,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "HasVoted",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7081,
+              "id": 7227,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7078,
+                  "id": 7224,
                   "mutability": "mutable",
                   "name": "key",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7085,
-                  "src": "5129:11:7",
+                  "scope": 7231,
+                  "src": "5132:11:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1169,10 +1169,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7077,
+                    "id": 7223,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "5129:7:7",
+                    "src": "5132:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1182,12 +1182,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7080,
+                  "id": 7226,
                   "mutability": "mutable",
                   "name": "voter_address",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7085,
-                  "src": "5142:21:7",
+                  "scope": 7231,
+                  "src": "5145:21:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1195,10 +1195,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7079,
+                    "id": 7225,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "5142:7:7",
+                    "src": "5145:7:7",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1208,20 +1208,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "5128:36:7"
+              "src": "5131:36:7"
             },
             "returnParameters": {
-              "id": 7084,
+              "id": 7230,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7083,
+                  "id": 7229,
                   "mutability": "mutable",
                   "name": "hasvoted",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7085,
-                  "src": "5187:13:7",
+                  "scope": 7231,
+                  "src": "5190:13:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1229,10 +1229,10 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 7082,
+                    "id": 7228,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "5187:4:7",
+                    "src": "5190:4:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -1241,40 +1241,40 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "5186:15:7"
+              "src": "5189:15:7"
             },
-            "scope": 7106,
-            "src": "5111:91:7",
+            "scope": 7252,
+            "src": "5114:91:7",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 7086,
+              "id": 7232,
               "nodeType": "StructuredDocumentation",
-              "src": "5213:256:7",
+              "src": "5216:256:7",
               "text": " @dev Check whether an account has Validated his vote or not.\n @param key Id of the voting session\n @param voter_address Address of the account \n @return Validated Boolean. \n @return Choice Validated voting choice."
             },
             "functionSelector": "589edb44",
-            "id": 7097,
+            "id": 7243,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "HasValidated",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7091,
+              "id": 7237,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7088,
+                  "id": 7234,
                   "mutability": "mutable",
                   "name": "key",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7097,
-                  "src": "5496:11:7",
+                  "scope": 7243,
+                  "src": "5499:11:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1282,10 +1282,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7087,
+                    "id": 7233,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "5496:7:7",
+                    "src": "5499:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1295,12 +1295,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7090,
+                  "id": 7236,
                   "mutability": "mutable",
                   "name": "voter_address",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7097,
-                  "src": "5509:21:7",
+                  "scope": 7243,
+                  "src": "5512:21:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1308,10 +1308,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7089,
+                    "id": 7235,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "5509:7:7",
+                    "src": "5512:7:7",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1321,20 +1321,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "5495:36:7"
+              "src": "5498:36:7"
             },
             "returnParameters": {
-              "id": 7096,
+              "id": 7242,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7093,
+                  "id": 7239,
                   "mutability": "mutable",
                   "name": "Validated",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7097,
-                  "src": "5554:14:7",
+                  "scope": 7243,
+                  "src": "5557:14:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1342,10 +1342,10 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 7092,
+                    "id": 7238,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "5554:4:7",
+                    "src": "5557:4:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -1355,12 +1355,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7095,
+                  "id": 7241,
                   "mutability": "mutable",
                   "name": "Choice",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7097,
-                  "src": "5570:14:7",
+                  "scope": 7243,
+                  "src": "5573:14:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1368,10 +1368,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7094,
+                    "id": 7240,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "5570:7:7",
+                    "src": "5573:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1380,40 +1380,40 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "5553:32:7"
+              "src": "5556:32:7"
             },
-            "scope": 7106,
-            "src": "5474:112:7",
+            "scope": 7252,
+            "src": "5477:112:7",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 7098,
+              "id": 7244,
               "nodeType": "StructuredDocumentation",
-              "src": "5600:152:7",
+              "src": "5603:152:7",
               "text": " @dev Get the number of accounts that have voted in the Voting session\n @param key Id of the voting session\n @return voter_num"
             },
             "functionSelector": "2422de87",
-            "id": 7105,
+            "id": 7251,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "Get_Voter_Number",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7101,
+              "id": 7247,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7100,
+                  "id": 7246,
                   "mutability": "mutable",
                   "name": "key",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7105,
-                  "src": "5783:11:7",
+                  "scope": 7251,
+                  "src": "5786:11:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1421,10 +1421,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7099,
+                    "id": 7245,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "5783:7:7",
+                    "src": "5786:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1433,20 +1433,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "5782:13:7"
+              "src": "5785:13:7"
             },
             "returnParameters": {
-              "id": 7104,
+              "id": 7250,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7103,
+                  "id": 7249,
                   "mutability": "mutable",
                   "name": "voter_num",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7105,
-                  "src": "5817:14:7",
+                  "scope": 7251,
+                  "src": "5820:14:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1454,10 +1454,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7102,
+                    "id": 7248,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "5817:4:7",
+                    "src": "5820:4:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1466,34 +1466,34 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "5816:16:7"
+              "src": "5819:16:7"
             },
-            "scope": 7106,
-            "src": "5757:76:7",
+            "scope": 7252,
+            "src": "5760:76:7",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 7107,
-        "src": "1094:4741:7"
+        "scope": 7253,
+        "src": "1097:4741:7"
       }
     ],
-    "src": "32:5803:7"
+    "src": "32:5806:7"
   },
   "legacyAST": {
     "absolutePath": "/home/andrei/Alyra/Web3_Referendum/contracts/IVote.sol",
     "exportedSymbols": {
       "IVote": [
-        7106
+        7252
       ]
     },
-    "id": 7107,
+    "id": 7253,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6997,
+        "id": 7143,
         "literals": [
           "solidity",
           "^",
@@ -1509,45 +1509,45 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 6998,
+          "id": 7144,
           "nodeType": "StructuredDocumentation",
-          "src": "57:1035:7",
-          "text": " @dev IVote is an interface for contracts that implements a voting system. IVote contract should allow voters to chose M Winning Propositions among N Candidates Propositions (M<N). \n Propositions are represented by numbers going from 1 to N. 0 proposition is the default proposition and represent the blank vote. \n Voting choices can be clear or hashed with a bytes32 salt in order to prevent voters that hasn't voted yet from being influenced by oders voter's voting choices. \n If votes are hashed, voters should validate their vote after the voting period is over, by submiting their clear voting choice with the corresponding salt.\n Serverals voting sessions with different parameters can be hold at the same time for various use case. \n Each new ballot should be provided with the address of a \"Voter register\" contract that contain a whitelist of account allowed to vote and with the function selector of a \"Voter register\" contract function that allow to check whether an account is allowed to vote or not.\n "
+          "src": "57:1038:7",
+          "text": " @notice IVote is an interface for contracts that implements a voting system. IVote contract should allow voters to chose M Winning Propositions among N Candidates Propositions (M<N). \n Propositions are represented by numbers going from 1 to N. 0 proposition is the default proposition and represent the blank vote. \n Voting choices can be clear or hashed with a bytes32 salt in order to prevent voters that hasn't voted yet from being influenced by oders voter's voting choices. \n If votes are hashed, voters should validate their vote after the voting period is over, by submiting their clear voting choice with the corresponding salt.\n Serverals voting sessions with different parameters can be hold at the same time for various use case. \n Each new ballot should be provided with the address of a \"Voter register\" contract that contain a whitelist of account allowed to vote and with the function selector of a \"Voter register\" contract function that allow to check whether an account is allowed to vote or not.\n "
         },
         "fullyImplemented": false,
-        "id": 7106,
+        "id": 7252,
         "linearizedBaseContracts": [
-          7106
+          7252
         ],
         "name": "IVote",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "documentation": {
-              "id": 6999,
+              "id": 7145,
               "nodeType": "StructuredDocumentation",
-              "src": "1120:836:7",
+              "src": "1123:836:7",
               "text": " @dev Creates a new voting session\n @param key Id of the new voting session\n @param Voters_Register_Address address of the contract that store account that are allowed to vote in this voting session\n @param Check_Voter_Selector Function Selector of a Voters_Register_Address contract's function in charge of checking whether an address belongs to accounts allowed to vote. The function should take an address in parameters and return a boolean. \n @param Vote_Duration Duration of the stage in which members are allowed to vote \n @param Vote_Validation_Duration Duration of the stage in which accounts who have voted have to validate their voting choice.\n @param Propositions_Number Number N of candidats Propositions\n @param Max_Winning_Propositions_Number Number M of places."
             },
             "functionSelector": "e1345358",
-            "id": 7016,
+            "id": 7162,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "Create_Ballot",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7014,
+              "id": 7160,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7001,
+                  "id": 7147,
                   "mutability": "mutable",
                   "name": "key",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7016,
-                  "src": "1984:11:7",
+                  "scope": 7162,
+                  "src": "1987:11:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1555,10 +1555,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7000,
+                    "id": 7146,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1984:7:7",
+                    "src": "1987:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1568,12 +1568,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7003,
+                  "id": 7149,
                   "mutability": "mutable",
                   "name": "Voters_Register_Address",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7016,
-                  "src": "1997:31:7",
+                  "scope": 7162,
+                  "src": "2000:31:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1581,10 +1581,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7002,
+                    "id": 7148,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1997:7:7",
+                    "src": "2000:7:7",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1595,12 +1595,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7005,
+                  "id": 7151,
                   "mutability": "mutable",
                   "name": "Check_Voter_Selector",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7016,
-                  "src": "2030:27:7",
+                  "scope": 7162,
+                  "src": "2033:27:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1608,10 +1608,10 @@
                     "typeString": "bytes4"
                   },
                   "typeName": {
-                    "id": 7004,
+                    "id": 7150,
                     "name": "bytes4",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2030:6:7",
+                    "src": "2033:6:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes4",
                       "typeString": "bytes4"
@@ -1621,12 +1621,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7007,
+                  "id": 7153,
                   "mutability": "mutable",
                   "name": "Vote_Duration",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7016,
-                  "src": "2059:18:7",
+                  "scope": 7162,
+                  "src": "2062:18:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1634,10 +1634,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7006,
+                    "id": 7152,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2059:4:7",
+                    "src": "2062:4:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1647,12 +1647,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7009,
+                  "id": 7155,
                   "mutability": "mutable",
                   "name": "Vote_Validation_Duration",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7016,
-                  "src": "2079:29:7",
+                  "scope": 7162,
+                  "src": "2082:29:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1660,10 +1660,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7008,
+                    "id": 7154,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2079:4:7",
+                    "src": "2082:4:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1673,12 +1673,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7011,
+                  "id": 7157,
                   "mutability": "mutable",
                   "name": "Propositions_Number",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7016,
-                  "src": "2110:24:7",
+                  "scope": 7162,
+                  "src": "2113:24:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1686,10 +1686,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7010,
+                    "id": 7156,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2110:4:7",
+                    "src": "2113:4:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1699,12 +1699,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7013,
+                  "id": 7159,
                   "mutability": "mutable",
                   "name": "Max_Winning_Propositions_Number",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7016,
-                  "src": "2136:36:7",
+                  "scope": 7162,
+                  "src": "2139:36:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1712,10 +1712,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7012,
+                    "id": 7158,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2136:4:7",
+                    "src": "2139:4:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1724,46 +1724,46 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1983:190:7"
+              "src": "1986:190:7"
             },
             "returnParameters": {
-              "id": 7015,
+              "id": 7161,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2182:0:7"
+              "src": "2185:0:7"
             },
-            "scope": 7106,
-            "src": "1961:222:7",
+            "scope": 7252,
+            "src": "1964:222:7",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 7017,
+              "id": 7163,
               "nodeType": "StructuredDocumentation",
-              "src": "2193:251:7",
+              "src": "2196:251:7",
               "text": " @dev Allows a voter to vote clear in a voting session. Only callable during Voting stage of a voting session.\n @param key Id of the voting session\n @param Choices Array of propositions Ids that correspond to voter choice"
             },
             "functionSelector": "f766ddf6",
-            "id": 7025,
+            "id": 7171,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "Vote_Clear",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7023,
+              "id": 7169,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7019,
+                  "id": 7165,
                   "mutability": "mutable",
                   "name": "key",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7025,
-                  "src": "2469:11:7",
+                  "scope": 7171,
+                  "src": "2472:11:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1771,10 +1771,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7018,
+                    "id": 7164,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2469:7:7",
+                    "src": "2472:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1784,12 +1784,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7022,
+                  "id": 7168,
                   "mutability": "mutable",
                   "name": "Choices",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7025,
-                  "src": "2482:23:7",
+                  "scope": 7171,
+                  "src": "2485:23:7",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
@@ -1798,18 +1798,18 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 7020,
+                      "id": 7166,
                       "name": "uint",
                       "nodeType": "ElementaryTypeName",
-                      "src": "2482:4:7",
+                      "src": "2485:4:7",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
                       }
                     },
-                    "id": 7021,
+                    "id": 7167,
                     "nodeType": "ArrayTypeName",
-                    "src": "2482:6:7",
+                    "src": "2485:6:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
                       "typeString": "uint256[]"
@@ -1818,46 +1818,46 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2468:38:7"
+              "src": "2471:38:7"
             },
             "returnParameters": {
-              "id": 7024,
+              "id": 7170,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2515:0:7"
+              "src": "2518:0:7"
             },
-            "scope": 7106,
-            "src": "2449:67:7",
+            "scope": 7252,
+            "src": "2452:67:7",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 7026,
+              "id": 7172,
               "nodeType": "StructuredDocumentation",
-              "src": "2527:394:7",
+              "src": "2530:394:7",
               "text": " @dev Allows a voter to vote in a voting session with an hashed voting choice in order to keep it secret until the vote validation stage. Only callable during Voting stage of a voting session.\n @param key Id of the voting session\n @param Choice Hash of the Array of propositions Ids that correspond to voter's choice with a salt bytes32 value created by the voter."
             },
             "functionSelector": "c0fac250",
-            "id": 7033,
+            "id": 7179,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "Vote_Hashed",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7031,
+              "id": 7177,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7028,
+                  "id": 7174,
                   "mutability": "mutable",
                   "name": "key",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7033,
-                  "src": "2947:11:7",
+                  "scope": 7179,
+                  "src": "2950:11:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1865,10 +1865,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7027,
+                    "id": 7173,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2947:7:7",
+                    "src": "2950:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1878,12 +1878,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7030,
+                  "id": 7176,
                   "mutability": "mutable",
                   "name": "Choice",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7033,
-                  "src": "2960:14:7",
+                  "scope": 7179,
+                  "src": "2963:14:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1891,10 +1891,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7029,
+                    "id": 7175,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2960:7:7",
+                    "src": "2963:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1903,46 +1903,46 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2946:29:7"
+              "src": "2949:29:7"
             },
             "returnParameters": {
-              "id": 7032,
+              "id": 7178,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2984:0:7"
+              "src": "2987:0:7"
             },
-            "scope": 7106,
-            "src": "2926:59:7",
+            "scope": 7252,
+            "src": "2929:59:7",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 7034,
+              "id": 7180,
               "nodeType": "StructuredDocumentation",
-              "src": "2995:231:7",
+              "src": "2998:231:7",
               "text": " @dev End the voting stage if it is over. If votes are hashed then we start the validation stage, else votes are tailled and we should have access to winning propositions\n @param key Id of the voting session"
             },
             "functionSelector": "b0a0787e",
-            "id": 7039,
+            "id": 7185,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "End_Vote",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7037,
+              "id": 7183,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7036,
+                  "id": 7182,
                   "mutability": "mutable",
                   "name": "key",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7039,
-                  "src": "3249:11:7",
+                  "scope": 7185,
+                  "src": "3252:11:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1950,10 +1950,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7035,
+                    "id": 7181,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3249:7:7",
+                    "src": "3252:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1962,46 +1962,46 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3248:13:7"
+              "src": "3251:13:7"
             },
             "returnParameters": {
-              "id": 7038,
+              "id": 7184,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3269:0:7"
+              "src": "3272:0:7"
             },
-            "scope": 7106,
-            "src": "3231:39:7",
+            "scope": 7252,
+            "src": "3234:39:7",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 7040,
+              "id": 7186,
               "nodeType": "StructuredDocumentation",
-              "src": "3280:420:7",
+              "src": "3283:420:7",
               "text": " @dev Allows voter to validate their hashed voting choice by submitting it coupled with the salt bytes32 value that has been used to hash it. nly callable during Validation stage of a voting session.\n @param key Id of the voting session\n @param Choices Array of propositions Ids that correspond to voter choice\n @param salt bytes32 value that has been used to hash the \"Choice\" value."
             },
             "functionSelector": "52d1b523",
-            "id": 7050,
+            "id": 7196,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "Valdiate_Vote",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7048,
+              "id": 7194,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7042,
+                  "id": 7188,
                   "mutability": "mutable",
                   "name": "key",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7050,
-                  "src": "3729:11:7",
+                  "scope": 7196,
+                  "src": "3732:11:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2009,10 +2009,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7041,
+                    "id": 7187,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3729:7:7",
+                    "src": "3732:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -2022,12 +2022,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7045,
+                  "id": 7191,
                   "mutability": "mutable",
                   "name": "Choices",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7050,
-                  "src": "3742:23:7",
+                  "scope": 7196,
+                  "src": "3745:23:7",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
@@ -2036,18 +2036,18 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 7043,
+                      "id": 7189,
                       "name": "uint",
                       "nodeType": "ElementaryTypeName",
-                      "src": "3742:4:7",
+                      "src": "3745:4:7",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
                       }
                     },
-                    "id": 7044,
+                    "id": 7190,
                     "nodeType": "ArrayTypeName",
-                    "src": "3742:6:7",
+                    "src": "3745:6:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
                       "typeString": "uint256[]"
@@ -2057,12 +2057,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7047,
+                  "id": 7193,
                   "mutability": "mutable",
                   "name": "salt",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7050,
-                  "src": "3767:12:7",
+                  "scope": 7196,
+                  "src": "3770:12:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2070,10 +2070,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7046,
+                    "id": 7192,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3767:7:7",
+                    "src": "3770:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -2082,46 +2082,46 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3728:53:7"
+              "src": "3731:53:7"
             },
             "returnParameters": {
-              "id": 7049,
+              "id": 7195,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3789:0:7"
+              "src": "3792:0:7"
             },
-            "scope": 7106,
-            "src": "3706:84:7",
+            "scope": 7252,
+            "src": "3709:84:7",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 7051,
+              "id": 7197,
               "nodeType": "StructuredDocumentation",
-              "src": "3801:174:7",
+              "src": "3804:174:7",
               "text": " @dev End the validation stage if it is over. Votes are tailled and we should have access to winning propositions\n @param key Id of the voting session"
             },
             "functionSelector": "3f71f876",
-            "id": 7056,
+            "id": 7202,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "End_Validation_Vote",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7054,
+              "id": 7200,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7053,
+                  "id": 7199,
                   "mutability": "mutable",
                   "name": "key",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7056,
-                  "src": "4009:11:7",
+                  "scope": 7202,
+                  "src": "4012:11:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2129,10 +2129,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7052,
+                    "id": 7198,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4009:7:7",
+                    "src": "4012:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -2141,46 +2141,46 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "4008:13:7"
+              "src": "4011:13:7"
             },
             "returnParameters": {
-              "id": 7055,
+              "id": 7201,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "4030:0:7"
+              "src": "4033:0:7"
             },
-            "scope": 7106,
-            "src": "3980:51:7",
+            "scope": 7252,
+            "src": "3983:51:7",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 7057,
+              "id": 7203,
               "nodeType": "StructuredDocumentation",
-              "src": "4042:285:7",
+              "src": "4045:285:7",
               "text": " @dev Get winning propositions list of a voting session. Only callable if the ballot have been tailled (after End_Vote of End_Validation_Vote call).\n @param key Id of the voting session\n @return Winning_Propositions_List List of winning propositions list."
             },
             "functionSelector": "1d1a8231",
-            "id": 7065,
+            "id": 7211,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "Get_Winning_Propositions",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7060,
+              "id": 7206,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7059,
+                  "id": 7205,
                   "mutability": "mutable",
                   "name": "key",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7065,
-                  "src": "4366:11:7",
+                  "scope": 7211,
+                  "src": "4369:11:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2188,10 +2188,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7058,
+                    "id": 7204,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4366:7:7",
+                    "src": "4369:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -2200,20 +2200,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "4365:13:7"
+              "src": "4368:13:7"
             },
             "returnParameters": {
-              "id": 7064,
+              "id": 7210,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7063,
+                  "id": 7209,
                   "mutability": "mutable",
                   "name": "Winning_Propositions_List",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7065,
-                  "src": "4400:39:7",
+                  "scope": 7211,
+                  "src": "4403:39:7",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -2222,18 +2222,18 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 7061,
+                      "id": 7207,
                       "name": "uint",
                       "nodeType": "ElementaryTypeName",
-                      "src": "4400:4:7",
+                      "src": "4403:4:7",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
                       }
                     },
-                    "id": 7062,
+                    "id": 7208,
                     "nodeType": "ArrayTypeName",
-                    "src": "4400:6:7",
+                    "src": "4403:6:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
                       "typeString": "uint256[]"
@@ -2242,40 +2242,40 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "4399:41:7"
+              "src": "4402:41:7"
             },
-            "scope": 7106,
-            "src": "4332:109:7",
+            "scope": 7252,
+            "src": "4335:109:7",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 7066,
+              "id": 7212,
               "nodeType": "StructuredDocumentation",
-              "src": "4451:336:7",
+              "src": "4454:336:7",
               "text": " @dev Get a winning proposition by it's rank. Only callable if the ballot have been tailled (after End_Vote of End_Validation_Vote call).\n @param key Id of the voting session\n @param Id Rank (index) of the proposition we want to get in the List of winning propositions.\n @return Winning_Propositions "
             },
             "functionSelector": "ce584e12",
-            "id": 7075,
+            "id": 7221,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "Get_Winning_Proposition_byId",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7071,
+              "id": 7217,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7068,
+                  "id": 7214,
                   "mutability": "mutable",
                   "name": "key",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7075,
-                  "src": "4830:11:7",
+                  "scope": 7221,
+                  "src": "4833:11:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2283,10 +2283,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7067,
+                    "id": 7213,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4830:7:7",
+                    "src": "4833:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -2296,12 +2296,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7070,
+                  "id": 7216,
                   "mutability": "mutable",
                   "name": "Id",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7075,
-                  "src": "4843:7:7",
+                  "scope": 7221,
+                  "src": "4846:7:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2309,10 +2309,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7069,
+                    "id": 7215,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4843:4:7",
+                    "src": "4846:4:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2321,20 +2321,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "4829:22:7"
+              "src": "4832:22:7"
             },
             "returnParameters": {
-              "id": 7074,
+              "id": 7220,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7073,
+                  "id": 7219,
                   "mutability": "mutable",
                   "name": "Winning_Propositions",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7075,
-                  "src": "4873:25:7",
+                  "scope": 7221,
+                  "src": "4876:25:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2342,10 +2342,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7072,
+                    "id": 7218,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4873:4:7",
+                    "src": "4876:4:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2354,40 +2354,40 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "4872:27:7"
+              "src": "4875:27:7"
             },
-            "scope": 7106,
-            "src": "4792:108:7",
+            "scope": 7252,
+            "src": "4795:108:7",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 7076,
+              "id": 7222,
               "nodeType": "StructuredDocumentation",
-              "src": "4911:195:7",
+              "src": "4914:195:7",
               "text": " @dev Check whether an account has voted or not.\n @param key Id of the voting session\n @param voter_address Address of the account \n @return hasvoted Boolean. "
             },
             "functionSelector": "6e85cb0a",
-            "id": 7085,
+            "id": 7231,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "HasVoted",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7081,
+              "id": 7227,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7078,
+                  "id": 7224,
                   "mutability": "mutable",
                   "name": "key",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7085,
-                  "src": "5129:11:7",
+                  "scope": 7231,
+                  "src": "5132:11:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2395,10 +2395,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7077,
+                    "id": 7223,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "5129:7:7",
+                    "src": "5132:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -2408,12 +2408,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7080,
+                  "id": 7226,
                   "mutability": "mutable",
                   "name": "voter_address",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7085,
-                  "src": "5142:21:7",
+                  "scope": 7231,
+                  "src": "5145:21:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2421,10 +2421,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7079,
+                    "id": 7225,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "5142:7:7",
+                    "src": "5145:7:7",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2434,20 +2434,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "5128:36:7"
+              "src": "5131:36:7"
             },
             "returnParameters": {
-              "id": 7084,
+              "id": 7230,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7083,
+                  "id": 7229,
                   "mutability": "mutable",
                   "name": "hasvoted",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7085,
-                  "src": "5187:13:7",
+                  "scope": 7231,
+                  "src": "5190:13:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2455,10 +2455,10 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 7082,
+                    "id": 7228,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "5187:4:7",
+                    "src": "5190:4:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -2467,40 +2467,40 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "5186:15:7"
+              "src": "5189:15:7"
             },
-            "scope": 7106,
-            "src": "5111:91:7",
+            "scope": 7252,
+            "src": "5114:91:7",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 7086,
+              "id": 7232,
               "nodeType": "StructuredDocumentation",
-              "src": "5213:256:7",
+              "src": "5216:256:7",
               "text": " @dev Check whether an account has Validated his vote or not.\n @param key Id of the voting session\n @param voter_address Address of the account \n @return Validated Boolean. \n @return Choice Validated voting choice."
             },
             "functionSelector": "589edb44",
-            "id": 7097,
+            "id": 7243,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "HasValidated",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7091,
+              "id": 7237,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7088,
+                  "id": 7234,
                   "mutability": "mutable",
                   "name": "key",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7097,
-                  "src": "5496:11:7",
+                  "scope": 7243,
+                  "src": "5499:11:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2508,10 +2508,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7087,
+                    "id": 7233,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "5496:7:7",
+                    "src": "5499:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -2521,12 +2521,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7090,
+                  "id": 7236,
                   "mutability": "mutable",
                   "name": "voter_address",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7097,
-                  "src": "5509:21:7",
+                  "scope": 7243,
+                  "src": "5512:21:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2534,10 +2534,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7089,
+                    "id": 7235,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "5509:7:7",
+                    "src": "5512:7:7",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2547,20 +2547,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "5495:36:7"
+              "src": "5498:36:7"
             },
             "returnParameters": {
-              "id": 7096,
+              "id": 7242,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7093,
+                  "id": 7239,
                   "mutability": "mutable",
                   "name": "Validated",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7097,
-                  "src": "5554:14:7",
+                  "scope": 7243,
+                  "src": "5557:14:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2568,10 +2568,10 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 7092,
+                    "id": 7238,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "5554:4:7",
+                    "src": "5557:4:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -2581,12 +2581,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 7095,
+                  "id": 7241,
                   "mutability": "mutable",
                   "name": "Choice",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7097,
-                  "src": "5570:14:7",
+                  "scope": 7243,
+                  "src": "5573:14:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2594,10 +2594,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7094,
+                    "id": 7240,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "5570:7:7",
+                    "src": "5573:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -2606,40 +2606,40 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "5553:32:7"
+              "src": "5556:32:7"
             },
-            "scope": 7106,
-            "src": "5474:112:7",
+            "scope": 7252,
+            "src": "5477:112:7",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 7098,
+              "id": 7244,
               "nodeType": "StructuredDocumentation",
-              "src": "5600:152:7",
+              "src": "5603:152:7",
               "text": " @dev Get the number of accounts that have voted in the Voting session\n @param key Id of the voting session\n @return voter_num"
             },
             "functionSelector": "2422de87",
-            "id": 7105,
+            "id": 7251,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "Get_Voter_Number",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7101,
+              "id": 7247,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7100,
+                  "id": 7246,
                   "mutability": "mutable",
                   "name": "key",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7105,
-                  "src": "5783:11:7",
+                  "scope": 7251,
+                  "src": "5786:11:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2647,10 +2647,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 7099,
+                    "id": 7245,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "5783:7:7",
+                    "src": "5786:7:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -2659,20 +2659,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "5782:13:7"
+              "src": "5785:13:7"
             },
             "returnParameters": {
-              "id": 7104,
+              "id": 7250,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7103,
+                  "id": 7249,
                   "mutability": "mutable",
                   "name": "voter_num",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7105,
-                  "src": "5817:14:7",
+                  "scope": 7251,
+                  "src": "5820:14:7",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2680,10 +2680,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7102,
+                    "id": 7248,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "5817:4:7",
+                    "src": "5820:4:7",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2692,20 +2692,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "5816:16:7"
+              "src": "5819:16:7"
             },
-            "scope": 7106,
-            "src": "5757:76:7",
+            "scope": 7252,
+            "src": "5760:76:7",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 7107,
-        "src": "1094:4741:7"
+        "scope": 7253,
+        "src": "1097:4741:7"
       }
     ],
-    "src": "32:5803:7"
+    "src": "32:5806:7"
   },
   "compiler": {
     "name": "solc",
@@ -2713,9 +2713,8 @@
   },
   "networks": {},
   "schemaVersion": "3.3.1",
-  "updatedAt": "2021-04-26T09:39:40.145Z",
+  "updatedAt": "2021-04-28T21:24:22.675Z",
   "devdoc": {
-    "details": "IVote is an interface for contracts that implements a voting system. IVote contract should allow voters to chose M Winning Propositions among N Candidates Propositions (M<N).  Propositions are represented by numbers going from 1 to N. 0 proposition is the default proposition and represent the blank vote.  Voting choices can be clear or hashed with a bytes32 salt in order to prevent voters that hasn't voted yet from being influenced by oders voter's voting choices.  If votes are hashed, voters should validate their vote after the voting period is over, by submiting their clear voting choice with the corresponding salt. Serverals voting sessions with different parameters can be hold at the same time for various use case.  Each new ballot should be provided with the address of a \"Voter register\" contract that contain a whitelist of account allowed to vote and with the function selector of a \"Voter register\" contract function that allow to check whether an account is allowed to vote or not. ",
     "kind": "dev",
     "methods": {
       "Create_Ballot(bytes32,address,bytes4,uint256,uint256,uint256,uint256)": {
@@ -2819,6 +2818,7 @@
   "userdoc": {
     "kind": "user",
     "methods": {},
+    "notice": "IVote is an interface for contracts that implements a voting system. IVote contract should allow voters to chose M Winning Propositions among N Candidates Propositions (M<N).  Propositions are represented by numbers going from 1 to N. 0 proposition is the default proposition and represent the blank vote.  Voting choices can be clear or hashed with a bytes32 salt in order to prevent voters that hasn't voted yet from being influenced by oders voter's voting choices.  If votes are hashed, voters should validate their vote after the voting period is over, by submiting their clear voting choice with the corresponding salt. Serverals voting sessions with different parameters can be hold at the same time for various use case.  Each new ballot should be provided with the address of a \"Voter register\" contract that contain a whitelist of account allowed to vote and with the function selector of a \"Voter register\" contract function that allow to check whether an account is allowed to vote or not. ",
     "version": 1
   }
 }

@@ -17,9 +17,13 @@ Le projet implémente un système de droit d’exécutions des fonction d’éta
  * _Authorities Only_ : Les contrats de type Register possèdent une liste d’adresses (Register_Authorities) correspondants aux contrats ayant le droit d’interagir avec eux. Seuls ces contrats peuvent faire appel aux fonctions ayant le modifier Authorities_Only. 
 
 
-On peut constater que les contrats de type register (Constitution, API_Register, Loi et Citizens_Register) ne peuvent être appelés que par l’Agora, les Delegation et la Constitution. Il n’est donc pas possible pour un citoyen d’interagir directement avec ces contrats. Ils doivent pour cela passer par les contrats de gouvernance que sont l’Agora et les Delegation. Cela permet d’isoler les données d’intérêt de la DAO, contenues dans les register ; des citoyens. 
+On peut constater que les contrats de type register (Constitution, API_Register, Loi et Citizens_Register) ne peuvent être appelés que par l’Agora, les Delegation et la Constitution. Il n’est donc pas possible pour un citoyen d’interagir directement avec ces contrats. Ils doivent pour cela passer par les contrats de gouvernance que sont l’Agora et les Delegation. Cela permet d’isoler les données d’intérêt de la DAO, contenues dans les register ; de l'ensemble des citoyens. 
 Par ailleurs, étant donné que la majorité des fonctions du projet sont soumises à l’un de ces modifier, il est difficile pour un compte étranger à la DAO d’interagir avec elle. 
 
+## Blocage
+
+L’attaquant peut vouloir bloquer ou perturber le bon fonctionnement de la DAO. Il peut notamment vouloir bloquer le processus de création d’une loi si cette dernière ne lui convient pas. 
+Le projet n’est pas soumis aux risques de blocages liés au transfert d’ether mais d’autres formes de blocages peuvent se produire.
 
 Prenons par exemple le contrats Majority_Judgment_Ballot.sol qui peut gérer plusieurs scrutins (ballots) relatifs à plusieurs contrats de gouvernance différents (Agora ou Délégations). Ces scrutins sont identifiés sur le contrat via une clé « key » (bytes32 choisit par le contrat de gouvernance) au sein d’un mapping. Un attaquant pourrait bloquer un contrat de gouvernance en l’empêchant de lancer un scrutin sur Majority_Judgment_Ballot en lançant avant lui un scrutin ayant la même clé. Pour éviter cette attaque, nous avons fait en sorte que les clés des scrutins fournies par les contrats de gouvernance ne puissent pas être calculées à l’avance avant la création du scrutin. Pour cela, la clé est obtenue en hashant un élément fixe (ex : l’identifiant de la proposition de loi) avec le timestamps du bloc auquel le scrutin est crée. 
 
