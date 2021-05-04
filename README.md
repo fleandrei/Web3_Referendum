@@ -208,6 +208,19 @@ Install javascript packages :
 
 `$ npm install @truffle/hdwallet-provider`
 
+
+Install bootstrap for the front end:
+
+`$ cd client`
+`$ npm install bootstrap`
+`$ npm install react-bootstrap`
+
+To launch the front end:
+
+`$ cd client`
+`$ npm run start`
+
+
 ### Migration Parameters:
 The migration folder contains a _Migration_Parameters.json_ file that set parameters for the deployment of initials contracts : DemoCoin, Citizens_Register, Agora and Constitution.
 It’s a JSON file containing following fields :
@@ -228,6 +241,11 @@ It’s a JSON file containing following fields :
 
 
 You can edit this file according to your needs.
+To launch the migration on ropsten:
+
+`$ truffle migrate --network ropsten`
+
+You can edit the truffle-config.js to add other networks.
 
 ### Web3 direct democracy project initialisation: 
 Once a Web3 Direct Democracy project has just been deployed, it hasn’t any register or delegation. Citizens_Register and DemoCoin contracts haven’t any authority in their _Register_Authorities_ list. 

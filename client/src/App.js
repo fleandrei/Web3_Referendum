@@ -1,8 +1,9 @@
 import React, { Component, useState, useEffect, useRef } from "react";
-import {Register, Constitution, Loi, Delegation, Governance_Instance, DemoCoin} from "./WDD_API";
+import {Register, Constitution, Loi, Delegation, Governance_Instance, DemoCoin, Majority_Judgment_Ballot} from "./WDD_API";
 import Propositions_Submission from "./Propositions_Submission";
 
 import Constitution_Artifact from "./contracts/Constitution.json";
+import Majority_Judgment_Ballot_Artifact from "./contracts/Majority_Judgment_Ballot.json";
 
 import Button from 'react-bootstrap/Button';
 import Navbar from 'react-bootstrap/Navbar';
@@ -113,7 +114,7 @@ function Referendum_Parameter_Table(props){
 }
 
 function Create_Function_Call(props){
-  const [Register, SetRegister] = useState(null);
+  //const [Register, SetRegister] = useState(null);
   const [Current_Function_Selector, SetCurrentFunction] = useState("");
   const [validated, SetValidated] = useState(false);
 
@@ -133,7 +134,7 @@ function Create_Function_Call(props){
       }
       var function_selector = form[0].value;
       if(function_selector==""){ alert("You should choose a register function")}
-      var Function = Register.Register_Functions.get(function_selector);
+      var Function = props.Register_Functions.get(function_selector);
       var Param_num = Function.Param_Types.length;
       var Param_value = Array.from({length:Param_num});
       for (var i =1; i <=Param_num; i++) {
@@ -141,22 +142,21 @@ function Create_Function_Call(props){
       }
       console.log("Create_Function_Call: Param_Values",Param_value);
 
-      var Encoded_Function_Call = await Register.Encode_Register_Functions_BySelector(function_selector, Param_value);
-      console.log("Create_Function_Call: Encoded_Function_Call:",Encoded_Function_Call);
+      
       SetValidated(true);
       console.log("\n\n\n Create_Function_Call: form:",form, "form.0.value",form[0].value);
-      props.Handle_Function_Call(Register.Instance._address, Encoded_Function_Call);
+      props.Handle_Function_Call(function_selector, Param_value);
     }catch(err){
       alert("Create_Function_Call.Handle_Submit error: Function call submission failed. Check console for details");
       console.error(err);
     }
   }
 
-  if(Register!==props.Register){
+  /*if(Register!==props.Register){
     SetRegister(props.Register);
-  }
+  }*/
 
-  if(Register==null){return <div> </div>}
+  if(props.Register_Functions==null){return <div> </div>}
 
   return(
     <div className="App">
@@ -173,7 +173,7 @@ function Create_Function_Call(props){
         >
           <option value="">Choose register function...</option>
           {
-            Array.from(Register.Register_Functions).map((elem,idx)=>{
+            Array.from(props.Register_Functions).map((elem,idx)=>{
               return <option key={elem[0]} value={elem[0]}>{elem[1].Name}</option>
             })
           }
@@ -183,13 +183,13 @@ function Create_Function_Call(props){
 
         {
           (Current_Function_Selector!="")&&
-          Register.Register_Functions.get(Current_Function_Selector).Param_Names.map((elem,idx)=>{
+          props.Register_Functions.get(Current_Function_Selector).Param_Names.map((elem,idx)=>{
             return <Form.Group as={Row} controlId={elem} key={elem+Current_Function_Selector}>
             <Form.Label column sm={5}>
               {elem}
             </Form.Label>
             <Col sm={7}>
-              <Form.Control type="text" placeholder={Register.Register_Functions.get(Current_Function_Selector).Param_Types[idx]} required/>
+              <Form.Control type="text" placeholder={props.Register_Functions.get(Current_Function_Selector).Param_Types[idx]} required/>
             </Col>
             </Form.Group>
           })
@@ -207,20 +207,37 @@ function Create_Function_Call(props){
 
 function Constitution_Data_Show(props){
 
-  const Transitional_Governement_FunctionCall = async (register_address, function_call)=>{
+  const Transitional_Governement_FunctionCall = async (function_selector, Param_value)=>{
     try{
-    await props.web3.eth.sendTransaction({
-      from:props.account,
-      to:props.Constitution.Instance._address,
-      data:function_call.slice(2)
-    })
-    var Register_Address = props.Constitution.Register_Address;
-  }catch(error){
-    alert("Transitional_Government function call error:" + error.toString());
-    console.error(error);
-  }
+      if(function_selector=="0x1529356f" || function_selector=="0x2cef26ca"){
+        Param_value.push(props.IVote_address);
+      }
+      var Encoded_Function_Call = await props.Constitution.Encode_Register_Functions_BySelector(function_selector, Param_value);
+      console.log("Create_Function_Call: Encoded_Function_Call:",Encoded_Function_Call);
+      await props.web3.eth.sendTransaction({
+        from:props.account,
+        to:props.Constitution.Instance._address,
+        data:Encoded_Function_Call.slice(2)
+      })
+      var Register_Address = props.Constitution.Register_Address;
+    }catch(error){
+      alert("Transitional_Government function call error:" + error.toString());
+      console.error(error);
+    }
   }
 
+  var Constitution_Register_Functions = new Map();
+
+  Array.from(props.Constitution.Register_Functions).forEach(elem=>{
+    var Function = Object.assign({},elem[1]);
+    Function.Param_Types= [...elem[1].Param_Types];
+    Function.Param_Names= [...elem[1].Param_Names];
+    if(elem[0]=="0x1529356f" || elem[0]=="0x2cef26ca"){
+      Function.Param_Types.pop();
+      Function.Param_Names.pop();
+    }
+    Constitution_Register_Functions.set(elem[0],Function);
+  })
 
 
   if(props.Constitution==null){return <div> </div>}
@@ -436,7 +453,7 @@ function Constitution_Data_Show(props){
       <Card className="d-flex" style={{ width: '50rem' }}>
         <Card.Header style={{color:"red"}}><strong>Transitional_Government</strong></Card.Header>
           <Card.Body>
-            <Create_Function_Call Register={props.Constitution} Handle_Function_Call={Transitional_Governement_FunctionCall} />
+            <Create_Function_Call Register_Functions={Constitution_Register_Functions} Handle_Function_Call={Transitional_Governement_FunctionCall} />
             
           </Card.Body>
           <Card.Footer className="text-muted">
@@ -474,6 +491,7 @@ function Constitution_Show(props){
                       Delegations={props.Delegations}
                       Citizens_Register={props.Citizens_Register}
                       DemoCoin={props.DemoCoin}
+                      IVote_address={props.Majority_Judgment_Ballot.Instance._address}
                       account={props.account}
                       web3={props.web3}/>;
         break;
@@ -564,7 +582,7 @@ function Constitution_Show(props){
 
   
 class Main extends Component {
-  state = { web3: null, accounts: null, Current_Institution_Tab:Institution_Type.LOI, Sub_Tab_Index:0, Ether_Balance:0, DemoCoin_Balance:0, Constitution:null, Lois:[], API:[], Delegations:[], Citizens_Register:null, DemoCoin:null };
+  state = { web3: null, accounts: null, Current_Institution_Tab:Institution_Type.LOI, Sub_Tab_Index:0, Ether_Balance:0, DemoCoin_Balance:0, Constitution:null, Lois:[], API:[], Delegations:[], Citizens_Register:null, Majority_Judgment_Ballot:null, DemoCoin:null };
 
   
   /*static getDerivedStateFromProps = async (props, state)=>{
@@ -641,9 +659,11 @@ class Main extends Component {
     const { accounts, Constitution } = this.state;
 
     console.log("LoadProject: Constitution.Instance",Constitution.Instance);
+    var Initial_Ballot_Keys=[];
 
     await Constitution.SetInstance(constitution_address);
-
+    //Constitution.Event.on("Voting_Stage_Started",this.New_Ballot);
+    //Initial_Ballot_Keys = Initial_Ballot_Keys.concat(await Constitution.Agora.Get_Pending_Ballot_Keys());
     console.log("LoadProject: after SetInstance Constitution.Instance",Constitution.Instance);
 
     var Democoin = new DemoCoin(this.state.web3);
@@ -654,18 +674,29 @@ class Main extends Component {
     var Lois=[];
     console.log("LoadState: Loi_Register_List:",Constitution.Loi_Register_List);
 
-    Constitution.Loi_Register_List.forEach((Loi_address, idx)=>{
+    Constitution.Loi_Register_List.forEach(async (Loi_address, idx)=>{
       Lois.push(new Loi(this.state.web3));
       Lois[idx].Event.on("State_Changed", this.SetState_Lois);
-      Lois[idx].SetInstance(Loi_address, Constitution.Agora.Instance._address, Democoin.Instance._address);
+      await Lois[idx].SetInstance(Loi_address, Constitution.Agora.Instance._address, Democoin.Instance._address);
+      //Initial_Ballot_Keys = Initial_Ballot_Keys.concat(await Lois[idx].Agora.Get_Pending_Ballot_Keys());
 
     })
 
+
+    var majority_judgment_ballot = new Majority_Judgment_Ballot(this.state.web3);
+    const networkId = await this.state.web3.eth.net.getId();
+    const deployedNetwork = Majority_Judgment_Ballot_Artifact.networks[networkId];
+    await majority_judgment_ballot.SetInstance(deployedNetwork.address, Initial_Ballot_Keys, this.state.accounts[0])
     //await Constitution.Set_Citizen_Mint_Amount(40, accounts[0]);
     //var Agora_Instance = Constitution.Agora_Instance;
 
-    this.setState({ Constitution: Constitution, Lois:Lois, DemoCoin:Democoin});
+    this.setState({ Constitution: Constitution, Lois:Lois, DemoCoin:Democoin, Majority_Judgment_Ballot:majority_judgment_ballot});
   }
+
+  /*New_Ballot = async(Law_Project_key, Ballot_Key)=>{
+
+    
+  }*/
 
   SetState_Constitution = async ()=>{
     var constitution = this.state.Constitution;
@@ -716,6 +747,7 @@ class Main extends Component {
                                  Delegations={this.state.Delegations}
                                  Citizens_Register={this.state.Citizens_Register}
                                  DemoCoin={this.state.DemoCoin}
+                                 Majority_Judgment_Ballot={this.state.Majority_Judgment_Ballot}
                                  account={this.state.accounts[0]}
                                  web3={this.state.web3}
                                  /></div>

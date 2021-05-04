@@ -251,7 +251,7 @@ contract('TEST: Citizen_Register.sol', function(accounts){
 			res = await Citizen_Register_Instance.Set_Citizen_Data(Initial_Citizens[0], data, {from:Registering_Authority});
 
 			expect((await Citizen_Register_Instance.Citizens(Initial_Citizens[0])).Data).to.equal(data);
-			await expectEvent(res, "Citizen_Data_Set", {citizen_address:Initial_Citizens[0]}, "Citizen_Data_Set event incorrect");
+			await expectEvent(res, "Citizen_Data_Set	", {citizen_address:Initial_Citizens[0]}, "Citizen_Data_Set event incorrect");
 		});
 
 	});

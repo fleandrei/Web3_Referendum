@@ -10,9 +10,10 @@
 * _Citizens_Register (contrat)_: 0xEc4ACfB14814F021BaC5fd0DA5e56f498060Bcae
 * _Agora (contrat)_: 0x84e83333d2224B844889C10Def767986b738ec57
 * _Constitution (contrat)_: 0xb7D71D60d09BF8EA9673983542d59B1b477e84c5
+* _Majority_Judgment_Ballot (contrat):_ 0xA394cDF308027c16D80124cD43b0Eed386eE2564
 
 
-Ces contrat ont été déployés sur Ropsten avec le compte 0xfD401B3D1726b159D5E324B919b57B155227e68E.
+Ces contrats ont été déployés sur Ropsten par le compte 0xfD401B3D1726b159D5E324B919b57B155227e68E.
 
 ## Code
 

@@ -36,37 +36,6 @@ abstract contract Institution is ReentrancyGuard{
         CUSTOM
     }
     
-    /*enum Argument_Type{
-        UINT,
-        INT,
-        BYTES,
-        STRING,
-        ADDRESS,
-        BOOL,
-        UINT_ARRAY,
-        INT_ARRAY,
-        BYTES_ARRAY,
-        STRING_ARRAY,
-        ADDRESS_ARRAY,
-        BOOL_ARRAY
-    }
-    
-    struct Function_Argument{
-        //string name;
-        Argument_Type _type;
-        uint Type_Size;
-        uint Array_Length;
-    }
-    
-    struct Register_Function{
-        bytes4 selector;
-        Function_Argument[] arg_list;
-    }
-    
-    struct Function_Call{
-        bytes Data;
-        address contract_address;
-    }*/
     
     ///@dev Check that the caller address is the {Constitution_Address}
     modifier Constitution_Only(){
@@ -74,12 +43,6 @@ abstract contract Institution is ReentrancyGuard{
         _;
     }
     
-    /*TEMP DEBUG EVENT*/
-    /*event LogUint(uint);
-    event LogString(string);
-    event LogBytes(bytes);
-    event LogBytes32(bytes32);
-    event LogAddress(address);*/
     
     /*STATE*/
     

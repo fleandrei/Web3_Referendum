@@ -4,8 +4,8 @@
     "Symbol":"DEMO",
     "Initial_Owners":[
         "0xfD401B3D1726b159D5E324B919b57B155227e68E",
-        "0x37d85FEC01D7205071693bF48782743D3Ba1046b",
-        "0xf37B5496B70F306e19af4799F143DC77A3cD9f52"
+        "0x96C2Ba4E14604BD4e0Bc218Ce3C4973F0D9Be49C",
+        "0x3EE8aB61c078403d270E2ab0677a93446003d197"
       ],
     "Initial_Amount":[
       	"20",
@@ -18,8 +18,8 @@
     "Name":"Citizens",
     "Initial_Citizens":[
       	"0xfD401B3D1726b159D5E324B919b57B155227e68E",
-        "0x37d85FEC01D7205071693bF48782743D3Ba1046b",
-        "0xf37B5496B70F306e19af4799F143DC77A3cD9f52"
+        "0x96C2Ba4E14604BD4e0Bc218Ce3C4973F0D9Be49C",
+        "0x3EE8aB61c078403d270E2ab0677a93446003d197"
       ],
     "new_citizen_mint_amount":"10"
   },

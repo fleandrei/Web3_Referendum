@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect, useRef } from "react";
-import {Constitution, Register, Delegation, Governance_Instance} from "./WDD_API";
+import {Constitution, Register, Delegation, Governance_Instance, DemoCoin} from "./WDD_API";
 
 import Constitution_Artifact from "./contracts/Constitution.json";
 
@@ -30,13 +30,15 @@ import "./App.css";
 function Propositions_Submission(props){
 	 const Handle_New_Proposition = async (Title, Description)=>{
 	 	try{
-	 		await props.Governance_Instance.Add_Law_Project(Title, Description);
+	 		await props.Governance_Instance.Add_Law_Project(Title, Description, props.account);
 	 	}catch(error){
 	 		alert(props.Register_Name+": Failed to add a new law proposition. Check console for details.",)
 	 		console.error(error);
 	 	}
 	 }
 
+	console.log("Propositions_Submission: props.Governance_Instance", props.Governance_Instance);
+	console.log("Propositions_Submission: Array.from(props.Governance_Instance.Pending_Law):",Array.from(props.Governance_Instance.Pending_Law));
 	return(
     <div className="App">
       
@@ -49,9 +51,9 @@ function Propositions_Submission(props){
            
             <Nav variant="pills" className="flex-column">
               
-              { Array.from(props.Governance_Instance.Pending_Law).map((key, law)=>{
-                  return <Nav.Item>
-                  <Nav.Link eventKey={key}>{law.Title}</Nav.Link>
+              { Array.from(props.Governance_Instance.Law_Project_List).map((elem)=>{
+                  return <Nav.Item key={elem[0]}>
+                  <Nav.Link eventKey={elem[0]}>{elem[1].Title}</Nav.Link>
                 </Nav.Item>
                 })
               }
@@ -71,9 +73,9 @@ function Propositions_Submission(props){
             <Tab.Content>
             
             {
-              Array.from(props.Governance_Instance.Pending_Law).map((key, law)=>{
-                return <Tab.Pane eventKey={key}>
-                <h4>law.Title</h4>
+              Array.from(props.Governance_Instance.Pending_Law).map((elem)=>{
+                return <Tab.Pane eventKey={elem[0]} key={elem[0]}>
+                <h4>{elem[1].Title}</h4>
 
 
 
@@ -90,7 +92,7 @@ function Propositions_Submission(props){
           </Col>
         </Row>
       </Tab.Container>
-
+      <hr/>
       <br/>
 
       <New_Law_Proposition On_Submit={Handle_New_Proposition}/>
@@ -128,7 +130,7 @@ function New_Law_Proposition(props){
 				  
 				  <Form.Group controlId="exampleForm.ControlTextarea1">
 				    <Form.Label>Description</Form.Label>
-				    <Form.Control as="textarea" rows={3} />
+				    <Form.Control as="textarea" placeholder="Description" rows={3} />
 				  </Form.Group>
 
 				  <Button type="submit">Submit</Button>

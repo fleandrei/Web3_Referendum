@@ -92,7 +92,7 @@ contract('TEST: API_Register.sol (and Register.sol)', function(accounts){
 
 	});
 
-	describe("Register a new contract", ()=>{
+	describe("Register add a new function to a registered contract", ()=>{
 		let Name, Description; 
 
 		beforeEach(async function(){

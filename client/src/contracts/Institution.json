@@ -105,7 +105,7 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.1+commit.df193b15\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"new_constitution\",\"type\":\"address\"}],\"name\":\"Constitution_Changed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"Address\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"enum Institution.Institution_Type\",\"name\":\"Type\",\"type\":\"uint8\"}],\"name\":\"Institution_Created\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"Name_Changed\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"Constitution_Address\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"Name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"new_constitution\",\"type\":\"address\"}],\"name\":\"Set_Constitution\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"}],\"name\":\"Set_Name\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"Type_Institution\",\"outputs\":[{\"internalType\":\"enum Institution.Institution_Type\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"Set_Constitution(address)\":{\"details\":\"The function Allows to change the Constitution contract the current Institution obey to. The function is only callable by the {Constitution_Address}\",\"params\":{\"new_constitution\":\"Address of the new Constitution contract.\"}},\"constructor\":{\"details\":\"Set the name of the new institution and the address of the constitution.\",\"params\":{\"name\":\"Name of the new institution\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"Constitution_Address()\":{\"notice\":\"Address of the constitution of the DAO\"},\"Name()\":{\"notice\":\"Name of the institution\"},\"Type_Institution()\":{\"notice\":\"Type of the Institution\"}},\"notice\":\"This abstract contract is inherited by almost all contracts of \\\"Web3 Direct Democracy\\\" (except \\\"DemoCoin\\\" token and ballot contracts inheriting from \\\"IVote\\\" interface).  It gathers some common features such as constitution address handling.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"/home/andrei/Alyra/Web3_Referendum/contracts/Institution.sol\":\"Institution\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":20000},\"remappings\":[]},\"sources\":{\"/home/andrei/Alyra/Web3_Referendum/contracts/Institution.sol\":{\"keccak256\":\"0x6c8725b595cb1f8745375e6c01fe634362811a3eeb9dbdb9404431c9dad18661\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://631e92d80bff04c9b0a205f4dc06c9c7afe9fab9de5716621663811a08e0647d\",\"dweb:/ipfs/QmVRqn5qcaonu8dCmBg1G3pQZCHvVVumspJUU3ARwxBLBe\"]},\"@openzeppelin/contracts/math/SafeMath.sol\":{\"keccak256\":\"0x89a5235cc820ce98151d91b50b738fa415f184afc79f7c7f59dbc1734b592ab8\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://4524329737fff496aa35f3e8d7e21492783b393eb317f1982c9446acf39d36d6\",\"dweb:/ipfs/QmYQRGL2Fqhr6VN5mjnVPSms6QmBt12Di8PqYAXjecBf5t\"]},\"@openzeppelin/contracts/token/ERC20/ERC20.sol\":{\"keccak256\":\"0x7d8e1c7d3c1e0c6dd71f7f9dd250b9ebca4ec0baf658f743c7abd14f7f26ac7c\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://079facb5672ce27b313b81bae1d0b89515ba302c1959be7c84c9996096683b13\",\"dweb:/ipfs/QmUiRHnpRoUXnSrhxhgtxP9gdF6pJjLSWwvdCyLpXshqYr\"]},\"@openzeppelin/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0x7d5b96b476e8765e038132e203e5a97557c89e61c3132e29d0512ddcc2ced28f\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://b1b835fb3630b14055b878b2d3b2cb3843c4d622c3ae3aec451d457fff6aeb2a\",\"dweb:/ipfs/QmRsGNbdFFVkzLU2Nunecn8BZcofiQpHkvXcDGdJwXyV2C\"]},\"@openzeppelin/contracts/utils/Address.sol\":{\"keccak256\":\"0x985cc56c2cb79527e573060ed294926635b698c347f2b07e026377f64b39ce10\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://e32c764fd37fe6210d362a463be151eb274bb49236d6f86d5a54f8d7f1ad898e\",\"dweb:/ipfs/QmcRRWxH2GA4NFaGicqD7tr8HzzZsqMoX6YFMvPAuNMuua\"]},\"@openzeppelin/contracts/utils/Context.sol\":{\"keccak256\":\"0x177d62c70d2fc339bd2b7b6c0407ad8818fa0e6d3572458b61c2a255ccd728c5\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://c22b36f19b62a0f2ad19db42cc4fb9723034cf9adbcfd00326df7c36701d1809\",\"dweb:/ipfs/QmbcDEYkmX43s7jDyWQwPqruZJnh9AexZLtUCvRFS6EPZs\"]},\"@openzeppelin/contracts/utils/EnumerableSet.sol\":{\"keccak256\":\"0x80e3fb83024287da5bb0fb8c56dc5344115d56841b5624cbe063b0408b6acada\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://4dd11cc95514e34c59937b16a887e0d1e8163ff2a6a9f659e859f48eda4b6816\",\"dweb:/ipfs/QmPXsgC46vnYz64VhZbedoeDXzwrg76jvJnDBPwLNCNPXr\"]},\"@openzeppelin/contracts/utils/ReentrancyGuard.sol\":{\"keccak256\":\"0x59099a6cd639eec965f060b0e48bc86bdbed02a095d4c36075b29ac0c0e8aa13\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://3752e6488908b452113c0724fc1995d3124e7de2eef89c378b07f08ccdaf2d00\",\"dweb:/ipfs/QmQ8uP8CSsZjQCwZg8o2eovEVaBRKdeH33wip3GBxGhzKN\"]},\"contracts/DemoCoin.sol\":{\"keccak256\":\"0x7fdf6652645c68258545d62f24b5552bf906f2d3005fffeeec010102f4fdcca9\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://860355b5c2f858d07bf04e23ae8848d80e8057360e3b6c6da681cef4612101fc\",\"dweb:/ipfs/QmePRkiYMf5CzwpaDa2JXtkimXV95cdYyE67MMwXadFLT6\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.1+commit.df193b15\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"new_constitution\",\"type\":\"address\"}],\"name\":\"Constitution_Changed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"Address\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"enum Institution.Institution_Type\",\"name\":\"Type\",\"type\":\"uint8\"}],\"name\":\"Institution_Created\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"Name_Changed\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"Constitution_Address\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"Name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"new_constitution\",\"type\":\"address\"}],\"name\":\"Set_Constitution\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"}],\"name\":\"Set_Name\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"Type_Institution\",\"outputs\":[{\"internalType\":\"enum Institution.Institution_Type\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"Set_Constitution(address)\":{\"details\":\"The function Allows to change the Constitution contract the current Institution obey to. The function is only callable by the {Constitution_Address}\",\"params\":{\"new_constitution\":\"Address of the new Constitution contract.\"}},\"constructor\":{\"details\":\"Set the name of the new institution and the address of the constitution.\",\"params\":{\"name\":\"Name of the new institution\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"Constitution_Address()\":{\"notice\":\"Address of the constitution of the DAO\"},\"Name()\":{\"notice\":\"Name of the institution\"},\"Type_Institution()\":{\"notice\":\"Type of the Institution\"}},\"notice\":\"This abstract contract is inherited by almost all contracts of \\\"Web3 Direct Democracy\\\" (except \\\"DemoCoin\\\" token and ballot contracts inheriting from \\\"IVote\\\" interface).  It gathers some common features such as constitution address handling.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"/home/andrei/Alyra/Web3_Referendum/contracts/Institution.sol\":\"Institution\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":20000},\"remappings\":[]},\"sources\":{\"/home/andrei/Alyra/Web3_Referendum/contracts/Institution.sol\":{\"keccak256\":\"0xd7e2800bfe19a409d75e8370a20fccb062678a3dedba46f828239578edf3ca4e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://f829fcfba36e6737b8b7c600466a7bc92a3761e0079bd5b5defe968c82e10004\",\"dweb:/ipfs/QmesLJoSo5tv4LPupoYae3KZ5EvKrSg6pTTptit67LcAuY\"]},\"@openzeppelin/contracts/math/SafeMath.sol\":{\"keccak256\":\"0x89a5235cc820ce98151d91b50b738fa415f184afc79f7c7f59dbc1734b592ab8\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://4524329737fff496aa35f3e8d7e21492783b393eb317f1982c9446acf39d36d6\",\"dweb:/ipfs/QmYQRGL2Fqhr6VN5mjnVPSms6QmBt12Di8PqYAXjecBf5t\"]},\"@openzeppelin/contracts/token/ERC20/ERC20.sol\":{\"keccak256\":\"0x7d8e1c7d3c1e0c6dd71f7f9dd250b9ebca4ec0baf658f743c7abd14f7f26ac7c\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://079facb5672ce27b313b81bae1d0b89515ba302c1959be7c84c9996096683b13\",\"dweb:/ipfs/QmUiRHnpRoUXnSrhxhgtxP9gdF6pJjLSWwvdCyLpXshqYr\"]},\"@openzeppelin/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0x7d5b96b476e8765e038132e203e5a97557c89e61c3132e29d0512ddcc2ced28f\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://b1b835fb3630b14055b878b2d3b2cb3843c4d622c3ae3aec451d457fff6aeb2a\",\"dweb:/ipfs/QmRsGNbdFFVkzLU2Nunecn8BZcofiQpHkvXcDGdJwXyV2C\"]},\"@openzeppelin/contracts/utils/Address.sol\":{\"keccak256\":\"0x985cc56c2cb79527e573060ed294926635b698c347f2b07e026377f64b39ce10\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://e32c764fd37fe6210d362a463be151eb274bb49236d6f86d5a54f8d7f1ad898e\",\"dweb:/ipfs/QmcRRWxH2GA4NFaGicqD7tr8HzzZsqMoX6YFMvPAuNMuua\"]},\"@openzeppelin/contracts/utils/Context.sol\":{\"keccak256\":\"0x177d62c70d2fc339bd2b7b6c0407ad8818fa0e6d3572458b61c2a255ccd728c5\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://c22b36f19b62a0f2ad19db42cc4fb9723034cf9adbcfd00326df7c36701d1809\",\"dweb:/ipfs/QmbcDEYkmX43s7jDyWQwPqruZJnh9AexZLtUCvRFS6EPZs\"]},\"@openzeppelin/contracts/utils/EnumerableSet.sol\":{\"keccak256\":\"0x80e3fb83024287da5bb0fb8c56dc5344115d56841b5624cbe063b0408b6acada\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://4dd11cc95514e34c59937b16a887e0d1e8163ff2a6a9f659e859f48eda4b6816\",\"dweb:/ipfs/QmPXsgC46vnYz64VhZbedoeDXzwrg76jvJnDBPwLNCNPXr\"]},\"@openzeppelin/contracts/utils/ReentrancyGuard.sol\":{\"keccak256\":\"0x59099a6cd639eec965f060b0e48bc86bdbed02a095d4c36075b29ac0c0e8aa13\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://3752e6488908b452113c0724fc1995d3124e7de2eef89c378b07f08ccdaf2d00\",\"dweb:/ipfs/QmQ8uP8CSsZjQCwZg8o2eovEVaBRKdeH33wip3GBxGhzKN\"]},\"contracts/DemoCoin.sol\":{\"keccak256\":\"0x7fdf6652645c68258545d62f24b5552bf906f2d3005fffeeec010102f4fdcca9\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://860355b5c2f858d07bf04e23ae8848d80e8057360e3b6c6da681cef4612101fc\",\"dweb:/ipfs/QmePRkiYMf5CzwpaDa2JXtkimXV95cdYyE67MMwXadFLT6\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
@@ -113,7 +113,7 @@
   "deployedGeneratedSources": [],
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n//pragma experimental ABIEncoderV2;\n\n\n/*import \"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol\";\nimport \"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/structs/EnumerableSet.sol\";\nimport \"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/SafeMath.sol\";\nimport \"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/security/ReentrancyGuard.sol\";\nimport \"DemoCoin.sol\";*/\n\nimport \"@openzeppelin/contracts/utils/Address.sol\";\nimport \"@openzeppelin/contracts/utils/EnumerableSet.sol\";\nimport \"@openzeppelin/contracts/math/SafeMath.sol\";\nimport \"@openzeppelin/contracts/utils/ReentrancyGuard.sol\";\nimport \"contracts/DemoCoin.sol\";\n\n\n/** \n * @notice This abstract contract is inherited by almost all contracts of \"Web3 Direct Democracy\" (except \"DemoCoin\" token and ballot contracts inheriting from \"IVote\" interface). \n * It gathers some common features such as constitution address handling.\n*/\nabstract contract Institution is ReentrancyGuard{\n    event Institution_Created(address Address, Institution_Type Type);\n    event Constitution_Changed(address new_constitution);\n    event Name_Changed();\n    \n    ///notice Type of the institution\n    enum Institution_Type{\n        CONSTITUTION,\n        CITIZENS_REGISTRATION,\n        AGORA,\n        LOI,\n        API,\n        DELEGATION,\n        CUSTOM\n    }\n    \n    /*enum Argument_Type{\n        UINT,\n        INT,\n        BYTES,\n        STRING,\n        ADDRESS,\n        BOOL,\n        UINT_ARRAY,\n        INT_ARRAY,\n        BYTES_ARRAY,\n        STRING_ARRAY,\n        ADDRESS_ARRAY,\n        BOOL_ARRAY\n    }\n    \n    struct Function_Argument{\n        //string name;\n        Argument_Type _type;\n        uint Type_Size;\n        uint Array_Length;\n    }\n    \n    struct Register_Function{\n        bytes4 selector;\n        Function_Argument[] arg_list;\n    }\n    \n    struct Function_Call{\n        bytes Data;\n        address contract_address;\n    }*/\n    \n    ///@dev Check that the caller address is the {Constitution_Address}\n    modifier Constitution_Only(){\n        require(msg.sender == Constitution_Address, \"Constitution Only\");\n        _;\n    }\n    \n    /*TEMP DEBUG EVENT*/\n    /*event LogUint(uint);\n    event LogString(string);\n    event LogBytes(bytes);\n    event LogBytes32(bytes32);\n    event LogAddress(address);*/\n    \n    /*STATE*/\n    \n    ///@notice Name of the institution\n    string public Name;\n    ///@notice Address of the constitution of the DAO\n    address public Constitution_Address;\n    \n    ///@notice Type of the Institution\n    Institution_Type public Type_Institution;\n    \n    /**\n     * @dev Set the name of the new institution and the address of the constitution.\n     * @param name Name of the new institution\n    */\n    constructor(string memory name){\n        Name=name;\n        Constitution_Address = msg.sender; //All Institution contract whether are called by created by the Constitution contract or are the Constitution contract\n    }\n    \n    /**\n     * @dev The function Allows to change the Constitution contract the current Institution obey to. The function is only callable by the {Constitution_Address}\n     * @param new_constitution Address of the new Constitution contract.\n    */\n    function Set_Constitution(address new_constitution)external Constitution_Only{\n        require(new_constitution!=address(0), \"Address 0\");\n        Constitution_Address= new_constitution;\n        emit Constitution_Changed(new_constitution);\n    }\n\n    function Set_Name(string calldata name)external Constitution_Only{\n        Name=name;\n        emit Name_Changed();\n    }\n    \n    /*UTILS*/\n    /** \n     * @dev Utility function for computing Percentage.\n     * @param ratio The ratio is represented with 2 decimals\n     * @param base The base's number of decimal is arbitrary\n     * @return Return the {ratio}% of {base}. The result is represented with the number of decimals of {base} \n    */\n    function Percentage(uint16 ratio, uint base) internal pure returns(uint){\n        return (ratio*base)/10000 ;// ((ratio*base)/100) * 10^(-ratio_decimals)\n    }\n}\n\n",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n//pragma experimental ABIEncoderV2;\n\n\n/*import \"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol\";\nimport \"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/structs/EnumerableSet.sol\";\nimport \"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/SafeMath.sol\";\nimport \"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/security/ReentrancyGuard.sol\";\nimport \"DemoCoin.sol\";*/\n\nimport \"@openzeppelin/contracts/utils/Address.sol\";\nimport \"@openzeppelin/contracts/utils/EnumerableSet.sol\";\nimport \"@openzeppelin/contracts/math/SafeMath.sol\";\nimport \"@openzeppelin/contracts/utils/ReentrancyGuard.sol\";\nimport \"contracts/DemoCoin.sol\";\n\n\n/** \n * @notice This abstract contract is inherited by almost all contracts of \"Web3 Direct Democracy\" (except \"DemoCoin\" token and ballot contracts inheriting from \"IVote\" interface). \n * It gathers some common features such as constitution address handling.\n*/\nabstract contract Institution is ReentrancyGuard{\n    event Institution_Created(address Address, Institution_Type Type);\n    event Constitution_Changed(address new_constitution);\n    event Name_Changed();\n    \n    ///notice Type of the institution\n    enum Institution_Type{\n        CONSTITUTION,\n        CITIZENS_REGISTRATION,\n        AGORA,\n        LOI,\n        API,\n        DELEGATION,\n        CUSTOM\n    }\n    \n    \n    ///@dev Check that the caller address is the {Constitution_Address}\n    modifier Constitution_Only(){\n        require(msg.sender == Constitution_Address, \"Constitution Only\");\n        _;\n    }\n    \n    \n    /*STATE*/\n    \n    ///@notice Name of the institution\n    string public Name;\n    ///@notice Address of the constitution of the DAO\n    address public Constitution_Address;\n    \n    ///@notice Type of the Institution\n    Institution_Type public Type_Institution;\n    \n    /**\n     * @dev Set the name of the new institution and the address of the constitution.\n     * @param name Name of the new institution\n    */\n    constructor(string memory name){\n        Name=name;\n        Constitution_Address = msg.sender; //All Institution contract whether are called by created by the Constitution contract or are the Constitution contract\n    }\n    \n    /**\n     * @dev The function Allows to change the Constitution contract the current Institution obey to. The function is only callable by the {Constitution_Address}\n     * @param new_constitution Address of the new Constitution contract.\n    */\n    function Set_Constitution(address new_constitution)external Constitution_Only{\n        require(new_constitution!=address(0), \"Address 0\");\n        Constitution_Address= new_constitution;\n        emit Constitution_Changed(new_constitution);\n    }\n\n    function Set_Name(string calldata name)external Constitution_Only{\n        Name=name;\n        emit Name_Changed();\n    }\n    \n    /*UTILS*/\n    /** \n     * @dev Utility function for computing Percentage.\n     * @param ratio The ratio is represented with 2 decimals\n     * @param base The base's number of decimal is arbitrary\n     * @return Return the {ratio}% of {base}. The result is represented with the number of decimals of {base} \n    */\n    function Percentage(uint16 ratio, uint base) internal pure returns(uint){\n        return (ratio*base)/10000 ;// ((ratio*base)/100) * 10^(-ratio_decimals)\n    }\n}\n\n",
   "sourcePath": "/home/andrei/Alyra/Web3_Referendum/contracts/Institution.sol",
   "ast": {
     "absolutePath": "/home/andrei/Alyra/Web3_Referendum/contracts/Institution.sol",
@@ -437,7 +437,7 @@
             "body": {
               "id": 8023,
               "nodeType": "Block",
-              "src": "2203:92:9",
+              "src": "1617:92:9",
               "statements": [
                 {
                   "expression": {
@@ -459,7 +459,7 @@
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
                             "referencedDeclaration": 4294967281,
-                            "src": "2221:3:9",
+                            "src": "1635:3:9",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
                               "typeString": "msg"
@@ -472,7 +472,7 @@
                           "lValueRequested": false,
                           "memberName": "sender",
                           "nodeType": "MemberAccess",
-                          "src": "2221:10:9",
+                          "src": "1635:10:9",
                           "typeDescriptions": {
                             "typeIdentifier": "t_address",
                             "typeString": "address"
@@ -486,13 +486,13 @@
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
                           "referencedDeclaration": 8030,
-                          "src": "2235:20:9",
+                          "src": "1649:20:9",
                           "typeDescriptions": {
                             "typeIdentifier": "t_address",
                             "typeString": "address"
                           }
                         },
-                        "src": "2221:34:9",
+                        "src": "1635:34:9",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bool",
                           "typeString": "bool"
@@ -507,7 +507,7 @@
                         "kind": "string",
                         "lValueRequested": false,
                         "nodeType": "Literal",
-                        "src": "2257:19:9",
+                        "src": "1671:19:9",
                         "typeDescriptions": {
                           "typeIdentifier": "t_stringliteral_1dce441cb1867d9ae5ab3b6c7f1fdad10c22d889851ab2478dbdae15f87d7967",
                           "typeString": "literal_string \"Constitution Only\""
@@ -534,7 +534,7 @@
                         4294967278
                       ],
                       "referencedDeclaration": 4294967278,
-                      "src": "2213:7:9",
+                      "src": "1627:7:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
                         "typeString": "function (bool,string memory) pure"
@@ -548,7 +548,7 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "2213:64:9",
+                    "src": "1627:64:9",
                     "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
@@ -557,19 +557,19 @@
                   },
                   "id": 8021,
                   "nodeType": "ExpressionStatement",
-                  "src": "2213:64:9"
+                  "src": "1627:64:9"
                 },
                 {
                   "id": 8022,
                   "nodeType": "PlaceholderStatement",
-                  "src": "2287:1:9"
+                  "src": "1701:1:9"
                 }
               ]
             },
             "documentation": {
               "id": 8012,
               "nodeType": "StructuredDocumentation",
-              "src": "2103:67:9",
+              "src": "1517:67:9",
               "text": "@dev Check that the caller address is the {Constitution_Address}"
             },
             "id": 8024,
@@ -579,9 +579,9 @@
               "id": 8013,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2201:2:9"
+              "src": "1615:2:9"
             },
-            "src": "2175:120:9",
+            "src": "1589:120:9",
             "virtual": false,
             "visibility": "internal"
           },
@@ -590,7 +590,7 @@
             "documentation": {
               "id": 8025,
               "nodeType": "StructuredDocumentation",
-              "src": "2501:34:9",
+              "src": "1743:34:9",
               "text": "@notice Name of the institution"
             },
             "functionSelector": "8052474d",
@@ -599,7 +599,7 @@
             "name": "Name",
             "nodeType": "VariableDeclaration",
             "scope": 8111,
-            "src": "2540:18:9",
+            "src": "1782:18:9",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -610,7 +610,7 @@
               "id": 8026,
               "name": "string",
               "nodeType": "ElementaryTypeName",
-              "src": "2540:6:9",
+              "src": "1782:6:9",
               "typeDescriptions": {
                 "typeIdentifier": "t_string_storage_ptr",
                 "typeString": "string"
@@ -623,7 +623,7 @@
             "documentation": {
               "id": 8028,
               "nodeType": "StructuredDocumentation",
-              "src": "2564:49:9",
+              "src": "1806:49:9",
               "text": "@notice Address of the constitution of the DAO"
             },
             "functionSelector": "02d4cd28",
@@ -632,7 +632,7 @@
             "name": "Constitution_Address",
             "nodeType": "VariableDeclaration",
             "scope": 8111,
-            "src": "2618:35:9",
+            "src": "1860:35:9",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -643,7 +643,7 @@
               "id": 8029,
               "name": "address",
               "nodeType": "ElementaryTypeName",
-              "src": "2618:7:9",
+              "src": "1860:7:9",
               "stateMutability": "nonpayable",
               "typeDescriptions": {
                 "typeIdentifier": "t_address",
@@ -657,7 +657,7 @@
             "documentation": {
               "id": 8031,
               "nodeType": "StructuredDocumentation",
-              "src": "2664:34:9",
+              "src": "1906:34:9",
               "text": "@notice Type of the Institution"
             },
             "functionSelector": "eb101b23",
@@ -666,7 +666,7 @@
             "name": "Type_Institution",
             "nodeType": "VariableDeclaration",
             "scope": 8111,
-            "src": "2703:40:9",
+            "src": "1945:40:9",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -681,10 +681,10 @@
                 "name": "Institution_Type",
                 "nodeType": "IdentifierPath",
                 "referencedDeclaration": 8011,
-                "src": "2703:16:9"
+                "src": "1945:16:9"
               },
               "referencedDeclaration": 8011,
-              "src": "2703:16:9",
+              "src": "1945:16:9",
               "typeDescriptions": {
                 "typeIdentifier": "t_enum$_Institution_Type_$8011",
                 "typeString": "enum Institution.Institution_Type"
@@ -696,7 +696,7 @@
             "body": {
               "id": 8049,
               "nodeType": "Block",
-              "src": "2932:188:9",
+              "src": "2174:188:9",
               "statements": [
                 {
                   "expression": {
@@ -711,7 +711,7 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 8027,
-                      "src": "2942:4:9",
+                      "src": "2184:4:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_string_storage",
                         "typeString": "string storage ref"
@@ -725,13 +725,13 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 8037,
-                      "src": "2947:4:9",
+                      "src": "2189:4:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_string_memory_ptr",
                         "typeString": "string memory"
                       }
                     },
-                    "src": "2942:9:9",
+                    "src": "2184:9:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage",
                       "typeString": "string storage ref"
@@ -739,7 +739,7 @@
                   },
                   "id": 8043,
                   "nodeType": "ExpressionStatement",
-                  "src": "2942:9:9"
+                  "src": "2184:9:9"
                 },
                 {
                   "expression": {
@@ -754,7 +754,7 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 8030,
-                      "src": "2961:20:9",
+                      "src": "2203:20:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
@@ -769,7 +769,7 @@
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": 4294967281,
-                        "src": "2984:3:9",
+                        "src": "2226:3:9",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
                           "typeString": "msg"
@@ -782,13 +782,13 @@
                       "lValueRequested": false,
                       "memberName": "sender",
                       "nodeType": "MemberAccess",
-                      "src": "2984:10:9",
+                      "src": "2226:10:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "src": "2961:33:9",
+                    "src": "2203:33:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
@@ -796,14 +796,14 @@
                   },
                   "id": 8048,
                   "nodeType": "ExpressionStatement",
-                  "src": "2961:33:9"
+                  "src": "2203:33:9"
                 }
               ]
             },
             "documentation": {
               "id": 8035,
               "nodeType": "StructuredDocumentation",
-              "src": "2754:142:9",
+              "src": "1996:142:9",
               "text": " @dev Set the name of the new institution and the address of the constitution.\n @param name Name of the new institution"
             },
             "id": 8050,
@@ -823,7 +823,7 @@
                   "name": "name",
                   "nodeType": "VariableDeclaration",
                   "scope": 8050,
-                  "src": "2913:18:9",
+                  "src": "2155:18:9",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -834,7 +834,7 @@
                     "id": 8036,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2913:6:9",
+                    "src": "2155:6:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -843,16 +843,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2912:20:9"
+              "src": "2154:20:9"
             },
             "returnParameters": {
               "id": 8039,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2932:0:9"
+              "src": "2174:0:9"
             },
             "scope": 8111,
-            "src": "2901:219:9",
+            "src": "2143:219:9",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "internal"
@@ -861,7 +861,7 @@
             "body": {
               "id": 8076,
               "nodeType": "Block",
-              "src": "3456:168:9",
+              "src": "2698:168:9",
               "statements": [
                 {
                   "expression": {
@@ -882,7 +882,7 @@
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
                           "referencedDeclaration": 8053,
-                          "src": "3474:16:9",
+                          "src": "2716:16:9",
                           "typeDescriptions": {
                             "typeIdentifier": "t_address",
                             "typeString": "address"
@@ -901,7 +901,7 @@
                               "kind": "number",
                               "lValueRequested": false,
                               "nodeType": "Literal",
-                              "src": "3500:1:9",
+                              "src": "2742:1:9",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_rational_0_by_1",
                                 "typeString": "int_const 0"
@@ -922,7 +922,7 @@
                             "isPure": true,
                             "lValueRequested": false,
                             "nodeType": "ElementaryTypeNameExpression",
-                            "src": "3492:7:9",
+                            "src": "2734:7:9",
                             "typeDescriptions": {
                               "typeIdentifier": "t_type$_t_address_$",
                               "typeString": "type(address)"
@@ -931,7 +931,7 @@
                               "id": 8060,
                               "name": "address",
                               "nodeType": "ElementaryTypeName",
-                              "src": "3492:7:9",
+                              "src": "2734:7:9",
                               "typeDescriptions": {}
                             }
                           },
@@ -943,14 +943,14 @@
                           "lValueRequested": false,
                           "names": [],
                           "nodeType": "FunctionCall",
-                          "src": "3492:10:9",
+                          "src": "2734:10:9",
                           "tryCall": false,
                           "typeDescriptions": {
                             "typeIdentifier": "t_address",
                             "typeString": "address"
                           }
                         },
-                        "src": "3474:28:9",
+                        "src": "2716:28:9",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bool",
                           "typeString": "bool"
@@ -965,7 +965,7 @@
                         "kind": "string",
                         "lValueRequested": false,
                         "nodeType": "Literal",
-                        "src": "3504:11:9",
+                        "src": "2746:11:9",
                         "typeDescriptions": {
                           "typeIdentifier": "t_stringliteral_4080f1fe86101fb49c0da7910d0d5ad38efde20ec25e58363b3c0e88541ecf00",
                           "typeString": "literal_string \"Address 0\""
@@ -992,7 +992,7 @@
                         4294967278
                       ],
                       "referencedDeclaration": 4294967278,
-                      "src": "3466:7:9",
+                      "src": "2708:7:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
                         "typeString": "function (bool,string memory) pure"
@@ -1006,7 +1006,7 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "3466:50:9",
+                    "src": "2708:50:9",
                     "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
@@ -1015,7 +1015,7 @@
                   },
                   "id": 8067,
                   "nodeType": "ExpressionStatement",
-                  "src": "3466:50:9"
+                  "src": "2708:50:9"
                 },
                 {
                   "expression": {
@@ -1030,7 +1030,7 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 8030,
-                      "src": "3526:20:9",
+                      "src": "2768:20:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
@@ -1044,13 +1044,13 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 8053,
-                      "src": "3548:16:9",
+                      "src": "2790:16:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "src": "3526:38:9",
+                    "src": "2768:38:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
@@ -1058,7 +1058,7 @@
                   },
                   "id": 8071,
                   "nodeType": "ExpressionStatement",
-                  "src": "3526:38:9"
+                  "src": "2768:38:9"
                 },
                 {
                   "eventCall": {
@@ -1069,7 +1069,7 @@
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": 8053,
-                        "src": "3600:16:9",
+                        "src": "2842:16:9",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
                           "typeString": "address"
@@ -1088,7 +1088,7 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 8001,
-                      "src": "3579:20:9",
+                      "src": "2821:20:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_event_nonpayable$_t_address_$returns$__$",
                         "typeString": "function (address)"
@@ -1102,7 +1102,7 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "3579:38:9",
+                    "src": "2821:38:9",
                     "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
@@ -1111,14 +1111,14 @@
                   },
                   "id": 8075,
                   "nodeType": "EmitStatement",
-                  "src": "3574:43:9"
+                  "src": "2816:43:9"
                 }
               ]
             },
             "documentation": {
               "id": 8051,
               "nodeType": "StructuredDocumentation",
-              "src": "3130:244:9",
+              "src": "2372:244:9",
               "text": " @dev The function Allows to change the Constitution contract the current Institution obey to. The function is only callable by the {Constitution_Address}\n @param new_constitution Address of the new Constitution contract."
             },
             "functionSelector": "3c289ea8",
@@ -1133,10 +1133,10 @@
                   "name": "Constitution_Only",
                   "nodeType": "IdentifierPath",
                   "referencedDeclaration": 8024,
-                  "src": "3439:17:9"
+                  "src": "2681:17:9"
                 },
                 "nodeType": "ModifierInvocation",
-                "src": "3439:17:9"
+                "src": "2681:17:9"
               }
             ],
             "name": "Set_Constitution",
@@ -1152,7 +1152,7 @@
                   "name": "new_constitution",
                   "nodeType": "VariableDeclaration",
                   "scope": 8077,
-                  "src": "3405:24:9",
+                  "src": "2647:24:9",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1163,7 +1163,7 @@
                     "id": 8052,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3405:7:9",
+                    "src": "2647:7:9",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1173,16 +1173,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3404:26:9"
+              "src": "2646:26:9"
             },
             "returnParameters": {
               "id": 8057,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3456:0:9"
+              "src": "2698:0:9"
             },
             "scope": 8111,
-            "src": "3379:245:9",
+            "src": "2621:245:9",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
@@ -1191,7 +1191,7 @@
             "body": {
               "id": 8091,
               "nodeType": "Block",
-              "src": "3695:55:9",
+              "src": "2937:55:9",
               "statements": [
                 {
                   "expression": {
@@ -1206,7 +1206,7 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 8027,
-                      "src": "3705:4:9",
+                      "src": "2947:4:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_string_storage",
                         "typeString": "string storage ref"
@@ -1220,13 +1220,13 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 8079,
-                      "src": "3710:4:9",
+                      "src": "2952:4:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_string_calldata_ptr",
                         "typeString": "string calldata"
                       }
                     },
-                    "src": "3705:9:9",
+                    "src": "2947:9:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage",
                       "typeString": "string storage ref"
@@ -1234,7 +1234,7 @@
                   },
                   "id": 8087,
                   "nodeType": "ExpressionStatement",
-                  "src": "3705:9:9"
+                  "src": "2947:9:9"
                 },
                 {
                   "eventCall": {
@@ -1246,7 +1246,7 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 8003,
-                      "src": "3729:12:9",
+                      "src": "2971:12:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_event_nonpayable$__$returns$__$",
                         "typeString": "function ()"
@@ -1260,7 +1260,7 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "3729:14:9",
+                    "src": "2971:14:9",
                     "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
@@ -1269,7 +1269,7 @@
                   },
                   "id": 8090,
                   "nodeType": "EmitStatement",
-                  "src": "3724:19:9"
+                  "src": "2966:19:9"
                 }
               ]
             },
@@ -1285,10 +1285,10 @@
                   "name": "Constitution_Only",
                   "nodeType": "IdentifierPath",
                   "referencedDeclaration": 8024,
-                  "src": "3678:17:9"
+                  "src": "2920:17:9"
                 },
                 "nodeType": "ModifierInvocation",
-                "src": "3678:17:9"
+                "src": "2920:17:9"
               }
             ],
             "name": "Set_Name",
@@ -1304,7 +1304,7 @@
                   "name": "name",
                   "nodeType": "VariableDeclaration",
                   "scope": 8092,
-                  "src": "3648:20:9",
+                  "src": "2890:20:9",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
@@ -1315,7 +1315,7 @@
                     "id": 8078,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3648:6:9",
+                    "src": "2890:6:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -1324,16 +1324,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3647:22:9"
+              "src": "2889:22:9"
             },
             "returnParameters": {
               "id": 8083,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3695:0:9"
+              "src": "2937:0:9"
             },
             "scope": 8111,
-            "src": "3630:120:9",
+            "src": "2872:120:9",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
@@ -1342,7 +1342,7 @@
             "body": {
               "id": 8109,
               "nodeType": "Block",
-              "src": "4150:87:9",
+              "src": "3392:87:9",
               "statements": [
                 {
                   "expression": {
@@ -1373,7 +1373,7 @@
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
                             "referencedDeclaration": 8095,
-                            "src": "4168:5:9",
+                            "src": "3410:5:9",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint16",
                               "typeString": "uint16"
@@ -1387,13 +1387,13 @@
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
                             "referencedDeclaration": 8097,
-                            "src": "4174:4:9",
+                            "src": "3416:4:9",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint256",
                               "typeString": "uint256"
                             }
                           },
-                          "src": "4168:10:9",
+                          "src": "3410:10:9",
                           "typeDescriptions": {
                             "typeIdentifier": "t_uint256",
                             "typeString": "uint256"
@@ -1407,7 +1407,7 @@
                       "isPure": false,
                       "lValueRequested": false,
                       "nodeType": "TupleExpression",
-                      "src": "4167:12:9",
+                      "src": "3409:12:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
@@ -1424,14 +1424,14 @@
                       "kind": "number",
                       "lValueRequested": false,
                       "nodeType": "Literal",
-                      "src": "4180:5:9",
+                      "src": "3422:5:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_rational_10000_by_1",
                         "typeString": "int_const 10000"
                       },
                       "value": "10000"
                     },
-                    "src": "4167:18:9",
+                    "src": "3409:18:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1440,14 +1440,14 @@
                   "functionReturnParameters": 8101,
                   "id": 8108,
                   "nodeType": "Return",
-                  "src": "4160:25:9"
+                  "src": "3402:25:9"
                 }
               ]
             },
             "documentation": {
               "id": 8093,
               "nodeType": "StructuredDocumentation",
-              "src": "3774:299:9",
+              "src": "3016:299:9",
               "text": " @dev Utility function for computing Percentage.\n @param ratio The ratio is represented with 2 decimals\n @param base The base's number of decimal is arbitrary\n @return Return the {ratio}% of {base}. The result is represented with the number of decimals of {base} "
             },
             "id": 8110,
@@ -1467,7 +1467,7 @@
                   "name": "ratio",
                   "nodeType": "VariableDeclaration",
                   "scope": 8110,
-                  "src": "4098:12:9",
+                  "src": "3340:12:9",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1478,7 +1478,7 @@
                     "id": 8094,
                     "name": "uint16",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4098:6:9",
+                    "src": "3340:6:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint16",
                       "typeString": "uint16"
@@ -1493,7 +1493,7 @@
                   "name": "base",
                   "nodeType": "VariableDeclaration",
                   "scope": 8110,
-                  "src": "4112:9:9",
+                  "src": "3354:9:9",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1504,7 +1504,7 @@
                     "id": 8096,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4112:4:9",
+                    "src": "3354:4:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1513,7 +1513,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "4097:25:9"
+              "src": "3339:25:9"
             },
             "returnParameters": {
               "id": 8101,
@@ -1526,7 +1526,7 @@
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "scope": 8110,
-                  "src": "4145:4:9",
+                  "src": "3387:4:9",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1537,7 +1537,7 @@
                     "id": 8099,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4145:4:9",
+                    "src": "3387:4:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1546,20 +1546,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "4144:6:9"
+              "src": "3386:6:9"
             },
             "scope": 8111,
-            "src": "4078:159:9",
+            "src": "3320:159:9",
             "stateMutability": "pure",
             "virtual": false,
             "visibility": "internal"
           }
         ],
         "scope": 8112,
-        "src": "1093:3146:9"
+        "src": "1093:2388:9"
       }
     ],
-    "src": "32:4209:9"
+    "src": "32:3451:9"
   },
   "legacyAST": {
     "absolutePath": "/home/andrei/Alyra/Web3_Referendum/contracts/Institution.sol",
@@ -1883,7 +1883,7 @@
             "body": {
               "id": 8023,
               "nodeType": "Block",
-              "src": "2203:92:9",
+              "src": "1617:92:9",
               "statements": [
                 {
                   "expression": {
@@ -1905,7 +1905,7 @@
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
                             "referencedDeclaration": 4294967281,
-                            "src": "2221:3:9",
+                            "src": "1635:3:9",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
                               "typeString": "msg"
@@ -1918,7 +1918,7 @@
                           "lValueRequested": false,
                           "memberName": "sender",
                           "nodeType": "MemberAccess",
-                          "src": "2221:10:9",
+                          "src": "1635:10:9",
                           "typeDescriptions": {
                             "typeIdentifier": "t_address",
                             "typeString": "address"
@@ -1932,13 +1932,13 @@
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
                           "referencedDeclaration": 8030,
-                          "src": "2235:20:9",
+                          "src": "1649:20:9",
                           "typeDescriptions": {
                             "typeIdentifier": "t_address",
                             "typeString": "address"
                           }
                         },
-                        "src": "2221:34:9",
+                        "src": "1635:34:9",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bool",
                           "typeString": "bool"
@@ -1953,7 +1953,7 @@
                         "kind": "string",
                         "lValueRequested": false,
                         "nodeType": "Literal",
-                        "src": "2257:19:9",
+                        "src": "1671:19:9",
                         "typeDescriptions": {
                           "typeIdentifier": "t_stringliteral_1dce441cb1867d9ae5ab3b6c7f1fdad10c22d889851ab2478dbdae15f87d7967",
                           "typeString": "literal_string \"Constitution Only\""
@@ -1980,7 +1980,7 @@
                         4294967278
                       ],
                       "referencedDeclaration": 4294967278,
-                      "src": "2213:7:9",
+                      "src": "1627:7:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
                         "typeString": "function (bool,string memory) pure"
@@ -1994,7 +1994,7 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "2213:64:9",
+                    "src": "1627:64:9",
                     "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
@@ -2003,19 +2003,19 @@
                   },
                   "id": 8021,
                   "nodeType": "ExpressionStatement",
-                  "src": "2213:64:9"
+                  "src": "1627:64:9"
                 },
                 {
                   "id": 8022,
                   "nodeType": "PlaceholderStatement",
-                  "src": "2287:1:9"
+                  "src": "1701:1:9"
                 }
               ]
             },
             "documentation": {
               "id": 8012,
               "nodeType": "StructuredDocumentation",
-              "src": "2103:67:9",
+              "src": "1517:67:9",
               "text": "@dev Check that the caller address is the {Constitution_Address}"
             },
             "id": 8024,
@@ -2025,9 +2025,9 @@
               "id": 8013,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2201:2:9"
+              "src": "1615:2:9"
             },
-            "src": "2175:120:9",
+            "src": "1589:120:9",
             "virtual": false,
             "visibility": "internal"
           },
@@ -2036,7 +2036,7 @@
             "documentation": {
               "id": 8025,
               "nodeType": "StructuredDocumentation",
-              "src": "2501:34:9",
+              "src": "1743:34:9",
               "text": "@notice Name of the institution"
             },
             "functionSelector": "8052474d",
@@ -2045,7 +2045,7 @@
             "name": "Name",
             "nodeType": "VariableDeclaration",
             "scope": 8111,
-            "src": "2540:18:9",
+            "src": "1782:18:9",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -2056,7 +2056,7 @@
               "id": 8026,
               "name": "string",
               "nodeType": "ElementaryTypeName",
-              "src": "2540:6:9",
+              "src": "1782:6:9",
               "typeDescriptions": {
                 "typeIdentifier": "t_string_storage_ptr",
                 "typeString": "string"
@@ -2069,7 +2069,7 @@
             "documentation": {
               "id": 8028,
               "nodeType": "StructuredDocumentation",
-              "src": "2564:49:9",
+              "src": "1806:49:9",
               "text": "@notice Address of the constitution of the DAO"
             },
             "functionSelector": "02d4cd28",
@@ -2078,7 +2078,7 @@
             "name": "Constitution_Address",
             "nodeType": "VariableDeclaration",
             "scope": 8111,
-            "src": "2618:35:9",
+            "src": "1860:35:9",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -2089,7 +2089,7 @@
               "id": 8029,
               "name": "address",
               "nodeType": "ElementaryTypeName",
-              "src": "2618:7:9",
+              "src": "1860:7:9",
               "stateMutability": "nonpayable",
               "typeDescriptions": {
                 "typeIdentifier": "t_address",
@@ -2103,7 +2103,7 @@
             "documentation": {
               "id": 8031,
               "nodeType": "StructuredDocumentation",
-              "src": "2664:34:9",
+              "src": "1906:34:9",
               "text": "@notice Type of the Institution"
             },
             "functionSelector": "eb101b23",
@@ -2112,7 +2112,7 @@
             "name": "Type_Institution",
             "nodeType": "VariableDeclaration",
             "scope": 8111,
-            "src": "2703:40:9",
+            "src": "1945:40:9",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -2127,10 +2127,10 @@
                 "name": "Institution_Type",
                 "nodeType": "IdentifierPath",
                 "referencedDeclaration": 8011,
-                "src": "2703:16:9"
+                "src": "1945:16:9"
               },
               "referencedDeclaration": 8011,
-              "src": "2703:16:9",
+              "src": "1945:16:9",
               "typeDescriptions": {
                 "typeIdentifier": "t_enum$_Institution_Type_$8011",
                 "typeString": "enum Institution.Institution_Type"
@@ -2142,7 +2142,7 @@
             "body": {
               "id": 8049,
               "nodeType": "Block",
-              "src": "2932:188:9",
+              "src": "2174:188:9",
               "statements": [
                 {
                   "expression": {
@@ -2157,7 +2157,7 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 8027,
-                      "src": "2942:4:9",
+                      "src": "2184:4:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_string_storage",
                         "typeString": "string storage ref"
@@ -2171,13 +2171,13 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 8037,
-                      "src": "2947:4:9",
+                      "src": "2189:4:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_string_memory_ptr",
                         "typeString": "string memory"
                       }
                     },
-                    "src": "2942:9:9",
+                    "src": "2184:9:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage",
                       "typeString": "string storage ref"
@@ -2185,7 +2185,7 @@
                   },
                   "id": 8043,
                   "nodeType": "ExpressionStatement",
-                  "src": "2942:9:9"
+                  "src": "2184:9:9"
                 },
                 {
                   "expression": {
@@ -2200,7 +2200,7 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 8030,
-                      "src": "2961:20:9",
+                      "src": "2203:20:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
@@ -2215,7 +2215,7 @@
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": 4294967281,
-                        "src": "2984:3:9",
+                        "src": "2226:3:9",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
                           "typeString": "msg"
@@ -2228,13 +2228,13 @@
                       "lValueRequested": false,
                       "memberName": "sender",
                       "nodeType": "MemberAccess",
-                      "src": "2984:10:9",
+                      "src": "2226:10:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "src": "2961:33:9",
+                    "src": "2203:33:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
@@ -2242,14 +2242,14 @@
                   },
                   "id": 8048,
                   "nodeType": "ExpressionStatement",
-                  "src": "2961:33:9"
+                  "src": "2203:33:9"
                 }
               ]
             },
             "documentation": {
               "id": 8035,
               "nodeType": "StructuredDocumentation",
-              "src": "2754:142:9",
+              "src": "1996:142:9",
               "text": " @dev Set the name of the new institution and the address of the constitution.\n @param name Name of the new institution"
             },
             "id": 8050,
@@ -2269,7 +2269,7 @@
                   "name": "name",
                   "nodeType": "VariableDeclaration",
                   "scope": 8050,
-                  "src": "2913:18:9",
+                  "src": "2155:18:9",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -2280,7 +2280,7 @@
                     "id": 8036,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2913:6:9",
+                    "src": "2155:6:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -2289,16 +2289,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2912:20:9"
+              "src": "2154:20:9"
             },
             "returnParameters": {
               "id": 8039,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2932:0:9"
+              "src": "2174:0:9"
             },
             "scope": 8111,
-            "src": "2901:219:9",
+            "src": "2143:219:9",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "internal"
@@ -2307,7 +2307,7 @@
             "body": {
               "id": 8076,
               "nodeType": "Block",
-              "src": "3456:168:9",
+              "src": "2698:168:9",
               "statements": [
                 {
                   "expression": {
@@ -2328,7 +2328,7 @@
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
                           "referencedDeclaration": 8053,
-                          "src": "3474:16:9",
+                          "src": "2716:16:9",
                           "typeDescriptions": {
                             "typeIdentifier": "t_address",
                             "typeString": "address"
@@ -2347,7 +2347,7 @@
                               "kind": "number",
                               "lValueRequested": false,
                               "nodeType": "Literal",
-                              "src": "3500:1:9",
+                              "src": "2742:1:9",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_rational_0_by_1",
                                 "typeString": "int_const 0"
@@ -2368,7 +2368,7 @@
                             "isPure": true,
                             "lValueRequested": false,
                             "nodeType": "ElementaryTypeNameExpression",
-                            "src": "3492:7:9",
+                            "src": "2734:7:9",
                             "typeDescriptions": {
                               "typeIdentifier": "t_type$_t_address_$",
                               "typeString": "type(address)"
@@ -2377,7 +2377,7 @@
                               "id": 8060,
                               "name": "address",
                               "nodeType": "ElementaryTypeName",
-                              "src": "3492:7:9",
+                              "src": "2734:7:9",
                               "typeDescriptions": {}
                             }
                           },
@@ -2389,14 +2389,14 @@
                           "lValueRequested": false,
                           "names": [],
                           "nodeType": "FunctionCall",
-                          "src": "3492:10:9",
+                          "src": "2734:10:9",
                           "tryCall": false,
                           "typeDescriptions": {
                             "typeIdentifier": "t_address",
                             "typeString": "address"
                           }
                         },
-                        "src": "3474:28:9",
+                        "src": "2716:28:9",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bool",
                           "typeString": "bool"
@@ -2411,7 +2411,7 @@
                         "kind": "string",
                         "lValueRequested": false,
                         "nodeType": "Literal",
-                        "src": "3504:11:9",
+                        "src": "2746:11:9",
                         "typeDescriptions": {
                           "typeIdentifier": "t_stringliteral_4080f1fe86101fb49c0da7910d0d5ad38efde20ec25e58363b3c0e88541ecf00",
                           "typeString": "literal_string \"Address 0\""
@@ -2438,7 +2438,7 @@
                         4294967278
                       ],
                       "referencedDeclaration": 4294967278,
-                      "src": "3466:7:9",
+                      "src": "2708:7:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
                         "typeString": "function (bool,string memory) pure"
@@ -2452,7 +2452,7 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "3466:50:9",
+                    "src": "2708:50:9",
                     "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
@@ -2461,7 +2461,7 @@
                   },
                   "id": 8067,
                   "nodeType": "ExpressionStatement",
-                  "src": "3466:50:9"
+                  "src": "2708:50:9"
                 },
                 {
                   "expression": {
@@ -2476,7 +2476,7 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 8030,
-                      "src": "3526:20:9",
+                      "src": "2768:20:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
@@ -2490,13 +2490,13 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 8053,
-                      "src": "3548:16:9",
+                      "src": "2790:16:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "src": "3526:38:9",
+                    "src": "2768:38:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
@@ -2504,7 +2504,7 @@
                   },
                   "id": 8071,
                   "nodeType": "ExpressionStatement",
-                  "src": "3526:38:9"
+                  "src": "2768:38:9"
                 },
                 {
                   "eventCall": {
@@ -2515,7 +2515,7 @@
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": 8053,
-                        "src": "3600:16:9",
+                        "src": "2842:16:9",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
                           "typeString": "address"
@@ -2534,7 +2534,7 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 8001,
-                      "src": "3579:20:9",
+                      "src": "2821:20:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_event_nonpayable$_t_address_$returns$__$",
                         "typeString": "function (address)"
@@ -2548,7 +2548,7 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "3579:38:9",
+                    "src": "2821:38:9",
                     "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
@@ -2557,14 +2557,14 @@
                   },
                   "id": 8075,
                   "nodeType": "EmitStatement",
-                  "src": "3574:43:9"
+                  "src": "2816:43:9"
                 }
               ]
             },
             "documentation": {
               "id": 8051,
               "nodeType": "StructuredDocumentation",
-              "src": "3130:244:9",
+              "src": "2372:244:9",
               "text": " @dev The function Allows to change the Constitution contract the current Institution obey to. The function is only callable by the {Constitution_Address}\n @param new_constitution Address of the new Constitution contract."
             },
             "functionSelector": "3c289ea8",
@@ -2579,10 +2579,10 @@
                   "name": "Constitution_Only",
                   "nodeType": "IdentifierPath",
                   "referencedDeclaration": 8024,
-                  "src": "3439:17:9"
+                  "src": "2681:17:9"
                 },
                 "nodeType": "ModifierInvocation",
-                "src": "3439:17:9"
+                "src": "2681:17:9"
               }
             ],
             "name": "Set_Constitution",
@@ -2598,7 +2598,7 @@
                   "name": "new_constitution",
                   "nodeType": "VariableDeclaration",
                   "scope": 8077,
-                  "src": "3405:24:9",
+                  "src": "2647:24:9",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2609,7 +2609,7 @@
                     "id": 8052,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3405:7:9",
+                    "src": "2647:7:9",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2619,16 +2619,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3404:26:9"
+              "src": "2646:26:9"
             },
             "returnParameters": {
               "id": 8057,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3456:0:9"
+              "src": "2698:0:9"
             },
             "scope": 8111,
-            "src": "3379:245:9",
+            "src": "2621:245:9",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
@@ -2637,7 +2637,7 @@
             "body": {
               "id": 8091,
               "nodeType": "Block",
-              "src": "3695:55:9",
+              "src": "2937:55:9",
               "statements": [
                 {
                   "expression": {
@@ -2652,7 +2652,7 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 8027,
-                      "src": "3705:4:9",
+                      "src": "2947:4:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_string_storage",
                         "typeString": "string storage ref"
@@ -2666,13 +2666,13 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 8079,
-                      "src": "3710:4:9",
+                      "src": "2952:4:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_string_calldata_ptr",
                         "typeString": "string calldata"
                       }
                     },
-                    "src": "3705:9:9",
+                    "src": "2947:9:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage",
                       "typeString": "string storage ref"
@@ -2680,7 +2680,7 @@
                   },
                   "id": 8087,
                   "nodeType": "ExpressionStatement",
-                  "src": "3705:9:9"
+                  "src": "2947:9:9"
                 },
                 {
                   "eventCall": {
@@ -2692,7 +2692,7 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 8003,
-                      "src": "3729:12:9",
+                      "src": "2971:12:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_event_nonpayable$__$returns$__$",
                         "typeString": "function ()"
@@ -2706,7 +2706,7 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "3729:14:9",
+                    "src": "2971:14:9",
                     "tryCall": false,
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
@@ -2715,7 +2715,7 @@
                   },
                   "id": 8090,
                   "nodeType": "EmitStatement",
-                  "src": "3724:19:9"
+                  "src": "2966:19:9"
                 }
               ]
             },
@@ -2731,10 +2731,10 @@
                   "name": "Constitution_Only",
                   "nodeType": "IdentifierPath",
                   "referencedDeclaration": 8024,
-                  "src": "3678:17:9"
+                  "src": "2920:17:9"
                 },
                 "nodeType": "ModifierInvocation",
-                "src": "3678:17:9"
+                "src": "2920:17:9"
               }
             ],
             "name": "Set_Name",
@@ -2750,7 +2750,7 @@
                   "name": "name",
                   "nodeType": "VariableDeclaration",
                   "scope": 8092,
-                  "src": "3648:20:9",
+                  "src": "2890:20:9",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
@@ -2761,7 +2761,7 @@
                     "id": 8078,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3648:6:9",
+                    "src": "2890:6:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -2770,16 +2770,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3647:22:9"
+              "src": "2889:22:9"
             },
             "returnParameters": {
               "id": 8083,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3695:0:9"
+              "src": "2937:0:9"
             },
             "scope": 8111,
-            "src": "3630:120:9",
+            "src": "2872:120:9",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
@@ -2788,7 +2788,7 @@
             "body": {
               "id": 8109,
               "nodeType": "Block",
-              "src": "4150:87:9",
+              "src": "3392:87:9",
               "statements": [
                 {
                   "expression": {
@@ -2819,7 +2819,7 @@
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
                             "referencedDeclaration": 8095,
-                            "src": "4168:5:9",
+                            "src": "3410:5:9",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint16",
                               "typeString": "uint16"
@@ -2833,13 +2833,13 @@
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
                             "referencedDeclaration": 8097,
-                            "src": "4174:4:9",
+                            "src": "3416:4:9",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint256",
                               "typeString": "uint256"
                             }
                           },
-                          "src": "4168:10:9",
+                          "src": "3410:10:9",
                           "typeDescriptions": {
                             "typeIdentifier": "t_uint256",
                             "typeString": "uint256"
@@ -2853,7 +2853,7 @@
                       "isPure": false,
                       "lValueRequested": false,
                       "nodeType": "TupleExpression",
-                      "src": "4167:12:9",
+                      "src": "3409:12:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
@@ -2870,14 +2870,14 @@
                       "kind": "number",
                       "lValueRequested": false,
                       "nodeType": "Literal",
-                      "src": "4180:5:9",
+                      "src": "3422:5:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_rational_10000_by_1",
                         "typeString": "int_const 10000"
                       },
                       "value": "10000"
                     },
-                    "src": "4167:18:9",
+                    "src": "3409:18:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2886,14 +2886,14 @@
                   "functionReturnParameters": 8101,
                   "id": 8108,
                   "nodeType": "Return",
-                  "src": "4160:25:9"
+                  "src": "3402:25:9"
                 }
               ]
             },
             "documentation": {
               "id": 8093,
               "nodeType": "StructuredDocumentation",
-              "src": "3774:299:9",
+              "src": "3016:299:9",
               "text": " @dev Utility function for computing Percentage.\n @param ratio The ratio is represented with 2 decimals\n @param base The base's number of decimal is arbitrary\n @return Return the {ratio}% of {base}. The result is represented with the number of decimals of {base} "
             },
             "id": 8110,
@@ -2913,7 +2913,7 @@
                   "name": "ratio",
                   "nodeType": "VariableDeclaration",
                   "scope": 8110,
-                  "src": "4098:12:9",
+                  "src": "3340:12:9",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2924,7 +2924,7 @@
                     "id": 8094,
                     "name": "uint16",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4098:6:9",
+                    "src": "3340:6:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint16",
                       "typeString": "uint16"
@@ -2939,7 +2939,7 @@
                   "name": "base",
                   "nodeType": "VariableDeclaration",
                   "scope": 8110,
-                  "src": "4112:9:9",
+                  "src": "3354:9:9",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2950,7 +2950,7 @@
                     "id": 8096,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4112:4:9",
+                    "src": "3354:4:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2959,7 +2959,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "4097:25:9"
+              "src": "3339:25:9"
             },
             "returnParameters": {
               "id": 8101,
@@ -2972,7 +2972,7 @@
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "scope": 8110,
-                  "src": "4145:4:9",
+                  "src": "3387:4:9",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2983,7 +2983,7 @@
                     "id": 8099,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4145:4:9",
+                    "src": "3387:4:9",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2992,20 +2992,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "4144:6:9"
+              "src": "3386:6:9"
             },
             "scope": 8111,
-            "src": "4078:159:9",
+            "src": "3320:159:9",
             "stateMutability": "pure",
             "virtual": false,
             "visibility": "internal"
           }
         ],
         "scope": 8112,
-        "src": "1093:3146:9"
+        "src": "1093:2388:9"
       }
     ],
-    "src": "32:4209:9"
+    "src": "32:3451:9"
   },
   "compiler": {
     "name": "solc",
@@ -3013,7 +3013,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.1",
-  "updatedAt": "2021-04-28T21:24:22.712Z",
+  "updatedAt": "2021-05-04T16:12:32.180Z",
   "devdoc": {
     "kind": "dev",
     "methods": {

@@ -159,7 +159,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -306,7 +307,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -330,7 +332,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -354,7 +357,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -383,7 +387,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -402,7 +407,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -438,7 +444,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.8.1+commit.df193b15\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"}],\"name\":\"Ballot_Created\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"}],\"name\":\"Begin_Validation\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"}],\"name\":\"Validated_Vote\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"}],\"name\":\"Vote_Finished\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"}],\"name\":\"Voted_Clear\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"voter\",\"type\":\"address\"}],\"name\":\"Voted_Hashed\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"Ballots\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"Voters_Register_Address\",\"type\":\"address\"},{\"internalType\":\"bytes4\",\"name\":\"Check_Voter_Selector\",\"type\":\"bytes4\"},{\"internalType\":\"enum Majority_Judgment_Ballot.Ballot_Status\",\"name\":\"Status\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"Creation_Timestamp\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"End_Vote_Timestamp\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"Vote_Duration\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"Vote_Validation_Duration\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"Propositions_Number\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"Max_Winning_Propositions_Number\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"Voter_Number\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"Voters_Register_Address\",\"type\":\"address\"},{\"internalType\":\"bytes4\",\"name\":\"Check_Voter_Selector\",\"type\":\"bytes4\"},{\"internalType\":\"uint256\",\"name\":\"Vote_Duration\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"Vote_Validation_Duration\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"Propositions_Number\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"Max_Winning_Propositions_Number\",\"type\":\"uint256\"}],\"name\":\"Create_Ballot\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"}],\"name\":\"End_Validation_Vote\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"}],\"name\":\"End_Vote\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"proposition_Id\",\"type\":\"uint256\"}],\"name\":\"Get_Propositions_Result\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256[5]\",\"name\":\"Cumulated_Score\",\"type\":\"uint256[5]\"},{\"internalType\":\"enum Majority_Judgment_Ballot.Assessement\",\"name\":\"Median_Grade\",\"type\":\"uint8\"}],\"internalType\":\"struct Majority_Judgment_Ballot.Propositions_Result\",\"name\":\"proposition_result\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"}],\"name\":\"Get_Voter_Number\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"voter_num\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"Id\",\"type\":\"uint256\"}],\"name\":\"Get_Winning_Proposition_byId\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"Winning_Proposition\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"}],\"name\":\"Get_Winning_Propositions\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"Winning_Propositions_List\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"voter_address\",\"type\":\"address\"}],\"name\":\"HasValidated\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"Validated\",\"type\":\"bool\"},{\"internalType\":\"bytes32\",\"name\":\"Choice\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"voter_address\",\"type\":\"address\"}],\"name\":\"HasVoted\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"hasvoted\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"internalType\":\"uint256[]\",\"name\":\"Choices\",\"type\":\"uint256[]\"},{\"internalType\":\"bytes32\",\"name\":\"salt\",\"type\":\"bytes32\"}],\"name\":\"Valdiate_Vote\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"internalType\":\"uint256[]\",\"name\":\"Choices\",\"type\":\"uint256[]\"}],\"name\":\"Vote_Clear\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"Hash\",\"type\":\"bytes32\"}],\"name\":\"Vote_Hashed\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Implementation of IVote interface. Majority_Judgment_Ballot contract implement the Majority Judgment which is a ballot process proven to be able to avoid biases of classical Uninominal ballot such as strategic vote. In Majority Judgment ballot, \",\"kind\":\"dev\",\"methods\":{\"Create_Ballot(bytes32,address,bytes4,uint256,uint256,uint256,uint256)\":{\"details\":\"See {IVote} interface.\"},\"End_Validation_Vote(bytes32)\":{\"details\":\"See {IVote} interface.\"},\"End_Vote(bytes32)\":{\"details\":\"See {IVote} interface.\"},\"Get_Propositions_Result(bytes32,uint256)\":{\"details\":\"Get the score obtained by a proposition\",\"params\":{\"key\":\"Id of the voting session\",\"proposition_Id\":\"Index of the proposition\"},\"returns\":{\"proposition_result\":\"  \"}},\"Get_Voter_Number(bytes32)\":{\"details\":\"See {IVote} interface\"},\"Get_Winning_Proposition_byId(bytes32,uint256)\":{\"details\":\"See {IVote} interface\"},\"Get_Winning_Propositions(bytes32)\":{\"details\":\"See {IVote} interface\"},\"HasValidated(bytes32,address)\":{\"details\":\"See {IVote} interface\"},\"HasVoted(bytes32,address)\":{\"details\":\"See {IVote} interface\"},\"Valdiate_Vote(bytes32,uint256[],bytes32)\":{\"details\":\"See {IVote} interface.\"},\"Vote_Clear(bytes32,uint256[])\":{\"details\":\"See {IVote} interface.\"},\"Vote_Hashed(bytes32,bytes32)\":{\"details\":\"See {IVote} interface.\"}},\"stateVariables\":{\"Ballots\":{\"details\":\"Mapping of all voting sessions of the contract. \"}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/home/andrei/Alyra/Web3_Referendum/contracts/Majority_Judgment_Ballot.sol\":\"Majority_Judgment_Ballot\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":20000},\"remappings\":[]},\"sources\":{\"/home/andrei/Alyra/Web3_Referendum/contracts/Majority_Judgment_Ballot.sol\":{\"keccak256\":\"0xdc3f008b97e4d7407c1a4e43b58b851ad2d1ddd6c9e217f18e18328373530193\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://c423a90eff12051f2cd2ecee716e066e59da0040f1352e5818aff8b95567f1b1\",\"dweb:/ipfs/QmeHscvNuDyxypAvWnkxaUKzH3BSk71wZticxnPJC8Sz3w\"]},\"@openzeppelin/contracts/math/SafeMath.sol\":{\"keccak256\":\"0x89a5235cc820ce98151d91b50b738fa415f184afc79f7c7f59dbc1734b592ab8\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://4524329737fff496aa35f3e8d7e21492783b393eb317f1982c9446acf39d36d6\",\"dweb:/ipfs/QmYQRGL2Fqhr6VN5mjnVPSms6QmBt12Di8PqYAXjecBf5t\"]},\"contracts/IVote.sol\":{\"keccak256\":\"0x777b26c9c45b30a9cf06f2c7683452290de7ad0755b7cb79152f210be78a44e0\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://d58567af11876c36174e45a675e44c6c7dab0f2ecd77d414cb8544f03ecbab1d\",\"dweb:/ipfs/QmRMsUFdV8d8eVd4HHdLWx9GZTSoPRLsj3NzRrMo9ijZoN\"]}},\"version\":1}",
@@ -42296,9 +42303,217 @@
     "name": "solc",
     "version": "0.8.1+commit.df193b15.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "3": {
+      "events": {
+        "0x71197020ed13a7746ac14a164ff9942e4ecd6bb6ed9dee9edcf1a3f98daffc51": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "bytes32",
+              "name": "key",
+              "type": "bytes32"
+            }
+          ],
+          "name": "Ballot_Created",
+          "type": "event"
+        },
+        "0xff677262295f7ba2a3a32db725abf746d1b7b106cf8e123775db03177a912f97": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "bytes32",
+              "name": "key",
+              "type": "bytes32"
+            }
+          ],
+          "name": "Begin_Validation",
+          "type": "event"
+        },
+        "0xa0c983f45e87f58b01ca20537cec70181d303e2ec150391e9f3716e68ecc53fd": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "bytes32",
+              "name": "key",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "voter",
+              "type": "address"
+            }
+          ],
+          "name": "Validated_Vote",
+          "type": "event"
+        },
+        "0xe96bdd59a53e270495249e7854a0227aacf98b768837e8d590d2469ab4355361": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "bytes32",
+              "name": "key",
+              "type": "bytes32"
+            }
+          ],
+          "name": "Vote_Finished",
+          "type": "event"
+        },
+        "0xad7d4bea7584cc2dd746b3a323fe8f2db17a81dc2b34db12371f846b6a86321d": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "bytes32",
+              "name": "key",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "voter",
+              "type": "address"
+            }
+          ],
+          "name": "Voted_Clear",
+          "type": "event"
+        },
+        "0xaf7369025904012c0f1acb24841aa1018ba994d0ba5dc0f14600d322739c3753": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "bytes32",
+              "name": "key",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "voter",
+              "type": "address"
+            }
+          ],
+          "name": "Voted_Hashed",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xA394cDF308027c16D80124cD43b0Eed386eE2564",
+      "transactionHash": "0x4e8212b3da5e6551e8980fbb0141ae7f743306efde2f7136ec4804409123ef9e"
+    },
+    "5777": {
+      "events": {
+        "0x71197020ed13a7746ac14a164ff9942e4ecd6bb6ed9dee9edcf1a3f98daffc51": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "bytes32",
+              "name": "key",
+              "type": "bytes32"
+            }
+          ],
+          "name": "Ballot_Created",
+          "type": "event"
+        },
+        "0xff677262295f7ba2a3a32db725abf746d1b7b106cf8e123775db03177a912f97": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "bytes32",
+              "name": "key",
+              "type": "bytes32"
+            }
+          ],
+          "name": "Begin_Validation",
+          "type": "event"
+        },
+        "0xa0c983f45e87f58b01ca20537cec70181d303e2ec150391e9f3716e68ecc53fd": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "bytes32",
+              "name": "key",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "voter",
+              "type": "address"
+            }
+          ],
+          "name": "Validated_Vote",
+          "type": "event"
+        },
+        "0xe96bdd59a53e270495249e7854a0227aacf98b768837e8d590d2469ab4355361": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "bytes32",
+              "name": "key",
+              "type": "bytes32"
+            }
+          ],
+          "name": "Vote_Finished",
+          "type": "event"
+        },
+        "0xad7d4bea7584cc2dd746b3a323fe8f2db17a81dc2b34db12371f846b6a86321d": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "bytes32",
+              "name": "key",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "voter",
+              "type": "address"
+            }
+          ],
+          "name": "Voted_Clear",
+          "type": "event"
+        },
+        "0xaf7369025904012c0f1acb24841aa1018ba994d0ba5dc0f14600d322739c3753": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "bytes32",
+              "name": "key",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "voter",
+              "type": "address"
+            }
+          ],
+          "name": "Voted_Hashed",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x3B0E1602380cD5F598F418eA0288219728092A44",
+      "transactionHash": "0x3f4b652f0ea45762c0fa709983c6674e2b4208060c9417fa6e3716e77e831339"
+    }
+  },
   "schemaVersion": "3.3.1",
-  "updatedAt": "2021-04-28T21:24:22.770Z",
+  "updatedAt": "2021-05-04T19:15:26.837Z",
+  "networkType": "ethereum",
   "devdoc": {
     "details": "Implementation of IVote interface. Majority_Judgment_Ballot contract implement the Majority Judgment which is a ballot process proven to be able to avoid biases of classical Uninominal ballot such as strategic vote. In Majority Judgment ballot, ",
     "kind": "dev",

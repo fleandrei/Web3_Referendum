@@ -7,7 +7,7 @@ import "contracts/Register.sol";
 
 
 /** 
- * @dev This contract inherit from abstract contract "Register". It register the whitelist of accounts allowed to take art in democratic activities of the DAO. This list of citizens is edited by two authorities:
+ * @notice This contract inherit from abstract contract "Register". It register the whitelist of accounts allowed to take art in democratic activities of the DAO. This list of citizens is edited by two authorities:
  *  - Citizens_Registering_Authorities: List of address allowed to add citizens. We can have severals address but usually one single Delegation contract address is enough.
  *  - Citizens_Banning_Authorities: List of address allowed to remove citizens.  We can have severals address but usually one single Delegation contract address is enough.
  * 
