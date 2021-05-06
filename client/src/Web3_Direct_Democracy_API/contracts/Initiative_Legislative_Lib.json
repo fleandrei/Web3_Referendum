@@ -27853,7 +27853,7 @@
     }
   },
   "schemaVersion": "3.3.1",
-  "updatedAt": "2021-05-04T19:08:27.650Z",
+  "updatedAt": "2021-05-05T13:23:55.417Z",
   "networkType": "ethereum",
   "devdoc": {
     "details": "This library is used by {Agora} and {Delegation} contracts for law project elaboration. It provides facilities for law project creation, propositions submission, Law execution...  Every citizen can submit one or more proposal for the function call corpus of the law project. Proposals are stored in a Proposal Tree where each proposal can reuse function calls of its parent proposal. When a citizen wants to submit a proposal via the Add_Proposal function, he has to pay tokens for each new function call but function calls that come from the parent proposal are free. Hence, citizens can spare tokens by reusing already proposed function call.  This is an incentive for citizens to avoid duplicate or unnecessary function call.  The tree structure increases the readability of the proposal corpus as similar proposal would have the same parents. Once a citizen has submitted a proposal, he still has the possibility to insert new function call to it via the Add_Item function.",

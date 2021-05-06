@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Main from './App';
+import Main from './Main';
 //import Set_Constitution_Screen from './App';
 import * as serviceWorker from './serviceWorker';
 

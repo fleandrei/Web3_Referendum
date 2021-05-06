@@ -8,7 +8,7 @@ const AGORA = artifacts.require("Agora")
 const DELEGATION = artifacts.require('Delegation');
 const DEMOCOIN = artifacts.require('DemoCoin');
 const CITIZEN_REGISTER = artifacts.require('Citizens_Register');
-const MAJORITY_JUDGMENT_BALLOT = artifacts.require('Majority_Judgment_Ballot')
+
 const Migration_Parameters = require('./Migration_Parameters.json');
 
 module.exports = async function(deployer) {
@@ -17,7 +17,7 @@ module.exports = async function(deployer) {
   //console.log("Migration_Parameters",Migration_Parameters);	
   //console.log("Initial_Owners", Migration_Parameters.DemoCoin.Initial_Owners, ",\n type of Initial_Owners", typeof Migration_Parameters.DemoCoin.Initial_Owners )
 
-  /*let Delegation_Utils_Library = await deployer.deploy(DELEGATION_UTILS);
+  let Delegation_Utils_Library = await deployer.deploy(DELEGATION_UTILS);
   let Delegation_Utils_Library_deployed = await DELEGATION_UTILS.deployed();
   let Initiative_Legislative_Lib_Library = await deployer.deploy(INITIATIVE_LEGISLATIV_LIB);
   let Initiative_Legislative_Lib_Library_deployed = await INITIATIVE_LEGISLATIV_LIB.deployed();
@@ -46,11 +46,11 @@ module.exports = async function(deployer) {
   let Constitution_deployed = await CONSTITUTION.deployed();
 
   /*Set Constitution_Address state variable for contracts that have been deployed before Constitution contract*/
-  /*await DemoCoin_Instance.Set_Constitution(CONSTITUTION.address);
+  await DemoCoin_Instance.Set_Constitution(CONSTITUTION.address);
   await Citizen_Register_Instance.Set_Constitution(CONSTITUTION.address);
-  await Agora_Instance.Set_Constitution(CONSTITUTION.address);*/
+  await Agora_Instance.Set_Constitution(CONSTITUTION.address);
 
-  await deployer.deploy(MAJORITY_JUDGMENT_BALLOT);
+  
   
   /*await deployer.deploy(CONSTITUTION, "Constitution", "Citizens", "Agora", "0x479d0C799C3869244cDaD5AEa35A43E02653cDc7",
    ["0x479d0C799C3869244cDaD5AEa35A43E02653cDc7"], "DemoCoin","DEMO", [100], 10, {gas:6700000});*/

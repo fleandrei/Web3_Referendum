@@ -1,9 +1,10 @@
 import React, { Component, useState, useEffect, useRef } from "react";
-import {Register, Constitution, Loi, Delegation, Governance_Instance, DemoCoin, Majority_Judgment_Ballot} from "./WDD_API";
+import {Register, Constitution, Loi, Delegation, Governance_Instance, DemoCoin, Majority_Judgment_Ballot} from "./Web3_Direct_Democracy_API/App";
 import Propositions_Submission from "./Propositions_Submission";
+import {Create_Function_Call} from "./Utils";
 
-import Constitution_Artifact from "./contracts/Constitution.json";
-import Majority_Judgment_Ballot_Artifact from "./contracts/Majority_Judgment_Ballot.json";
+import Constitution_Artifact from "./Web3_Direct_Democracy_API/contracts/Constitution.json";
+import Majority_Judgment_Ballot_Artifact from "./Web3_Direct_Democracy_API/contracts/Majority_Judgment_Ballot.json";
 
 import Button from 'react-bootstrap/Button';
 import Navbar from 'react-bootstrap/Navbar';
@@ -113,94 +114,6 @@ function Referendum_Parameter_Table(props){
   )
 }
 
-function Create_Function_Call(props){
-  //const [Register, SetRegister] = useState(null);
-  const [Current_Function_Selector, SetCurrentFunction] = useState("");
-  const [validated, SetValidated] = useState(false);
-
-  const Handle_Function_Change = async (event)=>{
-    SetCurrentFunction(event.target.value)
-    if(validated)SetValidated(false);
-  }
-
-  const Handle_Submit = async(event)=>{
-    try{
-      const form = event.currentTarget;
-      event.preventDefault();
-      event.stopPropagation();
-      if (form.checkValidity() === false) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-      var function_selector = form[0].value;
-      if(function_selector==""){ alert("You should choose a register function")}
-      var Function = props.Register_Functions.get(function_selector);
-      var Param_num = Function.Param_Types.length;
-      var Param_value = Array.from({length:Param_num});
-      for (var i =1; i <=Param_num; i++) {
-        Param_value[i-1]=form[i].value;
-      }
-      console.log("Create_Function_Call: Param_Values",Param_value);
-
-      
-      SetValidated(true);
-      console.log("\n\n\n Create_Function_Call: form:",form, "form.0.value",form[0].value);
-      props.Handle_Function_Call(function_selector, Param_value);
-    }catch(err){
-      alert("Create_Function_Call.Handle_Submit error: Function call submission failed. Check console for details");
-      console.error(err);
-    }
-  }
-
-  /*if(Register!==props.Register){
-    SetRegister(props.Register);
-  }*/
-
-  if(props.Register_Functions==null){return <div> </div>}
-
-  return(
-    <div className="App">
-      <Form noValidate validated={validated} onSubmit={Handle_Submit}>
-        <Form.Label className="my-1 mr-2" htmlFor="inlineFormCustomSelectPref">
-          Register Function
-        </Form.Label>
-        <Form.Control
-          as="select"
-          className="my-1 mr-sm-2"
-          id="inlineFormCustomSelectPref"
-          custom
-          onChange={Handle_Function_Change}
-        >
-          <option value="">Choose register function...</option>
-          {
-            Array.from(props.Register_Functions).map((elem,idx)=>{
-              return <option key={elem[0]} value={elem[0]}>{elem[1].Name}</option>
-            })
-          }
-      </Form.Control>
-        <br/>
-        <br/>
-
-        {
-          (Current_Function_Selector!="")&&
-          props.Register_Functions.get(Current_Function_Selector).Param_Names.map((elem,idx)=>{
-            return <Form.Group as={Row} controlId={elem} key={elem+Current_Function_Selector}>
-            <Form.Label column sm={5}>
-              {elem}
-            </Form.Label>
-            <Col sm={7}>
-              <Form.Control type="text" placeholder={props.Register_Functions.get(Current_Function_Selector).Param_Types[idx]} required/>
-            </Col>
-            </Form.Group>
-          })
-        }
-
-        <Button type="submit">Submit</Button>
-
-      </Form>
-    </div>
-  )
-}
 
 
 
@@ -498,7 +411,7 @@ function Constitution_Show(props){
       case Sub_Tab.PROPOSITIONS:
         return <Propositions_Submission Governance_Instance={Constitution.Agora}
                       Title="Referendum Propositions Submission"
-                      Left_Title="Pending Referendum Propositions"
+                      Left_Title="Pending Referendum:"
                       account={props.account}
                       web3={props.web3}
                       />
@@ -818,15 +731,17 @@ class Main extends Component {
                 <NavDropdown.Divider />
                 <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
               </NavDropdown>
-              <NavDropdown title="Delegations" id="basic-nav-dropdown">
+              
+              <Nav.Link href="#link">Citizens</Nav.Link>
+            </Nav>
+
+            <NavDropdown title="Delegations" id="basic-nav-dropdown">
                 <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
                 <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
                 <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
               </NavDropdown>
-              <Nav.Link href="#link">Citizens</Nav.Link>
-            </Nav>
 
             <Nav >
               

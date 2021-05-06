@@ -229,8 +229,10 @@ Les votes au sein de ces tests sont faits aléatoirement.
 	* Un citoyen met fin à la phase de validation des votes (ce qui entraîne le comptage des voix et la fin de la session) avec succès et l'event "Vote_Finished" est émit.
 
 
+### Agora
+## Présentation
+Dans ce fichier, on teste les fonctionnalités du contrat _Agora_ 
 
 
-	* 
 	 
 	

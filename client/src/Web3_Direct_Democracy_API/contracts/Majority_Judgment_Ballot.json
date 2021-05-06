@@ -42507,12 +42507,12 @@
         }
       },
       "links": {},
-      "address": "0x3B0E1602380cD5F598F418eA0288219728092A44",
-      "transactionHash": "0x3f4b652f0ea45762c0fa709983c6674e2b4208060c9417fa6e3716e77e831339"
+      "address": "0x575c3E878A1007ED2dAe65f7e01E7660948B71c1",
+      "transactionHash": "0xdbaf116e46644c8d89f3e40d5e01c7dbee0c1ceb3964a2342798c684576c03d7"
     }
   },
   "schemaVersion": "3.3.1",
-  "updatedAt": "2021-05-04T19:15:26.837Z",
+  "updatedAt": "2021-05-05T13:23:57.480Z",
   "networkType": "ethereum",
   "devdoc": {
     "details": "Implementation of IVote interface. Majority_Judgment_Ballot contract implement the Majority Judgment which is a ballot process proven to be able to avoid biases of classical Uninominal ballot such as strategic vote. In Majority Judgment ballot, ",

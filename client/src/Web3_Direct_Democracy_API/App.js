@@ -117,11 +117,16 @@ class Citizens_Register extends Register{
     ); 
 
     await this.Set_Register_Events();
-    this.Instance.events.Law_Created(this.Handle_Law_Created);
-    this.Instance.events.Article_Created(this.Handle_Article_Created);
-    this.Instance.events.Description_Changed(this.Handle_Description_Changed);
-    this.Instance.events.Article_Removed(this.Handle_Article_Removed);
-    this.Instance.events.Law_Removed(this.Handle_Law_Removed);
+    this.Instance.events.New_Citizen(this.Handle_New_Citizen);
+    this.Instance.events.Citizen_Data_Set(this.Handle_Citizen_Data_Set);
+    this.Instance.events.Citizen_Banned(this.Handle_Citizen_Banned);
+    this.Instance.events.Citizen_Permanently_Banned(this.Handle_Citizen_Permanently_Banned);
+    this.Instance.events.Citizen_Ban_Over(this.Handle_Citizen_Ban_Over);
+    this.Instance.events.new_citizen_mint_amount_Set(this.Handle_new_citizen_mint_amount_Set);
+    this.Instance.events.Registering_Authority_Added(this.Handle_Registering_Authority_Added);
+    this.Instance.events.Banning_Authority_Added(this.Handle_Banning_Authority_Added);
+    this.Instance.events.Registering_Authority_Removed(this.Handle_Citizen_Permanently_Banned);
+    this.Instance.events.Banning_Authority_Removed(this.Handle_Citizen_Ban_Over);
     
 
     await this.Agora.SetInstance(Agora_Address, this.Instance._address, DemoCoin_Address);
@@ -143,7 +148,7 @@ class Citizens_Register extends Register{
     const Citizens_List = (await this.Instance.methods.Get_Citizens_List().call()).map(Bytes32ToAddress);
 
     Citizens_List.forEach(async (citizen_address)=>{
-      var citizen = await this.Instance.methods.Citizens().call();
+      var citizen = await this.Instance.methods.Citizens(citizen_address).call();
       if(citizen.Active){
         this.Citizens.set(citizen_address, citizen);
       }else{
@@ -153,7 +158,153 @@ class Citizens_Register extends Register{
 
     this.Event.emit("State_Loaded");
   }
+
+  Handle_New_Citizen = async(err, ev)=>{
+    if(err){
+      alert(this.Name+" (Citizens_Register) : New_Citizen event error. Check console for details");
+      console.error(err);
+    }else{
+      var citizen_address = ev.returnValues.citizen_address;
+      var citizen = await this.Instance.methods.Citizens(citizen_address).call();
+      
+      this.Citizens.set(citizen_address, citizen);
+      this.Event.emit("State_Changed");
+      this.Event.emit("New_Citizen", citizen_address);
+    }
+  }
+
+  Handle_Citizen_Data_Set = async(err, ev)=>{
+    if(err){
+      alert(this.Name+" (Citizens_Register) : Citizen_Data_Set event error. Check console for details");
+      console.error(err);
+    }else{
+      var citizen_address = ev.returnValues.citizen_address;
+      var citizen = await this.Instance.methods.Citizens(citizen_address).call();
+      if(this.Citizens.has(citizen_address)){
+        this.Citizens.set(citizen_address, citizen);
+      }else{
+        this.Temporary_Banned_Citizens.set(citizen_address,citizen);
+      }
+      
+      this.Event.emit("State_Changed");
+      this.Event.emit("Citizen_Data_Set", citizen_address);
+    }
+  }
+
+  Handle_Citizen_Banned = async(err, ev)=>{
+    if(err){
+      alert(this.Name+" (Citizens_Register) : Citizen_Banned event error. Check console for details");
+      console.error(err);
+    }else{
+      var citizen_address = ev.returnValues.citizen_address;
+      var citizen = await this.Instance.methods.Citizens(citizen_address).call();
+      
+      
+      this.Citizens.delete(citizen_address);
+      this.Temporary_Banned_Citizens.set(citizen_address, citizen);
+      this.Event.emit("State_Changed");
+      this.Event.emit("Citizen_Banned", citizen_address);
+    }
+  }
+
+  Handle_Citizen_Permanently_Banned= async(err, ev)=>{
+    if(err){
+      alert(this.Name+" (Citizens_Register) : Citizen_Permanently_Banned event error. Check console for details");
+      console.error(err);
+    }else{
+      var citizen_address = ev.returnValues.citizen_address;
+      
+      if(!this.Citizens.delete(citizen_address)){
+        this.Temporary_Banned_Citizens.delete(citizen_address);
+      }
+      
+      this.Blacklist.push(citizen_address);
+      this.Event.emit("State_Changed");
+      this.Event.emit("Citizen_Permanently_Banned", citizen_address);
+    }
+  }
+
+  Handle_Citizen_Ban_Over= async(err,ev)=>{
+    if(err){
+      alert(this.Name+" (Citizens_Register) : Citizen_Ban_Over event error. Check console for details");
+      console.error(err);
+    }else{
+      var citizen_address = ev.returnValues.citizen_address;
+      var citizen= this.Temporary_Banned_Citizens.get(citizen_address);
+      citizen.Active=true;
+      citizen.End_Ban_Timestamp=0;
+      this.Temporary_Banned_Citizens.delete(citizen_address);
+      this.Citizens.set(citizen_address, citizen);
+      
+      this.Event.emit("State_Changed");
+      this.Event.emit("Citizen_Ban_Over", citizen_address);
+    }
+  }
+
+  Handle_new_citizen_mint_amount_Set=async(err,ev)=>{
+    if(err){
+      alert(this.Name+" (Citizens_Register) : new_citizen_mint_amount_Set event error. Check console for details");
+      console.error(err);
+    }else{
+      this.New_Citizen_Mint_Amount = ev.returnValues.new_citizen_mint_amount;
+    
+      this.Event.emit("State_Changed");
+      this.Event.emit("new_citizen_mint_amount_Set", ev.returnValues.new_citizen_mint_amount);
+    }
+  }
+
+
+  Handle_Registering_Authority_Added= async(err,ev)=>{
+    if(err){
+      alert(this.Name+" (Citizens_Register) : Registering_Authority_Added event error. Check console for details");
+      console.error(err);
+    }else{
+      this.Citizens_Registering_Authorities.push(ev.returnValues.authority);
+    
+      this.Event.emit("State_Changed");
+      this.Event.emit("Registering_Authority_Added", ev.returnValues.authority);
+    }
+  }
+
+  Handle_Banning_Authority_Added= async(err,ev)=>{
+    if(err){
+      alert(this.Name+" (Citizens_Register) : Banning_Authority_Added event error. Check console for details");
+      console.error(err);
+    }else{
+      this.Citizens_Banning_Authorities.push(ev.returnValues.authority);
+    
+      this.Event.emit("State_Changed");
+      this.Event.emit("Banning_Authority_Added", ev.returnValues.authority);
+    }
+  }
+
+  Handle_Registering_Authority_Removed= async(err,ev)=>{
+    if(err){
+      alert(this.Name+" (Citizens_Register) : Registering_Authority_Removed event error. Check console for details");
+      console.error(err);
+    }else{
+      this.Citizens_Registering_Authorities = this.Citizens_Registering_Authorities.filter(item=>{return item!==ev.returnValues.authority});
+    
+      this.Event.emit("State_Changed");
+      this.Event.emit("Registering_Authority_Removed", ev.returnValues.authority);
+    }
+  }
+
+  Handle_Banning_Authority_Removed= async(err,ev)=>{
+    if(err){
+      alert(this.Name+" (Citizens_Register) : Banning_Authority_Removed event error. Check console for details");
+      console.error(err);
+    }else{
+      this.Citizens_Banning_Authorities = this.Citizens_Banning_Authorities.filter(item=>{return item!==ev.returnValues.authority});
+    
+      this.Event.emit("State_Changed");
+      this.Event.emit("Banning_Authority_Removed", ev.returnValues.authority);
+    }
+  }
+
 }
+
+
 
 class Loi extends Register{
   constructor(web3){
@@ -685,8 +836,8 @@ class Agora_Specific_Register extends Governance_Instance {
   Add_Law_Project = async (Title, Description, account)=>{
     var hexTitle = this.web3.utils.utf8ToHex(Title);
     var hexDescription = this.web3.utils.utf8ToHex(Description);
-    console.log("Add_Law_Project: this.Last_Version", this.Last_Version);
     const key = this.web3.utils.soliditySha3(this.web3.eth.abi.encodeParameters(["bytes", "bytes"], [hexTitle, hexDescription]));
+    console.log("Add_Law_Project: this.Last_Version:",this.Last_Version,", this.Last_Version - 1= ",this.Last_Version -1);
     await this.DemoCoin_Instance.methods.approve(this.Instance._address, this.Parameters[this.Last_Version - 1].Law_Initialisation_Price).send({from:account});
     await this.Instance.methods.Add_Law_Project(this.Register_Address, hexTitle, hexDescription).send({from:account});
     this.Has_Signed=true;
